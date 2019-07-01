@@ -1,10 +1,12 @@
-import collections
+import sys
 from sources.filter import *
 from sources.Levenshtein import *
+from sources.import_repository import *
 
 def main():
     # Pull 2 repos from GitHub
     print("Pulling repositories")
+    import_repository(sys.argv)
     # Tokenize repos
     print("Tokenizing repositories")
     list1 = {}
@@ -15,8 +17,6 @@ def main():
     # Use Levenhstein to compare tokens to tokens
     print("Comparing repositories")
     lev_distance(list1, list2)
-
-    print("Results:")
 
 
 if __name__ == "__main__":
