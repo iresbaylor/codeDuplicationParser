@@ -1,4 +1,4 @@
-from git_importer import GitImporter
+from .git_importer import GitImporter
 
 
 def import_repository(argv):
