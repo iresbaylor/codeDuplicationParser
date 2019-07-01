@@ -8,10 +8,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+What things you need to install the software
 
 ```
 Python 3.7
+```
+
+```
+pip
 ```
 
 ### Installing
@@ -23,11 +27,22 @@ Clone the repository
 git clone github.com/calebdehaan/codeDuplicationParser.git
 ```
 
-That's it!
+Download GitPython
+
+```
+pip3 install gitpython
+```
+
+Run main.py
+
+``` 
+python3 main.py
+```
 
 ## Built With
 
 * [Python 3.7.3](https://www.python.org/downloads/release/python-373/) - The Python version used
+* [GitPython](https://gitpython.readthedocs.io/en/stable/) - Used to pull git repositories
 
 ## Authors
 
