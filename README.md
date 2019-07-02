@@ -33,6 +33,12 @@ Download GitPython
 pip3 install gitpython
 ```
 
+Download Tokenizer
+
+```
+pip3 install tokenizer
+```
+
 Run main.py
 
 ``` 
@@ -43,6 +49,7 @@ python3 main.py
 
 * [Python 3.7.3](https://www.python.org/downloads/release/python-373/) - The Python version used
 * [GitPython](https://gitpython.readthedocs.io/en/stable/) - Used to pull git repositories
+* [Tokenizer](https://pypi.org/project/tokenizer/) - Used to tokenize the code
 
 ## Authors
 
