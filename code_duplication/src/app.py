@@ -1,8 +1,5 @@
 import sys
 import os
-from sources.filter import *
-from sources.Levenshtein import *
-from sources.import_repository import *
 from code_duplication.src.common.filter import filter_tokens
 from code_duplication.src.common.Levenshtein import lev_distance
 from code_duplication.src.common.import_repository import import_repository
