@@ -3,6 +3,9 @@ import os
 from sources.filter import *
 from sources.Levenshtein import *
 from sources.import_repository import *
+from code_duplication.src.common.filter import filter_tokens
+from code_duplication.src.common.Levenshtein import lev_distance
+from code_duplication.src.common.import_repository import import_repository
 from urllib.parse import urlparse
 import string
 
@@ -64,8 +67,3 @@ def main():
     # Use Levenhstein to compare tokens to tokens
     print("Comparing repositories")
     lev_distance(list1, list2)
-
-
-if __name__ == "__main__":
-    main()
-

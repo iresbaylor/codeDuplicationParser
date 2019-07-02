@@ -1,1 +1,4 @@
 .idea/
+code_duplication/build/
+code_duplication/code_duplication_scanner.egg-info/
+code_duplication/dist/
