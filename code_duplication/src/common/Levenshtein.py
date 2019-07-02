@@ -1,23 +1,31 @@
 # get minimum of three values
 def minimum(val1, val2, val3):
-    min = val1
-    if val2 < min:
-        min = val2
-    if val3 < min:
-        min = val3
-    return min
+    mini = val1
+    if val2 < mini:
+        mini = val2
+    if val3 < mini:
+        mini = val3
+    return mini
+
 
 # takes two words and determines levenshtein distance
-def lev_distance(w1, w2):
-
+def lev_distance(line1, line2):
     # check if same kind of token
-    ss1 = w1[15,17]
-    ss2 = w2[15,17]
+    ss1 = line1[15:17]
+    ss2 = line2[15:17]
 
     if ss1 == ss2:
+        # grab the strings
+        i = line1.find("string='")
+        j = line1.find("',")
+        w1 = line1[i+8:j]
+        i = line2.find("string='")
+        j = line2.find("',")
+        w2 = line2[i+8:j]
+
         # THE ACTUAL LEVENSHTEIN ALGORITHM
-        length1 = len(w1)+1 # length of word 1 - col
-        length2 = len(w2)+1 # length of word 2 - row
+        length1 = len(w1)+1     # length of word 1 - col
+        length2 = len(w2)+1     # length of word 2 - row
 
         # STEP 1
         # check if words are empty
@@ -54,7 +62,9 @@ def lev_distance(w1, w2):
         # STEP 7
         return m[length2-1][length1-1]
     else:
+        # returns 3 bc they're definitely not the same
         return 3
+
 
 # takes two lists and compares everything in them to everything in the other one
 def list_compare(list1, list2):
