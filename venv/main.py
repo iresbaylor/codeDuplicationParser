@@ -1,4 +1,5 @@
 import sys
+import os
 from sources.filter import *
 from sources.Levenshtein import *
 from sources.import_repository import *
@@ -18,35 +19,39 @@ def check_args(argv):
         python3 main.py [directory to be cloned to 1] [git repo 1]
             """)
         return False
-    # testing the github URLs below
+    # testing the github URLs and that the directories exist below
     if len(argv) == 3:
         pieces = urlparse(argv[2])
-        flag = all([pieces.scheme, pieces.netloc])
-        if flag:
-            flag = set(pieces.netloc) <= set(string.ascii_letters + string.digits + '-.')
-            if flag:
-                flag = pieces.scheme in ['http', 'https']
-        return flag
+        url_flag = all([pieces.scheme, pieces.netloc])
+        if url_flag:
+            url_flag = set(pieces.netloc) <= set(string.ascii_letters + string.digits + '-.')
+            if url_flag:
+                url_flag = pieces.scheme in ['http', 'https']
+        dir_flag = os.path.isdir(argv[1])
+        return url_flag and dir_flag
     else:
         pieces1 = urlparse(argv[2])
-        flag1 = all([pieces1.scheme, pieces1.netloc])
-        if flag1:
-            flag1 = set(pieces1.netloc) <= set(string.ascii_letters + string.digits + '-.')
-            if flag1:
-                flag1 = pieces1.scheme in ['http', 'https']
+        url_flag1 = all([pieces1.scheme, pieces1.netloc])
+        if url_flag1:
+            url_flag1 = set(pieces1.netloc) <= set(string.ascii_letters + string.digits + '-.')
+            if url_flag1:
+                url_flag1 = pieces1.scheme in ['http', 'https']
         pieces2 = urlparse(argv[4])
-        flag2 = all([pieces2.scheme, pieces2.netloc])
-        if flag2:
-            flag2 = set(pieces2.netloc) <= set(string.ascii_letters + string.digits + '-.')
-            if flag2:
-                flag2 = pieces2.scheme in ['http', 'https']
-        return flag1 and flag2
+        url_flag2 = all([pieces2.scheme, pieces2.netloc])
+        if url_flag2:
+            url_flag2 = set(pieces2.netloc) <= set(string.ascii_letters + string.digits + '-.')
+            if url_flag2:
+                url_flag2 = pieces2.scheme in ['http', 'https']
+        dir_flag1 = os.path.isdir(argv[1])
+        dir_flag2 = os.path.isdir(argv[3])
+        return url_flag1 and url_flag2 and dir_flag1 and dir_flag2
 
 
 def main():
     flag = check_args(sys.argv)
     if not flag:
-        print("There was an error in your syntax. Please check your syntax and try again.")
+        print("There was an error in your syntax. \n"
+              "Please verify that the git repos exist and your attempted directory to clone into are correct.")
         return
     import_repository(sys.argv)
     # Tokenize repos
