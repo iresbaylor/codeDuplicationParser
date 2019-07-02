@@ -13,8 +13,8 @@ def then_there_were_tokens(filename, list1):
     with open(filename, 'rb') as f:
         for five_tuple in tokenize.tokenize(f.readline):
             print("---------------------")
-            # print(five_tuple)
-            print(five_tuple.type, five_tuple.string, five_tuple.end)
+            print(five_tuple)
+            # print(five_tuple.type, five_tuple.string, five_tuple.end)
             list1.append(five_tuple)
             # print(five_tuple.string)
             # print(five_tuple.start)
