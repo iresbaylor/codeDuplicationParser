@@ -1,4 +1,4 @@
-from sources.Levenshtein import *
+from code_duplication.src.common.Levenshtein import lev_distance
 
 
 class TestLevenshtein(object):
