@@ -1,8 +1,11 @@
+from sources.Levenshtein import *
+
+
 class TestLevenshtein(object):
     def test_one(self):
-        x = "this"
-        assert 'h' in x
+        dist = lev_distance("hi", "hl")
+        assert dist == 1
 
     def test_two(self):
-        x = "hello"
-        assert hasattr(x, 'check')
+        dist = lev_distance("hello", "h1")
+        assert dist == 4
