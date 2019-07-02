@@ -72,9 +72,9 @@ def list_compare(list1, list2):
     for x in list1:
         for y in list2:
             # calculate levenshtein
-            l = lev_distance(x, y)
+            dist = lev_distance(x, y)
             # determine if distance within acceptable threshold
-            if l >= 3:
+            if dist >= 3:
                 un = un+1
 
     # calculate percentage of similarity
