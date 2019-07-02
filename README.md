@@ -39,10 +39,10 @@ Download Tokenizer
 pip3 install tokenizer
 ```
 
-Run main.py
+Run the program
 
 ``` 
-python3 main.py
+python -m code_duplication [args]
 ```
 
 ## Built With
