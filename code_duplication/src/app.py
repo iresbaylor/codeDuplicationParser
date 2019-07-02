@@ -3,6 +3,7 @@ import os
 from code_duplication.src.common.filter import filter_tokens
 from code_duplication.src.common.Levenshtein import lev_distance
 from code_duplication.src.common.import_repository import import_repository
+from code_duplication.src.common.time_to_tokenize import *
 from urllib.parse import urlparse
 import string
 
@@ -59,8 +60,13 @@ def main():
     import_repository(sys.argv)
     # Tokenize repos
     print("Tokenizing repositories")
-    list1 = {}
-    list2 = {}
+    list1 = []
+    list2 = []
+    # if we can set the variables below to the directories we want to compare, it should work
+    directory1 = 'code_duplication/src/common'
+    directory2 = 'code_duplication/src/common'
+    time_to_tokenize_the_directory(directory1, list1)
+    time_to_tokenize_the_directory(directory2, list2)
     # Filter out variable names - only control structures
     print("Filtering repositories")
     filter_tokens(list1, list2)
