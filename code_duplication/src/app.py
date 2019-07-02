@@ -50,8 +50,8 @@ def check_args(argv):
 def main():
     flag = check_args(sys.argv)
     if not flag:
-        print("There was an error in your syntax. \n"
-              "Please verify that the git repos exist and your attempted directory to clone into are correct.")
+        print("    There was an error in your syntax. \n"
+              "    Please verify that the git repos exist and your attempted directory to clone into are correct.")
         return
     import_repository(sys.argv)
     # Tokenize repos
