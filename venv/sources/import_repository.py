@@ -1,6 +1,9 @@
 from .git_importer import GitImporter
 
 
+# This code will import the repos from git into the specified locations
+# based on the args passed to the program
+# it does not return anything
 def import_repository(argv):
     if len(argv) == 3:
         cloned_directory_1 = argv[1]

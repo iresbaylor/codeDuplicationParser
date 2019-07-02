@@ -4,6 +4,9 @@ from sources.Levenshtein import *
 from sources.import_repository import *
 
 
+# The below function will check to verify that there are the correct number of args
+# it returns a boolean signifying whether the correct args were passed
+# it will exit the program if it the passed args are not correct
 def check_args(argv):
     if len(argv) != 5 and len(argv) != 3:
         print("""\
@@ -21,7 +24,6 @@ def main():
     if not flag:
         return
     import_repository(sys.argv)
-
     # Tokenize repos
     print("Tokenizing repositories")
     list1 = {}
