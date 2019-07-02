@@ -48,6 +48,9 @@ def check_args(argv):
 
 
 def main():
+    # verifying inputs.
+    # sys.argv should be in the following format:
+    # sys.argv = {script name, dir_1, git_1, dir_2, git_2}
     flag = check_args(sys.argv)
     if not flag:
         print("    There was an error in your syntax. \n"
