@@ -1,10 +1,10 @@
 import sys
-import os
 from code_duplication.src.common.filter import filter_tokens
 from code_duplication.src.common.Levenshtein import lev_distance
 from code_duplication.src.common.import_repository import import_repository
 from code_duplication.src.common.time_to_tokenize import *
 from urllib.parse import urlparse
+from code_duplication.src.common.directory_parser import list_files
 import string
 
 
