@@ -1,5 +1,7 @@
+import ast
 import tokenize
 import os
+from pprint import pprint
 
 
 def time_to_tokenize_the_directory(directory, list1):
@@ -20,3 +22,20 @@ def then_there_were_tokens(filename, list1):
             # print(five_tuple.start)
             # print(five_tuple.end)
             # print(five_tuple.line)
+
+
+def i_am_groot(directory1):
+    with open(directory1, "r") as source:
+        tree = ast.parse(source.read())
+        print(ast.dump(tree))
+
+
+def print_node_value(value):
+    print(value)
+
+
+def visit(node, handle_node):
+    handle_node(node)
+    for child in node.children:
+        visit(child, handle_node)
+

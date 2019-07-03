@@ -63,10 +63,13 @@ def main():
     list1 = []
     list2 = []
     # if we can set the variables below to the directories we want to compare, it should work
-    directory1 = 'code_duplication/src/common'
-    directory2 = 'code_duplication/src/common'
-    time_to_tokenize_the_directory(directory1, list1)
-    time_to_tokenize_the_directory(directory2, list2)
+    directory1 = sys.argv[1]
+    directory2 = sys.argv[3]
+    # time_to_tokenize_the_directory(directory1, list1)
+    # time_to_tokenize_the_directory(directory2, list2)
+    i_am_groot(directory1)
+    # "./code_duplication/src/common/Levenshtein.py"
+    i_am_groot(directory2)
     # Filter out variable names - only control structures
     print("Filtering repositories")
     filter_tokens(list1, list2)
