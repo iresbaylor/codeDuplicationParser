@@ -2,6 +2,7 @@ import ast
 import tokenize
 import os
 from pprint import pprint
+from code_duplication.src.common.TreeNode import TreeNode
 
 
 def time_to_tokenize_the_directory(directory, list1):
@@ -39,3 +40,29 @@ def visit(node, handle_node):
     for child in node.children:
         visit(child, handle_node)
 
+
+def get_ast_from_file(file1):
+    with open(file1, "r") as source:
+        return ast.parse(source.read())
+
+
+def get_methods_from_tree(tree):
+    return [TreeNode(x) for x in ast.walk(tree) if isinstance(x, ast.FunctionDef)]
+
+
+def get_methods_from_file(file1):
+    return get_methods_from_tree(get_ast_from_file(file1))
+
+
+def get_methods_from_directory(directory):
+    methods = []
+
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
+
+        methods.extend((
+            get_methods_from_file if os.path.isfile(item_path) and item_path.endswith('.py') else
+            get_methods_from_directory if os.path.isdir(item_path) else
+            lambda _: [])(item_path))
+
+    return methods

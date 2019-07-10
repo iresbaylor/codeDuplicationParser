@@ -60,6 +60,16 @@ def main():
     import_repository(sys.argv)
     # Tokenize repos
     print("Tokenizing repositories")
+
+    # ------- FOR TESTING PURPOSES ------------
+    if len(sys.argv) >= 2:
+        # Find all functions and parse their syntax tree using the TreeNode wrapper
+        for method in get_methods_from_directory(sys.argv[1]):
+            print(method)
+
+        return
+    # -----------------------------------------
+
     list1 = []
     list2 = []
     # if we can set the variables below to the directories we want to compare, it should work
