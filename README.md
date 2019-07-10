@@ -28,8 +28,7 @@ What things you need to install the software
 2. Enter the repository directory
    - `cd codeDuplicationParser`
 3. Install dependencies
-   - Automatically: `pip3 install -r requirements.txt`
-   - Manually: `pip3 install gitpython`
+   - `pip3 install -r requirements.txt`
 4. Run the program
    - `python3 -m code_duplication [args]`
 
