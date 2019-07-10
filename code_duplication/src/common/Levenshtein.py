@@ -15,7 +15,7 @@ def lev_distance(line1, line2):
     ss2 = line2[15:17]
 
     # checks if they're equal and not new lines
-    if ss1 == ss2 and ss1 != '4' and ss2 != '4':
+    if ss1 == ss2 and ss1 != "4" and ss2 != "4":
         # grab the strings
         i = line1.find("string='")
         j = line1.find("',")

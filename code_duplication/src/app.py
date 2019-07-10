@@ -27,9 +27,9 @@ def check_args(argv):
         url_flag = all([pieces.scheme, pieces.netloc])
         if url_flag:
             url_flag = set(pieces.netloc) <= set(
-                string.ascii_letters + string.digits + '-.')
+                string.ascii_letters + string.digits + "-.")
             if url_flag:
-                url_flag = pieces.scheme in ['http', 'https']
+                url_flag = pieces.scheme in ["http", "https"]
         dir_flag = os.path.isdir(argv[1])
         return url_flag and dir_flag
     else:
@@ -37,16 +37,16 @@ def check_args(argv):
         url_flag1 = all([pieces1.scheme, pieces1.netloc])
         if url_flag1:
             url_flag1 = set(pieces1.netloc) <= set(
-                string.ascii_letters + string.digits + '-.')
+                string.ascii_letters + string.digits + "-.")
             if url_flag1:
-                url_flag1 = pieces1.scheme in ['http', 'https']
+                url_flag1 = pieces1.scheme in ["http", "https"]
         pieces2 = urlparse(argv[4])
         url_flag2 = all([pieces2.scheme, pieces2.netloc])
         if url_flag2:
             url_flag2 = set(pieces2.netloc) <= set(
-                string.ascii_letters + string.digits + '-.')
+                string.ascii_letters + string.digits + "-.")
             if url_flag2:
-                url_flag2 = pieces2.scheme in ['http', 'https']
+                url_flag2 = pieces2.scheme in ["http", "https"]
         dir_flag1 = os.path.isdir(argv[1])
         dir_flag2 = os.path.isdir(argv[3])
         return url_flag1 and url_flag2 and dir_flag1 and dir_flag2

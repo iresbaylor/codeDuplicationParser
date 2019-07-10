@@ -9,7 +9,7 @@ def _read_whole_file(file_path):
     Read a text file into a single string.
     Assumes UTF-8 encoding.
     """
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
 
@@ -36,7 +36,7 @@ def _recursive_listdir_py(directory):
     for item in listdir(directory):
         fullpath = path.join(directory, item)
 
-        if isfile(fullpath) and item.endswith('py'):
+        if isfile(fullpath) and item.endswith("py"):
             files.append(fullpath)
         elif isdir(fullpath):
             files.extend(_recursive_listdir_py(fullpath))
