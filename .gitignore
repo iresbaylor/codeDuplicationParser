@@ -1,5 +1,4 @@
 .idea/
-.vscode/
 *.pyc
 code_duplication/build/
 code_duplication/code_duplication_scanner.egg-info/
