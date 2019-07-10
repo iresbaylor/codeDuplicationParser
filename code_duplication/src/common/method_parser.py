@@ -1,7 +1,7 @@
 import ast
 from os import listdir, path
 from os.path import isdir, isfile
-from code_duplication.src.common.TreeNode import TreeNode
+from .TreeNode import TreeNode
 
 
 def _read_whole_file(file_path):
@@ -46,7 +46,7 @@ def _recursive_listdir_py(directory):
 
 def get_methods_from_dir(directory):
     """
-    Find all *.py files in the directory recursively.
+    Finds all *.py files in the directory recursively.
     Then finds all the methods in each file and
     stores them all in a list, which it then returns.
     """
