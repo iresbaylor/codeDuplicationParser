@@ -32,6 +32,9 @@ What things you need to install the software
 4. Run the program
    - `python3 -m code_duplication [args]`
 
+Alternatively you can run the program in a Python virtual environment
+`./code-duplication.sh`
+
 ## Built With
 
 - [Python 3.7.3](https://www.python.org/downloads/release/python-373/) - The Python version used
