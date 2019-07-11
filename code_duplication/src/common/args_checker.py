@@ -1,15 +1,17 @@
 from urllib.parse import urlparse
-import string
+import re
 
 
 def _check_url(url):
     pieces = urlparse(url)
 
-    if not all([pieces.scheme, pieces.netloc]):
-        return False
-    elif not set(pieces.netloc) <= set(string.ascii_letters + string.digits + "-."):
+    if not pieces.scheme or not pieces.netloc or not pieces.path:
         return False
     elif not pieces.scheme in ["http", "https"]:
+        return False
+    elif not re.fullmatch(r"^[a-zA-Z0-9\.\-]+\.\w+$", pieces.netloc):
+        return False
+    elif not re.fullmatch(r"^[\w\.\-/_]+$", pieces.path):
         return False
     else:
         return True

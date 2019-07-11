@@ -1,7 +1,7 @@
 from git import Git, Repo
 from os import path, makedirs
 from os.path import isdir, dirname
-import re
+from urllib.parse import urlparse
 from code_duplication import __file__ as base_path
 
 
@@ -16,11 +16,12 @@ def _clone_repo(repo_url):
     # Make sure the base clone dir exists.
     makedirs(clone_dir, exist_ok=True)
 
-    # HACK: The RegEx used to determine the name of the repository is not very reliable.
-    repo_name = re.sub(r"^.*/([a-zA-Z0-9_.\-]+)/??[^/]*$", r"\1", repo_url)
+    repo_name = urlparse(repo_url).path.split("/")[-1]
     repo_dir = path.join(clone_dir, repo_name)
 
     if isdir(repo_dir):
+        # TODO: Add try-except for InvalidGitRepositoryError
+        # in case of empty directory, missing .git, etc.
         Repo(repo_dir).remotes.origin.pull()
     else:
         Git(clone_dir).clone(repo_url)

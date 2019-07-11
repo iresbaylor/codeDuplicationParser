@@ -21,8 +21,13 @@ class TreeNode:
         self.labels = set([
             x.id for x in self.all_nodes if isinstance(x, Name)])
 
+        # These values is set externally after all nodes are parsed
+        self.index = None
+        self.parent_index = None
+        self.child_indices = []
+
     def __str__(self):
-        return f"{self.value}[{len(self.direct_children)} children; {len(self.labels)} labels]"
+        return f"{self.value}[{len(self.direct_children)} children; {len(self.labels)} labels; index={self.index}; parent={self.parent_index}; children={self.child_indices}]"
 
     def __repr__(self):
         return self.__str__()
