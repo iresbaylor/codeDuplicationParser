@@ -21,8 +21,11 @@ def main():
     # ------- FOR TESTING PURPOSES ------------
 
     # Find all functions and parse their syntax tree using the TreeNode wrapper
-    print("Parsing method in repositories...")
-    for method in get_methods_from_dir(repos[0]):
-        print(method)
+    print("Parsing methods in repositories...")
+    _, flat_node_list = get_methods_from_dir(repos[0])
+
+    # Dump all nodes' information into stdout.
+    for node in flat_node_list:
+        print(node)
 
     # -----------------------------------------
