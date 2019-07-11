@@ -51,5 +51,5 @@ Alternatively you can run the program in a Python virtual environment
 ## Acknowledgments
 
 - [Dr. Tomáš Černý](https://cs.baylor.edu/~cerny/)
-- Pavel Tisnovsky
+- Pavel Tišnovský
 - [Red Hat](https://www.redhat.com/en)
