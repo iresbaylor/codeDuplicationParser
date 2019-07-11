@@ -21,6 +21,8 @@ def _clone_repo(repo_url):
     repo_dir = path.join(clone_dir, repo_name)
 
     if isdir(repo_dir):
+        # TODO: Add try-except for InvalidGitRepositoryError
+        # in case of empty directory, missing .git, etc.
         Repo(repo_dir).remotes.origin.pull()
     else:
         Git(clone_dir).clone(repo_url)
