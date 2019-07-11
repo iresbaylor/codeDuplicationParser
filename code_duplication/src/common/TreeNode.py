@@ -22,7 +22,7 @@ class TreeNode:
             x.id for x in self.all_nodes if isinstance(x, Name)])
 
     def __str__(self):
-        return f'{self.value}[{len(self.direct_children)} children; {len(self.labels)} labels]'
+        return f"{self.value}[{len(self.direct_children)} children; {len(self.labels)} labels]"
 
     def __repr__(self):
         return self.__str__()
