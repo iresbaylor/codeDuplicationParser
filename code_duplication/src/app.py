@@ -33,12 +33,12 @@ def main():
 def print_node_list(node_list):
     for node in node_list:
         if node.parent_index is None:
-            print_node(node, "", node_list)
+            print_node(node, "", 0, node_list)
 
 
-def print_node(node, indent, node_list):
-    print(indent, node)
+def print_node(node, indent, level, node_list):
+    print(indent, "(", level, ")", node)
     for index in node.child_indices:
         for node in node_list:
             if node.index == index:
-                print_node(node, "    " + indent, node_list)
+                print_node(node, indent + "----", level + 1, node_list)
