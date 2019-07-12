@@ -1,7 +1,7 @@
 import os
 import sys
 from .common.repo_cloner import clone_repos
-from .common.method_parser import get_modules_from_dir
+from .common.module_parser import get_modules_from_dir
 from .common.args_checker import check_args
 import ast
 
