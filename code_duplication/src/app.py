@@ -25,7 +25,20 @@ def main():
     _, flat_node_list = get_methods_from_dir(repos[0])
 
     # Dump all nodes' information into stdout.
-    for node in flat_node_list:
-        print(node)
+    print_node_list(flat_node_list)
 
     # -----------------------------------------
+
+
+def print_node_list(node_list):
+    for node in node_list:
+        if node.parent_index is None:
+            print_node(node, "", node_list)
+
+
+def print_node(node, indent, node_list):
+    print(indent, node)
+    for index in node.child_indices:
+        for node in node_list:
+            if node.index == index:
+                print_node(node, "    " + indent, node_list)
