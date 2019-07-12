@@ -2,27 +2,24 @@ import ast
 
 
 class TreeNode:
-    def __init__(self, node):
+    def __init__(self, node, origin_file):
         self.node = node
+        self.origin = origin_file + (f" (L:{node.lineno} C:{node.col_offset})"
+                                     if node._attributes else "")
 
-        self.all_nodes = list(ast.walk(self.node))
-        self.child_nodes = [x for x in self.all_nodes if x is not self.node]
+        self.children = [TreeNode(n, origin_file)
+                         for n in ast.iter_child_nodes(node)]
 
-        grandchild_nodes = set()
-        for child_node in self.child_nodes:
-            grandchild_nodes.update(
-                [x for x in ast.walk(child_node) if x is not child_node])
+        self.weight = 1 + sum([c.weight for c in self.children])
 
-        self.direct_children = [
-            TreeNode(x) for x in self.child_nodes if x not in grandchild_nodes]
+        self.labels = [node.id] if isinstance(node, ast.Name) else []
 
-        self.labels = [x.id for x in self.all_nodes if isinstance(x, ast.Name)]
+        for c in self.children:
+            self.labels.extend(c.labels)
 
         # Class name if the node has children, AST dump if it does not.
-        self.value = node.__class__.__name__ if self.direct_children else self.dump()
-
-        if isinstance(node, ast.FunctionDef) and node.name == "pattern_collection":
-            print("asd")
+        self.value = node.id if isinstance(node, ast.Name) else \
+            node.__class__.__name__ if self.children else self.dump()
 
         # These values are set externally after all nodes are parsed
         # during the node tree flattening process.
@@ -36,29 +33,24 @@ class TreeNode:
     def __eq__(self, other):
         if not isinstance(other, TreeNode):
             return False
-
         elif other.dump() == self.dump():
             return True
-
         elif other.value != self.value:
             return False
-
-        elif len(other.direct_children) != len(self.direct_children):
+        elif len(other.children) != len(self.children):
             return False
 
-        else:
-            for i, v in enumerate(other.direct_children):
-                if not v.__eq__(self.direct_children[i]):
-                    return False
+        for i, v in enumerate(other.children):
+            if not v.__eq__(self.children[i]):
+                return False
 
         return True
-
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __str__(self):
-        return f"{self.value}[{len(self.direct_children)} children; {len(self.labels)} labels; index={self.index}; parent={self.parent_index}; children={self.child_indices}]"
+        return f"{self.origin} - {self.value}"
 
     def __repr__(self):
         return self.__str__()
