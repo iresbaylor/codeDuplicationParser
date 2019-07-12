@@ -46,8 +46,10 @@ Alternatively you can run the program in a Python virtual environment
 - **Denton Wood** - *Initial work* - [Github](https://github.com/dentonmwood)
 - **Stephanie Alvord** - *Initial work* - [Github](https://github.com/ST3PHANI3)
 - **Schaeffer Duncan** - *Initial work* - [Github](https://github.com/SchaefferDuncan)
+- **Ivo Meixner** - *Initial work* - [Github](https://github.com/natiiix)
 
 ## Acknowledgments
 
-- Red Hat
-- Dr. Cerny
+- [Dr. Tomáš Černý](https://cs.baylor.edu/~cerny/)
+- Pavel Tišnovský
+- [Red Hat](https://www.redhat.com/en)
