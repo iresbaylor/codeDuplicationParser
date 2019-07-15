@@ -24,6 +24,7 @@ def main():
     # Find all functions and parse their syntax tree using the TreeNode wrapper
     print("Parsing methods in repositories...")
     modules = get_modules_from_dir(repos[0])
+    modules_2 = get_modules_from_dir(repos[1])
 
     parse_time = time()
 
@@ -34,6 +35,13 @@ def main():
     print(f"Clone: {clone_time - start_time} s\nParse: {parse_time - clone_time} s\nType 1: {type1_time - parse_time} s\nTotal: {type1_time - start_time} s")
 
     # -----------------------------------------
+    
+    clusters = []
+    for module1 in modules:
+        for module2 in modules_2:
+            clusters.append(pattern_collection(module1, module2))
+
+    print(clusters)
 
 
 def type1_check(modules):
@@ -71,4 +79,4 @@ def print_node(node, indent, level, node_list):
     for index in node.child_indices:
         for node in node_list:
             if node.index == index:
-                print_node(node, indent + "----", level + 1, node_list)
+                print_node(node, indent + "    ", level + 1, node_list)
