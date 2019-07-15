@@ -30,9 +30,9 @@ def pattern_collection(tree_list_1, tree_list_2):
                     # Add the results of anti-unify to the list of subtrees
                     pats[i].append(anti_unify(tree_list_1, tree_list_2, i, j, work_list))
     # for every node in the tree
-    for i in range(len(pats)):
+    for pattern in pats:
         # Run the clustering function on the pats of each element
-        cpats.append(clustering(pats[i]))
+        cpats.append(clustering(pattern))
     # Return the values of the clustering function
     return cpats
 
