@@ -3,6 +3,7 @@ import sys
 from .common.repo_cloner import clone_repos
 from .common.method_parser import get_methods_from_dir
 from .common.args_checker import check_args
+from .common.pattern_collection import pattern_collection
 
 
 def main():
@@ -18,14 +19,22 @@ def main():
     # Close repositories and get their paths
     repos = clone_repos(sys.argv)
 
-    # ------- FOR TESTING PURPOSES ------------
-
     # Find all functions and parse their syntax tree using the TreeNode wrapper
     print("Parsing methods in repositories...")
-    _, flat_node_list = get_methods_from_dir(repos[0])
+    _, node_list_1 = get_methods_from_dir(repos[0])
+    _, node_list_2 = get_methods_from_dir(repos[1])
+
+    clusters = []
+    for module1 in node_list_1:
+        for module2 in node_list_2:
+            clusters.append(pattern_collection(module1, module2))
+
+    print(clusters)
+
+    # ------- FOR TESTING PURPOSES ------------
 
     # Dump all nodes' information into stdout.
-    print_node_list(flat_node_list)
+    print_node_list(node_list_1)
 
     # -----------------------------------------
 
@@ -41,4 +50,4 @@ def print_node(node, indent, level, node_list):
     for index in node.child_indices:
         for node in node_list:
             if node.index == index:
-                print_node(node, indent + "----", level + 1, node_list)
+                print_node(node, indent + "    ", level + 1, node_list)

@@ -38,8 +38,8 @@ def pattern_collection(tree_list_1, tree_list_2):
 
 
 def anti_unify(tree_list_1, tree_list_2, index_1, index_2, worklist):
-    return []
+    return [index_1, index_2]
 
 
 def clustering(pattern):
-    return []
+    return pattern
