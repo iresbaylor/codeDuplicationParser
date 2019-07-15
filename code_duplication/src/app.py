@@ -9,10 +9,7 @@ def main():
     # verifying inputs.
     # sys.argv should be in the following format:
     # sys.argv = {script name, git_1, git_2}
-    flag = check_args(sys.argv)
-    if not flag:
-        print("    There was an error in your syntax. \n"
-              "    Please verify that the git repos exist and your attempted directory to clone into are correct.")
+    if not check_args(sys.argv):
         return
 
     from time import time
@@ -26,33 +23,20 @@ def main():
 
     # Find all functions and parse their syntax tree using the TreeNode wrapper
     print("Parsing methods in repositories...")
-    modules, flat_nodes = get_modules_from_dir(repos[0])
+    modules = get_modules_from_dir(repos[0])
 
     parse_time = time()
 
-    # Dump all nodes' information into stdout.
-    # print_node_list(flat_nodes)
+    type1_check(modules)
 
-    # Tree-based type 1 check
-    # method_count = len(methods)
+    type1_time = time()
 
-    # for i1, m1 in enumerate(methods):
-    #     for i2 in range(i1 + 1, method_count):
-    #         if methods[i2] == m1:
-    #             print("\n\n" + m1.dump())
-
-    method1_time = time()
-
-    type1_check(flat_nodes)
-
-    method2_time = time()
-
-    print(f"Clone: {clone_time - start_time} s\nParse: {parse_time - clone_time} s\nMethod 1: {method1_time - parse_time} s\nMethod 2: {method2_time - method1_time} s\nTotal: {method2_time - start_time} s")
+    print(f"Clone: {clone_time - start_time} s\nParse: {parse_time - clone_time} s\nType 1: {type1_time - parse_time} s\nTotal: {type1_time - start_time} s")
 
     # -----------------------------------------
 
 
-def type1_check(nodes):
+def type1_check(modules):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
     """
@@ -63,16 +47,17 @@ def type1_check(nodes):
 
     seen_nodes = set()
 
-    for n in nodes:
-        if n.weight < WEIGHT_LIMIT and n.node.__class__ not in PRIORITY_CLASSES:
-            continue
+    for m in modules:
+        for n in m:
+            if n.weight < WEIGHT_LIMIT and n.node.__class__ not in PRIORITY_CLASSES:
+                continue
 
-        node_dump = n.dump()
+            node_dump = n.dump()
 
-        if node_dump in seen_nodes:
-            print(f"{n}[{n.weight}]")
-        else:
-            seen_nodes.add(node_dump)
+            if node_dump in seen_nodes:
+                print(f"{n}[{n.weight}]")
+            else:
+                seen_nodes.add(node_dump)
 
 
 def print_node_list(node_list):
