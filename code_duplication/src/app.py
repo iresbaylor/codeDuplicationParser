@@ -64,7 +64,7 @@ def type1_check(nodes):
     seen_nodes = set()
 
     for n in nodes:
-        if n.weight < WEIGHT_LIMIT and not n.node.__class__ in PRIORITY_CLASSES:
+        if n.weight < WEIGHT_LIMIT and n.node.__class__ not in PRIORITY_CLASSES:
             continue
 
         node_dump = n.dump()
