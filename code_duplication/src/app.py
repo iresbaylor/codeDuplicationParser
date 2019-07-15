@@ -1,4 +1,3 @@
-import os
 import sys
 from .common.repo_cloner import clone_repos
 from .common.module_parser import get_modules_from_dir
@@ -30,7 +29,7 @@ def main():
     modules, flat_nodes = get_modules_from_dir(repos[0])
 
     parse_time = time()
-    
+
     # Dump all nodes' information into stdout.
     # print_node_list(flat_nodes)
 
@@ -74,6 +73,7 @@ def type1_check(nodes):
             print(f"{n}[{n.weight}]")
         else:
             seen_nodes.add(node_dump)
+
 
 def print_node_list(node_list):
     for node in node_list:

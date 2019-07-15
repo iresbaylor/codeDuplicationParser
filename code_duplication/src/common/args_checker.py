@@ -7,7 +7,7 @@ def _check_url(url):
 
     if not pieces.scheme or not pieces.netloc or not pieces.path:
         return False
-    elif not pieces.scheme in ["http", "https"]:
+    elif pieces.scheme not in ["http", "https"]:
         return False
     elif not re.fullmatch(r"^[a-zA-Z0-9\.\-]+\.\w+$", pieces.netloc):
         return False
