@@ -1,2 +1,3 @@
 # GitPython - Package used for cloning Git(Hub) repositories
 gitpython
+bitarray
