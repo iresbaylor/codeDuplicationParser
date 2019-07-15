@@ -14,7 +14,7 @@ def pattern_collection(tree_list_1, tree_list_2):
     work_list = [bitarray(bit_string, endian='little') for i in range(len(tree_list_1))]
 
     # minimum common subtrees (patterns) of trees
-    pats = []
+    pats = [[] for i in range(len_tree_1)]
     # clustered patterns
     cpats = []
 
@@ -30,7 +30,7 @@ def pattern_collection(tree_list_1, tree_list_2):
                     # Add the results of anti-unify to the list of subtrees
                     pats[i].append(anti_unify(tree_list_1, tree_list_2, i, j, work_list))
     # for every node in the tree
-    for i in range(0, len(pats)):
+    for i in range(len(pats)):
         # Run the clustering function on the pats of each element
         cpats.append(clustering(pats[i]))
     # Return the values of the clustering function
