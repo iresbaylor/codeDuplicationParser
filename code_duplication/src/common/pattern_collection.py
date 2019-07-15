@@ -11,7 +11,7 @@ def pattern_collection(tree_list_1, tree_list_2):
 
     # Checks whether a pairing has been compared
     bit_string = '1' * len(tree_list_2)
-    work_list = [bitarray(bit_string, endian='little') for i in range(len(tree_list_1))]
+    work_list = [bitarray(bit_string, endian='little') for _ in tree_list_1]
 
     # minimum common subtrees (patterns) of trees
     pats = [[] for i in range(len_tree_1)]
