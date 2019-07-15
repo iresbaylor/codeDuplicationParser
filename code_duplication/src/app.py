@@ -30,6 +30,9 @@ def main():
     modules, flat_nodes = get_modules_from_dir(repos[0])
 
     parse_time = time()
+    
+    # Dump all nodes' information into stdout.
+    # print_node_list(flat_nodes)
 
     # Tree-based type 1 check
     # method_count = len(methods)
@@ -71,3 +74,16 @@ def type1_check(nodes):
             print(f"{n}[{n.weight}]")
         else:
             seen_nodes.add(node_dump)
+
+def print_node_list(node_list):
+    for node in node_list:
+        if node.parent_index is None:
+            print_node(node, "", 0, node_list)
+
+
+def print_node(node, indent, level, node_list):
+    print(indent, "(", level, ")", node)
+    for index in node.child_indices:
+        for node in node_list:
+            if node.index == index:
+                print_node(node, indent + "----", level + 1, node_list)
