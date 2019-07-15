@@ -2,7 +2,18 @@ import ast
 
 
 class TreeNode:
+    """
+    Represents a single node of the Python code AST (Abstract Syntax Tree).
+    Every node is also a tree of its own,
+    with the exception of leaf (childless) nodes.
+    """
+
     def __init__(self, node, origin_file):
+        """
+        Arguments:
+            node -- Single raw node produced by the Python AST parser.
+            origin_file {string} -- Relative path to the source file.
+        """
         self.node = node
         self.origin = origin_file + (f" (L:{node.lineno} C:{node.col_offset})"
                                      if node._attributes else "")
@@ -28,9 +39,25 @@ class TreeNode:
         self.child_indices = []
 
     def dump(self):
+        """
+        Converts the node into a string using the built-in function.
+
+        Returns:
+            string -- String representation of the AST node.
+        """
         return ast.dump(self.node)
 
     def __eq__(self, other):
+        """
+        Compares the node to another node recursively.
+        This operator overload can be used for Type 1 clone detection.
+
+        Arguments:
+            other {TreeNode} -- Another tree node to compare this one to.
+
+        Returns:
+            bool -- True if the nodes are equivalent, False if they are not.
+        """
         if not isinstance(other, TreeNode):
             return False
         elif other.dump() == self.dump():
