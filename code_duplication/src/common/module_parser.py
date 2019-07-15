@@ -46,20 +46,20 @@ def _recursive_listdir_py(directory):
     return files
 
 
-def _flatten_node_tree(nodes):
-    node_queue = deque(nodes)
-    flat_nodes = []
+def _flatten_module_nodes(module):
+    module_nodes = []
+    node_queue = deque([module])
 
     while node_queue:
         n = node_queue.popleft()
 
         # Set this node's self-index.
-        n.index = len(flat_nodes)
+        n.index = len(module_nodes)
 
         # Add this node's index to the list of
         # children of its parent if it has any.
         if n.parent_index is not None:
-            flat_nodes[n.parent_index].child_indices.append(n.index)
+            module_nodes[n.parent_index].child_indices.append(n.index)
 
         # Set this node's children's parent index to this node's index.
         for c in n.children:
@@ -68,10 +68,10 @@ def _flatten_node_tree(nodes):
         # Add this node's children to the queue.
         node_queue.extend(n.children)
 
-        # Add this node to the list of alraedy visited nodes.
-        flat_nodes.append(n)
+        # Add this node to the list of already visited nodes.
+        module_nodes.append(n)
 
-    return flat_nodes
+    return module_nodes
 
 
 def get_modules_from_dir(directory):
@@ -80,9 +80,5 @@ def get_modules_from_dir(directory):
     returns a module for each one of them wrapped in TreeNode.
     """
 
-    modules = [_get_tree_from_file(f)
-               for f in _recursive_listdir_py(directory)]
-
-    flat_nodes = _flatten_node_tree(modules)
-
-    return modules, flat_nodes
+    return [_flatten_module_nodes(_get_tree_from_file(f))
+            for f in _recursive_listdir_py(directory)]

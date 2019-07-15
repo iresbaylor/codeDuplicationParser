@@ -11,7 +11,7 @@ clone_root_dir = path.join(dirname(base_path), "repos")
 
 def _clone_repo(repo_url):
     """
-    Clones the specfied repository into a special internal directory and
+    Clones the specified repository into a special internal directory and
     returns the directory path of the cloned repository.
     """
     # Make sure the base clone dir exists.
