@@ -1,7 +1,7 @@
 import ast
 from os import listdir, path
 from os.path import isdir, isfile
-from .TreeNode import TreeNode
+from .Nodes.TreeNode import TreeNode
 from collections import deque
 from .repo_cloner import clone_root_dir
 
