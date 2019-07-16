@@ -1,29 +1,32 @@
 from git import Git, Repo
 from os import path, makedirs
 from os.path import isdir, dirname
+from urllib.parse import urlparse
 import re
 from code_duplication import __file__ as base_path
+
+# Base directory for all cloned repositories is "[main module root directory]/repos/".
+clone_root_dir = path.join(dirname(base_path), "repos")
 
 
 def _clone_repo(repo_url):
     """
-    Clones the specfied repository into a special internal directory and
+    Clones the specified repository into a special internal directory and
     returns the directory path of the cloned repository.
     """
-
-    # Base directory for all cloned repositories is "[main module root directory]/repos/".
-    clone_dir = path.join(dirname(base_path), "repos")
     # Make sure the base clone dir exists.
-    makedirs(clone_dir, exist_ok=True)
+    makedirs(clone_root_dir, exist_ok=True)
 
-    # HACK: The RegEx used to determine the name of the repository is not very reliable.
-    repo_name = re.sub(r"^.*/([a-zA-Z0-9_.\-]+)/??[^/]*$", r"\1", repo_url)
-    repo_dir = path.join(clone_dir, repo_name)
+    repo_name = re.sub(r"^.*?/([^/]+?)(?:\.git)?/?$",
+                       r"\1", urlparse(repo_url).path)
+    repo_dir = path.join(clone_root_dir, repo_name)
 
     if isdir(repo_dir):
+        # TODO: Add try-except for InvalidGitRepositoryError
+        # in case of empty directory, missing .git, etc.
         Repo(repo_dir).remotes.origin.pull()
     else:
-        Git(clone_dir).clone(repo_url)
+        Git(clone_root_dir).clone(repo_url)
 
     return repo_dir
 
