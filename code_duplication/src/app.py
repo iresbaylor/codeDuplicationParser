@@ -41,23 +41,33 @@ def type1_check(modules):
     Very simple type 1 code duplication check based on AST.dump() function.
     """
 
-    WEIGHT_LIMIT = 20
+    WEIGHT_LIMIT = 10
     PRIORITY_CLASSES = [ast.Module, ast.ClassDef,
                         ast.FunctionDef, ast.AsyncFunctionDef]
 
-    seen_nodes = set()
+    from hashlib import md5
+
+    node_dict = {}
 
     for m in modules:
+        visited = set()
+
         for n in m:
-            if n.weight < WEIGHT_LIMIT and n.node.__class__ not in PRIORITY_CLASSES:
+            if n.parent_index in visited or n.weight < WEIGHT_LIMIT:
+                visited.add(n.index)
                 continue
 
             node_dump = n.dump()
 
-            if node_dump in seen_nodes:
-                print(f"{n}[{n.weight}]")
+            if node_dump in node_dict:
+                visited.add(n.index)
+                node_dict[node_dump].append(n)
             else:
-                seen_nodes.add(node_dump)
+                node_dict[node_dump] = [n]
+
+    for k, v in node_dict.items():
+        if len(v) > 1:
+            print(k, "\n", v, "\n")
 
 
 def print_node_list(node_list):

@@ -77,7 +77,7 @@ class TreeNode:
         return not self.__eq__(other)
 
     def __str__(self):
-        return f"{self.origin} - {self.value}"
+        return f"{self.origin} - {self.value} (W={self.weight})"
 
     def __repr__(self):
         return self.__str__()
