@@ -1,33 +1,92 @@
-import os
 import sys
 from .common.repo_cloner import clone_repos
-from .common.method_parser import get_methods_from_dir
+from .common.module_parser import get_modules_from_dir
 from .common.args_checker import check_args
+from .common.pattern_collection import pattern_collection
+import ast
 
 
 def main():
     # verifying inputs.
     # sys.argv should be in the following format:
     # sys.argv = {script name, git_1, git_2}
-    flag = check_args(sys.argv)
-    if not flag:
-        print("    There was an error in your syntax. \n"
-              "    Please verify that the git repos exist and your attempted directory to clone into are correct.")
+    if not check_args(sys.argv):
         return
 
+    from time import time
+
+    start_time = time()
     # Close repositories and get their paths
     repos = clone_repos(sys.argv)
+    clone_time = time()
 
     # ------- FOR TESTING PURPOSES ------------
 
     # Find all functions and parse their syntax tree using the TreeNode wrapper
     print("Parsing methods in repositories...")
-    _, flat_node_list = get_methods_from_dir(repos[0])
+    module_list_1 = get_modules_from_dir(repos[0])
+    parse_time_1 = time()
 
-    # Dump all nodes' information into stdout.
-    print_node_list(flat_node_list)
+    module_list_2 = get_modules_from_dir(repos[1])
+    parse_time_2 = time()
+
+    type1_check(module_list_1)
+    type1_time_1 = time()
+
+    type1_check(module_list_2)
+    type1_time_2 = time()
+
+    clusters = []
+    for module_tree_1 in module_list_1:
+        for module_tree_2 in module_list_2:
+            clusters.append(pattern_collection(module_tree_1, module_tree_2))
+
+    analyze_time = time()
+
+    print(f"Clone: {clone_time - start_time} s")
+    print(f"Parse (repo 1): {parse_time_1 - clone_time} s")
+    print(f"Parse (repo 2): {parse_time_2 - parse_time_1} s")
+    print(f"Type 1 (repo 1): {type1_time_1 - parse_time_2} s")
+    print(f"Type 1 (repo 2): {type1_time_2 - type1_time_1} s")
+    print(f"Analysis: {analyze_time - type1_time_2} s")
+    print(f"Total: {analyze_time - start_time} s")
+    print("")
 
     # -----------------------------------------
+
+    # TODO: Need code to analyze and/or print clusters here
+
+
+def type1_check(modules):
+    """
+    Very simple type 1 code duplication check based on AST.dump() function.
+    """
+
+    WEIGHT_LIMIT = 25
+    # PRIORITY_CLASSES = [ast.Module, ast.ClassDef,
+    #                     ast.FunctionDef, ast.AsyncFunctionDef]
+
+    node_dict = {}
+
+    for m in modules:
+        visited = set()
+
+        for n in m:
+            if n.parent_index in visited or n.weight < WEIGHT_LIMIT:
+                visited.add(n.index)
+                continue
+
+            node_dump = n.dump()
+
+            if node_dump in node_dict:
+                visited.add(n.index)
+                node_dict[node_dump].append(n)
+            else:
+                node_dict[node_dump] = [n]
+
+    for v in node_dict.values():
+        if len(v) > 1:
+            print(v)
 
 
 def print_node_list(node_list):
@@ -41,4 +100,4 @@ def print_node(node, indent, level, node_list):
     for index in node.child_indices:
         for node in node_list:
             if node.index == index:
-                print_node(node, indent + "----", level + 1, node_list)
+                print_node(node, indent + "    ", level + 1, node_list)
