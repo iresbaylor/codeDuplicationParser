@@ -1,4 +1,5 @@
 from bitarray import bitarray
+from .pattern_clustering import clustering
 
 
 def pattern_collection(tree_list_1, tree_list_2):
@@ -39,7 +40,3 @@ def pattern_collection(tree_list_1, tree_list_2):
 
 def anti_unify(tree_list_1, tree_list_2, index_1, index_2, worklist):
     return [index_1, index_2]
-
-
-def clustering(pattern):
-    return pattern
