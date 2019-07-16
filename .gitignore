@@ -7,3 +7,4 @@ code_duplication/dist/
 code_duplication/env/
 code_duplication/repos/
 venv/
+web/credentials.py
