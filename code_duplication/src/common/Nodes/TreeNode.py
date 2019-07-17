@@ -30,7 +30,7 @@ class TreeNode:
         """
         self.node = node
         self.origin = origin_file + (f" (L:{node.lineno} C:{node.col_offset})"
-                                     if node._attributes else "")
+                                     if node._attributes else f" (ID:{id(node)})")
 
         # HACK: Ignore useless context-related children.
         # This should greatly reduce the total number of nodes.
@@ -102,3 +102,6 @@ class TreeNode:
 
     def __repr__(self):
         return self.__str__()
+
+    def __hash__(self):
+        return hash(self.origin)
