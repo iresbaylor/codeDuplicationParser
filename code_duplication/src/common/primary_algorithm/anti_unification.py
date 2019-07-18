@@ -24,7 +24,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
             # iterate thru node's children, adding them as new children to the new fake node
             p = PatternNode(list1[index1], list2[index2], list1[index1].value)
             for cii, ci1 in enumerate(list1[index1].child_indices):
-                ci2 = list2[index2].child_indices
+                ci2 = list2[index2].child_indices[cii]
                 # call function on children to get their subtrees - RECURSION
                 subtree = anti_unify(list1, list2, ci1, ci2, worktable)
                 # associate with p
