@@ -58,7 +58,12 @@ def main():
 
     # -----------------------------------------
 
-    # TODO: Need code to analyze and/or print clusters here
+    for cluster_list in clusters:
+        for cluster in cluster_list:
+            print("Possible clones:")
+            for node in cluster.nodes:
+                print(node.origin)
+            print("")
 
 
 def type1_check(modules):
