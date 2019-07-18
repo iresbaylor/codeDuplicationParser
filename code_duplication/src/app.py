@@ -7,6 +7,10 @@ import ast
 
 
 def main():
+    """
+    Entry point of the application.
+    """
+
     # verifying inputs.
     # sys.argv should be in the following format:
     # sys.argv = {script name, git_1, git_2}
