@@ -19,8 +19,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
     if list1 == list2:  # if true:
         # check if leaves
         if not list1[index1].child_indices and not list2[index2].child_indices:
-            t = PatternNode(list1[index1], list2[index2], list1[index1].value)
-            return t
+            return PatternNode(list1[index1], list2[index2], list1[index1].value)
         else:  # if not leaves:
             # iterate thru node's children, adding them as new children to the new fake node
             p = PatternNode(list1[index1], list2[index2], list1[index1].value)
@@ -31,7 +30,4 @@ def anti_unify(list1, list2, index1, index2, worktable):
                 p.add_children(subtree)
             return p
     else:  # if false:
-        # return hole with combined weights
-        weights = [list1[index1].weight, list2[index2].weight]
-        temp = PatternNode(list1[index1], list2[index2], weights)
-        return temp
+        return PatternNode(list1[index1], list2[index2])
