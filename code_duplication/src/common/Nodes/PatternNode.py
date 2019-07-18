@@ -40,7 +40,17 @@ class PatternNode:
         """
         self.children.extend(children)
 
-    def __eq__(self, other):
+    def skeleton_equals(self, other):
+        """
+        Checks if this node's skeleton is equal to another node's.
+
+        Arguments:
+            other {PatterNode} -- Another node to compare this one with.
+
+        Returns:
+            bool -- True if the nodes have an equal skeleton, False otherwise.
+        """
+
         if not isinstance(other, PatternNode) or other.value != self.value or \
                 len(other.children) != len(self.children):
             return False
@@ -50,9 +60,6 @@ class PatternNode:
                 return False
 
         return True
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __str__(self):
         return f"{self.value}(', '.join{[n.origin for n in self.nodes]})"
