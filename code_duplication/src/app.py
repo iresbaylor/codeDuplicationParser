@@ -2,6 +2,7 @@ import sys
 from .common.repo_cloner import clone_repos
 from .common.module_parser import get_modules_from_dir
 from .common.args_checker import check_args
+from .common.pattern_collection import pattern_collection
 import ast
 
 
@@ -23,17 +24,37 @@ def main():
 
     # Find all functions and parse their syntax tree using the TreeNode wrapper
     print("Parsing methods in repositories...")
-    modules = get_modules_from_dir(repos[0])
+    module_list_1 = get_modules_from_dir(repos[0])
+    parse_time_1 = time()
 
-    parse_time = time()
+    module_list_2 = get_modules_from_dir(repos[1])
+    parse_time_2 = time()
 
-    type1_check(modules)
+    type1_check(module_list_1)
+    type1_time_1 = time()
 
-    type1_time = time()
+    type1_check(module_list_2)
+    type1_time_2 = time()
 
-    print(f"Clone: {clone_time - start_time} s\nParse: {parse_time - clone_time} s\nType 1: {type1_time - parse_time} s\nTotal: {type1_time - start_time} s")
+    clusters = []
+    for module_tree_1 in module_list_1:
+        for module_tree_2 in module_list_2:
+            clusters.append(pattern_collection(module_tree_1, module_tree_2))
+
+    analyze_time = time()
+
+    print(f"Clone: {clone_time - start_time} s")
+    print(f"Parse (repo 1): {parse_time_1 - clone_time} s")
+    print(f"Parse (repo 2): {parse_time_2 - parse_time_1} s")
+    print(f"Type 1 (repo 1): {type1_time_1 - parse_time_2} s")
+    print(f"Type 1 (repo 2): {type1_time_2 - type1_time_1} s")
+    print(f"Analysis: {analyze_time - type1_time_2} s")
+    print(f"Total: {analyze_time - start_time} s")
+    print("")
 
     # -----------------------------------------
+
+    # TODO: Need code to analyze and/or print clusters here
 
 
 def type1_check(modules):
@@ -79,4 +100,4 @@ def print_node(node, indent, level, node_list):
     for index in node.child_indices:
         for node in node_list:
             if node.index == index:
-                print_node(node, indent + "----", level + 1, node_list)
+                print_node(node, indent + "    ", level + 1, node_list)
