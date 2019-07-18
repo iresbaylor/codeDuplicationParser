@@ -12,5 +12,5 @@ def clustering(ps):
                 merged = True
                 break
         if not merged:
-            cs.Union(p)
+            cs.add(p)
     return cs
