@@ -4,25 +4,22 @@ class PatternNode:
 
     Attributes:
         nodes {list[TreeNode]} -- List of TreeNodes with the same skeleton.
-        weight {int} -- Weight of the entire node's tree.
         value {string} -- Common string representation of all the nodes.
         children {list[PatternNode]} -- List of node's direct children.
     """
 
-    def __init__(self, node1, node2, weight, value=None):
+    def __init__(self, node1, node2, value=None):
         """
         Creates a new PatternNode from two nodes and their common value.
 
         Arguments:
             node1 {TreeNode} -- First TreeNode sharing common skeleton.
             node2 {TreeNode} -- Second TreeNode sharing common skeleton.
-            weight {int} -- Weight of the entire node's tree.
             value {string} -- String representation common for all the nodes.
                               None if the PatternNode represents a hole.
         """
         self.nodes = [node1, node2]
-        self.weight = weight
-        self.value = value or f"Hole(weight={weight})"
+        self.value = value or "Hole"
         self.children = []
 
     def add_nodes(self, *nodes):
