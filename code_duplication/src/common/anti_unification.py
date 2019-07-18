@@ -1,4 +1,4 @@
-from .PatternNode import PatternNode
+from .Nodes.PatternNode import PatternNode
 
 
 def anti_unify(list1, list2, index1, index2, worktable):
