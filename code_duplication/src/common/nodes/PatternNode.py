@@ -22,23 +22,23 @@ class PatternNode:
         self.value = value or "Hole"
         self.children = []
 
-    def add_nodes(self, *nodes):
+    def add_node(self, node):
         """
         Appends the supplied nodes to this node's list of origin nodes.
 
         Arguments:
-            *nodes {tuple[TreeNode]} -- Origin TreeNodes of this node.
+            node {TreeNode} -- Node to be added to the list of origin nodes.
         """
-        self.nodes.extend(nodes)
+        self.nodes.append(node)
 
-    def add_children(self, *children):
+    def add_child(self, child):
         """
         Appends the supplied nodes to this node's list of child nodes.
 
         Arguments:
-            *nodes {tuple[PatternNode]} -- Children of this node.
+            child {PatternNode} -- Node that is a child of this node.
         """
-        self.children.extend(children)
+        self.children.append(child)
 
     def skeleton_equals(self, other):
         """
