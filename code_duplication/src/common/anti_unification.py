@@ -12,17 +12,16 @@ def anti_unify(list1, list2, index1, index2, worktable):
             return t
         else:  # if not leaves:
             # iterate thru node's children, adding them as new children to the new fake node
-            p = PatternNode(list1[index1], list2[index2], list1[index1].weight)
+            p = PatternNode(list1[index1], list2[index2], list1[index1].weight, list1[index1].value)
             for c in list1[index1].child_indices:
                 # call function on children to get their subtrees - DFS???
                 # RECURSION
                 subtree = anti_unify(list1, list2, c, c, worktable)
-                # smoosh the subtree into a list??? might already be one
                 # associate with p
                 p.add_children(subtree)
             return p
     else:  # if false:
-        # return hole with combined label
+        # return hole with combined weights
         weights = [list1[index1].weight, list2[index2].weight]
         temp = PatternNode(list1[index1], list2[index2], weights)
         return temp
