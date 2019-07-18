@@ -3,10 +3,10 @@ class PatternNode:
     More abstract representation of multiple similar TreeNodes.
 
     Attributes:
-        nodes {List[TreeNode]} -- List of TreeNodes with the same skeleton.
+        nodes {list[TreeNode]} -- List of TreeNodes with the same skeleton.
         weight {int} -- Weight of the entire node's tree.
         value {string} -- Common string representation of all the nodes.
-        children {List[PatternNode]} -- List of node's direct children.
+        children {list[PatternNode]} -- List of node's direct children.
     """
 
     def __init__(self, node1, node2, weight, value=None):
@@ -26,9 +26,21 @@ class PatternNode:
         self.children = []
 
     def add_nodes(self, *nodes):
+        """
+        Appends the supplied nodes to this node's list of origin nodes.
+
+        Arguments:
+            *nodes {tuple[TreeNode]} -- Origin TreeNodes of this node.
+        """
         self.nodes.extend(nodes)
 
     def add_children(self, *children):
+        """
+        Appends the supplied nodes to this node's list of child nodes.
+
+        Arguments:
+            *nodes {tuple[PatternNode]} -- Children of this node.
+        """
         self.children.extend(children)
 
     def __eq__(self, other):
