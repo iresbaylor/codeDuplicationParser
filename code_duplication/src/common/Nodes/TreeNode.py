@@ -1,5 +1,8 @@
 import ast
 
+_IGNORE_CLASSES = [ast.Load, ast.Store, ast.Del,
+                   ast.AugLoad, ast.AugStore, ast.Param]
+
 
 class TreeNode:
     """
@@ -12,7 +15,7 @@ class TreeNode:
         origin {string} -- Origin of the node (file path, line and column).
         children {List[TreeNode]} -- List of direct children of this node.
         weight {int} -- Total number of nodes in this node's tree.
-        labels {List[string]} -- All labels (names) used in this node's tree.
+        names {List[string]} -- All names / symbols used in this node's tree.
         value {string} -- String representation of just this node.
         index {int} -- Index of this node (in an external flat list of nodes).
         parent_index {int} -- Index of parent node. None if this is root node.
@@ -27,21 +30,28 @@ class TreeNode:
         """
         self.node = node
         self.origin = origin_file + (f" (L:{node.lineno} C:{node.col_offset})"
-                                     if node._attributes else "")
+                                     if node._attributes else f" (ID:{id(node):x})")
 
-        self.children = [TreeNode(n, origin_file)
-                         for n in ast.iter_child_nodes(node)]
+        # HACK: Ignore useless context-related children.
+        # This should greatly reduce the total number of nodes.
+        self.children = [TreeNode(n, origin_file) for n in
+                         ast.iter_child_nodes(node)
+                         if n.__class__ not in _IGNORE_CLASSES]
 
         self.weight = 1 + sum([c.weight for c in self.children])
 
-        self.labels = [node.id] if isinstance(node, ast.Name) else []
+        # Name nodes are handled in a special way.
+        if isinstance(node, ast.Name):
+            self.value = f"Name('{node.id}')"
+            self.names = [node.id]
 
-        for c in self.children:
-            self.labels.extend(c.labels)
+        else:
+            # Class name if the node has children, AST dump if it does not.
+            self.value = node.__class__.__name__ if self.children else self.dump()
 
-        # Class name if the node has children, AST dump if it does not.
-        self.value = node.id if isinstance(node, ast.Name) else \
-            node.__class__.__name__ if self.children else self.dump()
+            self.names = []
+            for c in self.children:
+                self.names.extend(c.names)
 
         # These values are set externally after all nodes are parsed
         # during the node tree flattening process.
@@ -92,3 +102,6 @@ class TreeNode:
 
     def __repr__(self):
         return self.__str__()
+
+    def __hash__(self):
+        return hash(self.origin)
