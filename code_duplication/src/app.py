@@ -1,12 +1,16 @@
 import sys
-from .common.repo_cloner import clone_repos
-from .common.module_parser import get_modules_from_dir
-from .common.args_checker import check_args
-from .common.pattern_collection import pattern_collection
+from .common.preprocessing.repo_cloner import clone_repos
+from .common.preprocessing.module_parser import get_modules_from_dir
+from .common.preprocessing.args_checker import check_args
+from .common.primary_algorithm.pattern_collection import pattern_collection
 import ast
 
 
 def main():
+    """
+    Entry point of the application.
+    """
+
     # verifying inputs.
     # sys.argv should be in the following format:
     # sys.argv = {script name, git_1, git_2}
