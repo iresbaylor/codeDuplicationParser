@@ -36,18 +36,28 @@ def _clone_repo(repo_url):
 
 
 def clone_repos(argv):
+    """
+    Clones one or two repositories based on the command line arguments
+    and then returns either either single repository path or a tuple
+    containing the paths of both cloned repositories.
+
+    Arguments:
+        argv {list[string]} -- Command line arguments supplied to the app.
+    """
+
     if len(argv) == 2:
         git_repo_1 = argv[1]
-        print("You have chosen to compare a repo with itself... grabbing the directory...")
+        print("Cloning the repository...")
         return _clone_repo(git_repo_1)
-#       do more stuff here
+
     elif len(argv) == 3:
         git_repo_1 = argv[1]
         git_repo_2 = argv[2]
-        print("You have chosen to compare two repos... grabbing the repos...")
-        print("Grabbing the first repo...")
+
+        print("Cloning the first repository...")
         repo1 = _clone_repo(git_repo_1)
-        print("Grabbing the second repo...")
+
+        print("Cloning the second repository...")
         repo2 = _clone_repo(git_repo_2)
+
         return (repo1, repo2)
-#       do more stuff here
