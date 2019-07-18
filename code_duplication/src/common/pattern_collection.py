@@ -1,11 +1,18 @@
 from bitarray import bitarray
 from .pattern_clustering import clustering
+from .anti_unification import anti_unify
 
 
 def pattern_collection(tree_list_1, tree_list_2):
     """
     Compares two Abstract Syntax Trees representing two methods. The trees are
-    provided as lists to provides indexes for the nodes within the tree
+    provided as lists to provides indexes for the nodes within the tree.
+
+    Arguments:
+        tree_list_1 {List(TreeNode}}: A TreeNode tree represented as a list
+        tree_list_2 {List(TreeNode}}: A TreeNode tree represented as a list
+
+    Returns: List{List{PatternNode}}: The clustered patterns identified in the repositories
     """
     # Get the sizes of the trees
     size_tree_1 = len(tree_list_1)
@@ -37,7 +44,3 @@ def pattern_collection(tree_list_1, tree_list_2):
         cpats.append(clustering(pattern_set))
     # Return the sets of clustered patterns
     return cpats
-
-
-def anti_unify(tree_list_1, tree_list_2, index_1, index_2, worklist):
-    return [index_1, index_2]
