@@ -5,7 +5,7 @@ def clustering(ps):
         merged = False
         for c in cs:  # iterate through the clustered-patterns in the set of clustered-patterns
             if p == c:  # if the pattern and the clustered-pattern are the same shape
-                # merge labels of p into c
+                c.add_node(p)  # merge labels of p into c
                 merged = True
                 break
         if not merged:
