@@ -1,3 +1,4 @@
 # GitPython - Package used for cloning Git(Hub) repositories
 gitpython
+# Bit Array - Package used for "work list" in Lee's algorithm
 bitarray

@@ -27,7 +27,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
                 # call function on children to get their subtrees - RECURSION
                 subtree = anti_unify(list1, list2, c, c, worktable)
                 # associate with p
-                p.add_children(subtree)
+                p.add_child(subtree)
             return p
     else:  # if false:
         return PatternNode(list1[index1], list2[index2])
