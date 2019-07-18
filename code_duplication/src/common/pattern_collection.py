@@ -11,8 +11,8 @@ def pattern_collection(tree_list_1, tree_list_2):
     size_tree_1 = len(tree_list_1)
     size_tree_2 = len(tree_list_2)
 
-    # Checks whether a pairing has been compared
-    bit_string = '1' * len(tree_list_2)
+    # Checks whether a pairing has been compared. Set all to false (0) originally
+    bit_string = '0' * len(tree_list_2)
     work_list = [bitarray(bit_string, endian='little') for _ in tree_list_1]
 
     # sets of minimum common subtrees (patterns) of trees
@@ -26,7 +26,7 @@ def pattern_collection(tree_list_1, tree_list_2):
             # if neither tree is a leaf node and the pair hasn't been checked
             if tree_list_1[i].children and tree_list_2[j].children and work_list[i][j]:
                 # we have now checked this pairing
-                work_list[i][j] = False
+                work_list[i][j] = True
                 # if the root nodes of the subtrees are equal
                 if tree_list_1[i] == tree_list_2[j]:
                     # Add the results of anti-unify to the list of subtrees
