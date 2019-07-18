@@ -9,10 +9,10 @@ def pattern_collection(tree_list_1, tree_list_2):
     provided as lists to provides indexes for the nodes within the tree.
 
     Arguments:
-        tree_list_1 {List(TreeNode}}: A TreeNode tree represented as a list
-        tree_list_2 {List(TreeNode}}: A TreeNode tree represented as a list
+        tree_list_1 {list[TreeNode]}: A TreeNode tree represented as a list
+        tree_list_2 {list[TreeNode]}: A TreeNode tree represented as a list
 
-    Returns: List{List{PatternNode}}: The clustered patterns identified in the repositories
+    Returns: list[list[PatternNode]]: The clustered patterns identified in the repositories
     """
     # Get the sizes of the trees
     size_tree_1 = len(tree_list_1)
