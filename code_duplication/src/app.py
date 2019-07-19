@@ -48,10 +48,10 @@ def main():
             clusters.append(pattern_collection(module_tree_1, module_tree_2))
 
     time_snap("Analysis completed")
+    log.info("")
 
+    log.info("Possible clones:")
     for cluster_list in clusters:
         for pattern in cluster_list:
             if pattern:
-                log.info("Possible clones:")
-                for node in pattern[0].nodes:
-                    log.info(node)
+                log.info(pattern)
