@@ -53,5 +53,4 @@ def main():
         for pattern in cluster_list:
             if pattern:
                 log.info("Possible clones:")
-                for node in pattern[0].nodes:
-                    log.info(node)
+                log.info(pattern)
