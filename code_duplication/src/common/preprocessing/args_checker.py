@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 import re
+from os.path import isdir
 from fastlog import log
 
 _USAGE_TEXT = """\
@@ -26,7 +27,7 @@ def _check_url(url):
         log.error(f"Invalid repository URL - \"{url}\"\n" +
                   "Expected repository URL format: \"https://github.com/user/repository\"")
 
-    return url_ok
+    return url_ok or isdir(url)
 
 
 def check_args(argv):

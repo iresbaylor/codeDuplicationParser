@@ -15,6 +15,9 @@ def _clone_repo(repo_url):
     Clones the specified repository into a special internal directory and
     returns the directory path of the cloned repository.
     """
+    if isdir(repo_url):
+        return repo_url
+
     # Make sure the base clone dir exists.
     makedirs(clone_root_dir, exist_ok=True)
 
