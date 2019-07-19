@@ -4,6 +4,8 @@ from .common.preprocessing.module_parser import get_modules_from_dir
 from .common.preprocessing.args_checker import check_args
 from .common.primary_algorithm.pattern_collection import pattern_collection
 import ast
+from time import time
+from fastlog import log
 
 
 def main():
@@ -17,8 +19,6 @@ def main():
     if not check_args(sys.argv):
         return
 
-    from time import time
-
     start_time = time()
     # Close repositories and get their paths
     repos = clone_repos(sys.argv)
@@ -27,7 +27,7 @@ def main():
     # ------- FOR TESTING PURPOSES ------------
 
     # Find all functions and parse their syntax tree using the TreeNode wrapper
-    print("Parsing methods in repositories...")
+    log.info("Parsing methods in repositories...")
     module_list_1 = get_modules_from_dir(repos[0])
     parse_time_1 = time()
 
@@ -47,14 +47,13 @@ def main():
 
     analyze_time = time()
 
-    print(f"Clone: {clone_time - start_time} s")
-    print(f"Parse (repo 1): {parse_time_1 - clone_time} s")
-    print(f"Parse (repo 2): {parse_time_2 - parse_time_1} s")
-    print(f"Type 1 (repo 1): {type1_time_1 - parse_time_2} s")
-    print(f"Type 1 (repo 2): {type1_time_2 - type1_time_1} s")
-    print(f"Analysis: {analyze_time - type1_time_2} s")
-    print(f"Total: {analyze_time - start_time} s")
-    print("")
+    log.info(f"Clone: {clone_time - start_time} s")
+    log.info(f"Parse (repo 1): {parse_time_1 - clone_time} s")
+    log.info(f"Parse (repo 2): {parse_time_2 - parse_time_1} s")
+    log.info(f"Type 1 (repo 1): {type1_time_1 - parse_time_2} s")
+    log.info(f"Type 1 (repo 2): {type1_time_2 - type1_time_1} s")
+    log.info(f"Analysis: {analyze_time - type1_time_2} s")
+    log.info(f"Total: {analyze_time - start_time} s")
 
     # -----------------------------------------
 
@@ -90,7 +89,7 @@ def type1_check(modules):
 
     for v in node_dict.values():
         if len(v) > 1:
-            print(v)
+            log.success(v)
 
 
 def print_node_list(node_list):

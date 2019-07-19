@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 import re
+from fastlog import log
 
 _USAGE_TEXT = """\
 Usage:
@@ -22,14 +23,10 @@ def _check_url(url):
         re.fullmatch(r"^[\w\.\-/_]+$", pieces.path)
 
     if not url_ok:
-        print(f"Error: Invalid repository URL - \"{url}\"\n" +
-              "Expected repository URL format: \"https://github.com/user/repository\"")
+        log.error(f"Invalid repository URL - \"{url}\"\n" +
+                  "Expected repository URL format: \"https://github.com/user/repository\"")
 
     return url_ok
-
-# The below function will check to verify that there are the correct number of args
-# it returns a boolean signifying whether the correct args were passed
-# it will exit the program if it the passed args are not correct
 
 
 def check_args(argv):
@@ -46,13 +43,17 @@ def check_args(argv):
     """
 
     if len(argv) == 1 or (len(argv) == 2 and argv[1] in ['-h', '--help', '--usage']):
+        # Special case where the usage text is printed using the built-in
+        # print function instead of the logging library because
+        # the app exits right after the message is displayed.
         print(_USAGE_TEXT)
         return False
 
     if len(argv) < 2 or len(argv) > 3:
-        print(
-            f"Error: Invalid number of command line arguments - {len(argv) - 1}")
-        print(_USAGE_TEXT)
+        # TODO: These two may also look better printed using regular print().
+        log.error(
+            f"Invalid number of command line arguments - {len(argv) - 1}")
+        log.info(_USAGE_TEXT)
         return False
 
     return _check_url(argv[1]) and (len(argv) < 3 or _check_url(argv[2]))
