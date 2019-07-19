@@ -3,6 +3,7 @@ from os import path, makedirs
 from os.path import isdir, dirname
 from urllib.parse import urlparse
 import re
+from fastlog import log
 from code_duplication import __file__ as base_path
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
@@ -30,10 +31,6 @@ def _clone_repo(repo_url):
 
     return repo_dir
 
-# This code will import the repos from git into the specified locations
-# based on the args passed to the program
-# it does not return anything
-
 
 def clone_repos(argv):
     """
@@ -47,17 +44,17 @@ def clone_repos(argv):
 
     if len(argv) == 2:
         git_repo_1 = argv[1]
-        print("Cloning the repository...")
+        log.info("Cloning the repository...")
         return _clone_repo(git_repo_1)
 
     elif len(argv) == 3:
         git_repo_1 = argv[1]
         git_repo_2 = argv[2]
 
-        print("Cloning the first repository...")
+        log.info("Cloning the first repository...")
         repo1 = _clone_repo(git_repo_1)
 
-        print("Cloning the second repository...")
+        log.info("Cloning the second repository...")
         repo2 = _clone_repo(git_repo_2)
 
         return (repo1, repo2)
