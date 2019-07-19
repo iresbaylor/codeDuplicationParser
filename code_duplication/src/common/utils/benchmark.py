@@ -1,4 +1,5 @@
 from time import time
+from fastlog import log
 
 _last_time = time()
 
@@ -13,5 +14,6 @@ def time_snap(text=None):
     """
     global _last_time
     current_time = time()
-    print(current_time - _last_time, "seconds -", text)
+    # TODO: This should probably be log.debug() instead.
+    log.info(f"{current_time - _last_time} seconds - {text}")
     _last_time = current_time

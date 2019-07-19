@@ -1,3 +1,4 @@
+from fastlog import log
 from ..preprocessing.repo_cloner import _clone_repo
 from ..preprocessing.module_parser import get_modules_from_dir
 from ..utils.benchmark import time_snap
@@ -106,6 +107,13 @@ def _type1_compare(node1, node2):
     return match_weight, _get_skeleton(node1.value, child_skeletons)
 
 
+def _print_clone(node1, node2, total_weight, match_weight, match_percentage):
+    log.success("Possible code clone detected: " +
+                f"{match_percentage:g} % similarity " +
+                f"({match_weight} out of {total_weight} nodes)" +
+                f"\n{node1}\n{node2}\n")
+
+
 def find_clones_in_repo(repo_url):
     """
     Finds all clones satisfying the settings at the top of this source file
@@ -154,15 +162,15 @@ def find_clones_in_repo(repo_url):
                 if total_weight < _MIN_WEIGHT:
                     continue
 
-                match_weight, match_skeleton = _type1_compare(n1, n2)
+                match_weight, _ = _type1_compare(n1, n2)
                 if not match_weight:
                     continue
 
                 match_percentage = round(match_weight / total_weight * 100, 2)
 
                 if match_percentage >= _MIN_MATCH_PERCENTAGE:
-                    print(f"\n{match_skeleton}\n\n{n1}\n{n2}\n" +
-                          f"Similarity: {match_percentage:g} % ({match_weight} out of {total_weight} nodes)")
+                    _print_clone(n1, n2, total_weight,
+                                 match_weight, match_percentage)
 
                 if match_weight == total_weight:
                     ignore_set.update(n2.children)
@@ -222,15 +230,15 @@ def compare_two_repos(repo1_url, repo2_url):
                 if total_weight < _MIN_WEIGHT:
                     continue
 
-                match_weight, match_skeleton = _type1_compare(n1, n2)
+                match_weight, _ = _type1_compare(n1, n2)
                 if not match_weight:
                     continue
 
                 match_percentage = round(match_weight / total_weight * 100, 2)
 
                 if match_percentage >= _MIN_MATCH_PERCENTAGE:
-                    print(f"\n{match_skeleton}\n\n{n1}\n{n2}\n" +
-                          f"Similarity: {match_percentage:g} % ({match_weight} out of {total_weight} nodes)")
+                    _print_clone(n1, n2, total_weight,
+                                 match_weight, match_percentage)
 
                 if match_weight == total_weight:
                     ignore_set.update(n2.children)
