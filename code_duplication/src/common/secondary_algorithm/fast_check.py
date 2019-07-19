@@ -1,6 +1,12 @@
+from fastlog import log
+
+
 def type1_check(modules):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
+
+    Arguments:
+        modules (list[list[TreeNode]): Python ASTs from a repository
     """
 
     WEIGHT_LIMIT = 25
