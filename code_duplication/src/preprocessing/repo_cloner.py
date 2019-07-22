@@ -6,7 +6,7 @@ import re
 from fastlog import log
 import sys
 from code_duplication import __file__ as base_path
-from ...errors.UserInputError import UserInputError
+from code_duplication.src.errors.UserInputError import UserInputError
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path.join(dirname(base_path), "repos")
