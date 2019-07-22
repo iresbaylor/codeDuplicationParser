@@ -1,9 +1,10 @@
-from git import Git, Repo
+from git import Git, Repo, InvalidGitRepositoryError
 from os import path, makedirs
 from os.path import isdir, dirname
 from urllib.parse import urlparse
 import re
 from fastlog import log
+import sys
 from code_duplication import __file__ as base_path
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
@@ -15,8 +16,6 @@ def _clone_repo(repo_url):
     Clones the specified repository into a special internal directory and
     returns the directory path of the cloned repository.
     """
-    if isdir(repo_url):
-        return repo_url
 
     # Make sure the base clone dir exists.
     makedirs(clone_root_dir, exist_ok=True)
@@ -25,39 +24,53 @@ def _clone_repo(repo_url):
                        r"\1", urlparse(repo_url).path)
     repo_dir = path.join(clone_root_dir, repo_name)
 
-    if isdir(repo_dir):
-        # TODO: Add try-except for InvalidGitRepositoryError
-        # in case of empty directory, missing .git, etc.
-        Repo(repo_dir).remotes.origin.pull()
-    else:
-        Git(clone_root_dir).clone(repo_url)
+    try:
+        # If repo dir already exists, pull
+        if isdir(repo_dir):
+            Repo(repo_dir).remotes.origin.pull()
+        # Otherwise, clone the repo
+        else:
+            Git(clone_root_dir).clone(repo_url)
 
-    return repo_dir
+        return repo_dir
+
+    # If anything goes wrong with the repo
+    except InvalidGitRepositoryError:
+        return None
 
 
-def clone_repos(argv):
+def get_repo_dir(repo):
     """
-    Clones one or two repositories based on the command line arguments
-    and then returns either either single repository path or a tuple
-    containing the paths of both cloned repositories.
+    Attempts to process the given repository path in many different ways.
+    If all of them fail, an error message will be printed and
+    the script with exit with a non-zero exit code.
+    If one of them succeeds, local path of the repository will be returned.
 
     Arguments:
-        argv {list[string]} -- Command line arguments supplied to the app.
+        repo {string} -- Path to the repository or local directory.
+
+    Returns:
+        string -- Local path to the repository's directory.
     """
 
-    if len(argv) == 2:
-        git_repo_1 = argv[1]
-        log.info("Cloning the repository...")
-        return _clone_repo(git_repo_1)
+    # Local directory path
+    if isdir(repo):
+        return repo
 
-    elif len(argv) == 3:
-        git_repo_1 = argv[1]
-        git_repo_2 = argv[2]
+    # Repository path relative to the local base repository directory
+    rel_path_to_repo_dir = path.join(clone_root_dir, repo)
+    if isdir(rel_path_to_repo_dir):
+        return rel_path_to_repo_dir
 
-        log.info("Cloning the first repository...")
-        repo1 = _clone_repo(git_repo_1)
+    # Shorthand for GitHub URLs: "[repository owner]/[repository name]"
+    if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)$", repo):
+        repo_dir = _clone_repo("https://github.com/" + repo)
+        if repo_dir:
+            return repo_dir
 
-        log.info("Cloning the second repository...")
-        repo2 = _clone_repo(git_repo_2)
+    repo_dir = _clone_repo(repo)
+    if repo_dir:
+        return repo_dir
 
-        return (repo1, repo2)
+    log.error(f"Invalid repository path: \"{repo}\"")
+    sys.exit(1)

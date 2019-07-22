@@ -1,7 +1,6 @@
 import sys
-from .common.preprocessing.repo_cloner import clone_repos
+from .common.preprocessing.args_handler import handle_args
 from .common.preprocessing.module_parser import get_modules_from_dir
-from .common.preprocessing.args_checker import check_args
 from .common.primary_algorithm.pattern_collection import pattern_collection
 from .common.utils.benchmark import time_snap
 from .common.secondary_algorithm.fast_check import type1_check
@@ -13,15 +12,9 @@ def main():
     Entry point of the application.
     """
 
-    # verifying inputs.
-    # sys.argv should be in the following format:
-    # sys.argv = {script name, git_1, git_2}
-    if not check_args(sys.argv):
-        return
-
     time_snap("Beginning analysis")
-    # Close repositories and get their paths
-    repos = clone_repos(sys.argv)
+    # Parse command line arguments
+    repos = handle_args(sys.argv)
     time_snap("Cloned repositories")
 
     # ------- FOR TESTING PURPOSES ------------
