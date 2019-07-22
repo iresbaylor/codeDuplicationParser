@@ -39,9 +39,9 @@ def _get_all_children(node):
     Returns:
         list[TreeNode] -- List of all the recursively found children.
     """
-    children = node.children
+    children = node.children.copy()
 
-    for c in children:
+    for c in node.children:
         children.extend(_get_all_children(c))
 
     return children
@@ -151,10 +151,6 @@ def find_clones_in_repo(repo_url):
 
                 n2 = nodes[i2]
 
-                if n2 in ignore_set:
-                    ignore_set.update(n2.children)
-                    continue
-
                 if not _can_be_compared(n1, n2):
                     continue
 
@@ -173,7 +169,7 @@ def find_clones_in_repo(repo_url):
                                  match_weight, match_percentage)
 
                 if match_weight == total_weight:
-                    ignore_set.update(n2.children)
+                    ignore_set.update(_get_all_children(n2))
 
             for c in n1.children:
                 index = len(nodes)
@@ -241,7 +237,7 @@ def compare_two_repos(repo1_url, repo2_url):
                                  match_weight, match_percentage)
 
                 if match_weight == total_weight:
-                    ignore_set.update(n2.children)
+                    ignore_set.update(_get_all_children(n2))
 
             first_index = len(repo1_nodes)
             repo1_nodes.extend(n1.children)
