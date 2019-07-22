@@ -1,4 +1,4 @@
-from ..nodes.PatternNode import PatternNode
+from ..Nodes.PatternNode import PatternNode
 
 
 def anti_unify(list1, list2, index1, index2, worktable):
@@ -22,6 +22,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
             return PatternNode(list1[index1], list2[index2], list1[index1].value)
         elif len(list1[index1].child_indices) != len(list2[index2].child_indices):
             # verify child lists are same length; if not return hole
+            # COME FIX AT SOME POINT
             return PatternNode(list1[index1], list2[index2])
         else:  # if not leaves && same child index length:
             # iterate thru node's children, adding them as new children to the new fake node
