@@ -1,9 +1,9 @@
 import sys
-from code_duplication.src.preprocessing.args_handler import handle_args
-from code_duplication.src.preprocessing.module_parser import get_modules_from_dir
-from code_duplication.src.primary_algorithm.pattern_collection import pattern_collection
-from code_duplication.src.utils.benchmark import time_snap
-from code_duplication.src.secondary_algorithm.fast_check import type1_check
+from .preprocessing.args_handler import handle_args
+from .preprocessing.module_parser import get_modules_from_dir
+from .primary_algorithm.pattern_collection import pattern_collection
+from .utils.benchmark import time_snap
+from .secondary_algorithm.fast_check import type1_check
 from fastlog import log
 from .errors.UserInputError import UserInputError
 
