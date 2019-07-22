@@ -32,11 +32,18 @@ class TreeNode:
         self.origin = origin_file + (f" (L:{node.lineno} C:{node.col_offset})"
                                      if node._attributes else f" (ID:{id(node):x})")
 
+        # Check if this type of node can have docstring.
+        can_have_docstring = node.__class__ in [ast.ClassDef, ast.FunctionDef]
+
         # HACK: Ignore useless context-related children.
         # This should greatly reduce the total number of nodes.
         self.children = [TreeNode(n, origin_file) for n in
                          ast.iter_child_nodes(node)
-                         if n.__class__ not in _IGNORE_CLASSES]
+                         if n.__class__ not in _IGNORE_CLASSES and
+                         # Ignore docstrings in class and function definitions.
+                         (not can_have_docstring or
+                          not isinstance(n, ast.Expr) or
+                          not isinstance(n.value, ast.Str))]
 
         self.weight = 1 + sum([c.weight for c in self.children])
 
