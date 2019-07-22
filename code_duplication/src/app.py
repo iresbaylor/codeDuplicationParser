@@ -1,9 +1,9 @@
 import sys
-from .common.preprocessing.args_handler import handle_args
-from .common.preprocessing.module_parser import get_modules_from_dir
-from .common.primary_algorithm.pattern_collection import pattern_collection
-from .common.utils.benchmark import time_snap
-from .common.secondary_algorithm.fast_check import type1_check
+from .preprocessing.args_handler import handle_args
+from .preprocessing.module_parser import get_modules_from_dir
+from .primary_algorithm.pattern_collection import pattern_collection
+from .utils.benchmark import time_snap
+from .secondary_algorithm.fast_check import type1_check
 from fastlog import log
 from .errors.UserInputError import UserInputError
 
