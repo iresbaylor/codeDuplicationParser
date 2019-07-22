@@ -6,7 +6,13 @@ from ..errors.UserInputError import UserInputError
 _USAGE_TEXT = """\
 Usage:
     python3 -m code_duplication <first repository> <second repository> - Repository comparison mode
-    python3 -m code_duplication <repository>                           - Single repository mode"""
+    python3 -m code_duplication <repository>                           - Single repository mode
+
+Valid repository path formats:
+    Absolute or relative local directory path   - /home/user/directory
+    Name of a previously cloned repository      - repository
+    Full remote repository path                 - https://github.com/username/repository
+    Short GitHub repository path                - username/repository"""
 
 
 def _check_url(url):
