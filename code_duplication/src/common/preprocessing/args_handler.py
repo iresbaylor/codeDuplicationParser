@@ -1,15 +1,14 @@
 from urllib.parse import urlparse
 import re
-import sys
 from os.path import isdir
 from fastlog import log
 from .repo_cloner import get_repo_dir
+from ...errors.UserInputError import UserInputError
 
 _USAGE_TEXT = """\
 Usage:
-    python3 -m code_duplication [first repository] [second repository]
-or (for comparing within a single repository):
-    python3 -m code_duplication [repository]"""
+    python3 -m code_duplication <first repository> <second repository> - Repository comparison mode
+    python3 -m code_duplication <repository>                           - Single repository mode"""
 
 
 def _check_url(url):
@@ -44,11 +43,10 @@ def handle_args(argv):
         # print function instead of the logging library because
         # the app exits right after the message is displayed.
         print(_USAGE_TEXT)
-        sys.exit(0)
+        raise UserInputError(None, 0)
 
     if len(argv) < 2 or len(argv) > 3:
-        log.error(
-            f"Invalid number of command line arguments - {len(argv) - 1}")
-        sys.exit(1)
+        raise UserInputError(
+            f"Invalid number of command line arguments: {len(argv) - 1}")
 
     return tuple(get_repo_dir(a) for a in argv[1:])

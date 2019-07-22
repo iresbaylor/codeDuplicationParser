@@ -6,6 +6,7 @@ import re
 from fastlog import log
 import sys
 from code_duplication import __file__ as base_path
+from ...errors.UserInputError import UserInputError
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path.join(dirname(base_path), "repos")
@@ -68,9 +69,11 @@ def get_repo_dir(repo):
         if repo_dir:
             return repo_dir
 
+    # NOTE: GitPython will pretend it has cloned a repository
+    # even if no such repository existed. In reality,
+    # it will just initialize a new local Git repository.
     repo_dir = _clone_repo(repo)
     if repo_dir:
         return repo_dir
 
-    log.error(f"Invalid repository path: \"{repo}\"")
-    sys.exit(1)
+    raise UserInputError(f"Invalid repository path: \"{repo}\"")
