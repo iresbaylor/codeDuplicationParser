@@ -15,19 +15,6 @@ Valid repository path formats:
     Short GitHub repository path                - username/repository"""
 
 
-def _check_url(url):
-    """
-    Performs a basic check of the repository URL.
-    """
-
-    pieces = urlparse(url)
-
-    return pieces.scheme and pieces.netloc and pieces.path and \
-        pieces.scheme in ["http", "https"] and \
-        re.fullmatch(r"^[a-zA-Z0-9\.\-]+\.\w+$", pieces.netloc) and \
-        re.fullmatch(r"^[\w\.\-/_]+$", pieces.path)
-
-
 def handle_args(argv):
     """
     Checks the command line arguments and handles them.
