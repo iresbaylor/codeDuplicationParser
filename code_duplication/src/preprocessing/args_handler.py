@@ -1,9 +1,7 @@
 from urllib.parse import urlparse
 import re
-from os.path import isdir
-from fastlog import log
 from .repo_cloner import get_repo_dir
-from ...errors.UserInputError import UserInputError
+from ..errors.UserInputError import UserInputError
 
 _USAGE_TEXT = """\
 Usage:
