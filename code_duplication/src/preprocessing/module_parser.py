@@ -1,7 +1,7 @@
 import ast
 from os import listdir, path
 from os.path import isdir, isfile
-from .TreeNode import TreeNode
+from ..nodes.TreeNode import TreeNode
 from collections import deque
 from .repo_cloner import clone_root_dir
 
@@ -72,7 +72,7 @@ def _flatten_module_nodes(module):
         module {TreeNode} -- TreeNode representing a module root node.
 
     Returns:
-        List[TreeNode] -- List of all the nodes in the module's AST.
+        list[TreeNode] -- List of all the nodes in the module's AST.
     """
     module_nodes = []
     node_queue = deque([module])
@@ -112,7 +112,7 @@ def get_modules_from_dir(directory):
         directory {string} -- Path of directory to search for Python files.
 
     Returns:
-        List[List[TreeNode]] -- List of lists of nodes from parsed modules.
+        list[list[TreeNode]] -- List of lists of nodes from parsed modules.
     """
 
     return [_flatten_module_nodes(_get_tree_node_from_file(f))

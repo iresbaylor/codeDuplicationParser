@@ -1,82 +1,67 @@
 import sys
-from .common.repo_cloner import clone_repos
-from .common.module_parser import get_modules_from_dir
-from .common.args_checker import check_args
-import ast
+from .preprocessing.args_handler import handle_args
+from .preprocessing.module_parser import get_modules_from_dir
+from .primary_algorithm.pattern_collection import pattern_collection
+from .utils.benchmark import time_snap
+from .secondary_algorithm.fast_check import type1_check
+from fastlog import log
+from .errors.UserInputError import UserInputError
 
 
 def main():
-    # verifying inputs.
-    # sys.argv should be in the following format:
-    # sys.argv = {script name, git_1, git_2}
-    if not check_args(sys.argv):
-        return
-
-    from time import time
-
-    start_time = time()
-    # Close repositories and get their paths
-    repos = clone_repos(sys.argv)
-    clone_time = time()
-
-    # ------- FOR TESTING PURPOSES ------------
-
-    # Find all functions and parse their syntax tree using the TreeNode wrapper
-    print("Parsing methods in repositories...")
-    modules = get_modules_from_dir(repos[0])
-
-    parse_time = time()
-
-    type1_check(modules)
-
-    type1_time = time()
-
-    print(f"Clone: {clone_time - start_time} s\nParse: {parse_time - clone_time} s\nType 1: {type1_time - parse_time} s\nTotal: {type1_time - start_time} s")
-
-    # -----------------------------------------
-
-
-def type1_check(modules):
     """
-    Very simple type 1 code duplication check based on AST.dump() function.
+    Entry point of the application.
     """
 
-    WEIGHT_LIMIT = 25
-    # PRIORITY_CLASSES = [ast.Module, ast.ClassDef,
-    #                     ast.FunctionDef, ast.AsyncFunctionDef]
+    try:
+        # Parse command line arguments
+        repos = handle_args(sys.argv)
 
-    node_dict = {}
+        time_snap("Cloned repositories")
 
-    for m in modules:
-        visited = set()
+        # ------- FOR TESTING PURPOSES ------------
 
-        for n in m:
-            if n.parent_index in visited or n.weight < WEIGHT_LIMIT:
-                visited.add(n.index)
-                continue
+        # Find all functions and parse their syntax tree using the TreeNode wrapper
+        log.info("Parsing methods in repositories...")
+        module_list_1 = get_modules_from_dir(repos[0])
 
-            node_dump = n.dump()
+        if not module_list_1:
+            raise UserInputError(f"First repository is empty: \"{repos[0]}\"")
 
-            if node_dump in node_dict:
-                visited.add(n.index)
-                node_dict[node_dump].append(n)
-            else:
-                node_dict[node_dump] = [n]
+        time_snap("Parsed first repository")
 
-    for v in node_dict.values():
-        if len(v) > 1:
-            print(v)
+        module_list_2 = get_modules_from_dir(repos[1])
 
+        if not module_list_2:
+            raise UserInputError(f"Second repository is empty: \"{repos[1]}\"")
 
-def print_node_list(node_list):
-    for node in node_list:
-        if node.parent_index is None:
-            print_node(node, "", 0, node_list)
+        time_snap("Parsed second repository")
 
+        log.info("Beginning fast analysis...")
+        type1_check(module_list_1)
+        time_snap("Type 1 check for first repository")
 
-def print_node(node, indent, level, node_list):
-    print(indent, "(", level, ")", node)
-    for index in node.child_indices:
-        for node in node_list:
-            if node.index == index:
-                print_node(node, indent + "----", level + 1, node_list)
+        type1_check(module_list_2)
+        time_snap("Type 1 check for second repository")
+
+        log.info("Beginning full analysis...")
+        clusters = []
+        for module_tree_1 in module_list_1:
+            for module_tree_2 in module_list_2:
+                clusters.append(pattern_collection(
+                    module_tree_1, module_tree_2))
+
+        time_snap("Analysis completed")
+        log.info("")
+
+        log.info("Possible clones:")
+        for cluster_list in clusters:
+            for pattern in cluster_list:
+                if pattern:
+                    log.info(pattern)
+
+    except UserInputError as ex:
+        if ex.message:
+            log.error(ex.message)
+
+        sys.exit(ex.code)
