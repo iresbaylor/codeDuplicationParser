@@ -25,4 +25,11 @@ class DetectionResult:
         # TODO: Sort the clones by similarity and weight.
 
     def json(self):
+        """
+        Converts the detection result into a JSON.
+        This includes information about all detected code clones.
+
+        Returns:
+            string -- JSON representation of the detection result.
+        """
         return json_dumps([c.dict() for c in self.clones])
