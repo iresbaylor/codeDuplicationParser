@@ -19,9 +19,14 @@ def hello():
 
     first_repo = request.args.get("first_repo")
     if first_repo:
-        output = "<ol>" + "".join([("<li>" + k[:40] + "...<ul>" +
-                                    "".join(["<li>" + n.origin + "</li>" for n in v]) +
-                                    "</ul></li>") for k, v in type1_check_repo(first_repo, 15).items()]) + "</ol>"
+        result = type1_check_repo(first_repo, 15)
+
+        with open("result.json", "w", encoding="utf-8") as f:
+            f.write(result.json())
+
+        output = "<ol>" + "".join([("<li>" + f"Value: {c.value}; Weight: {c.weight}; Similarity: {c.similarity * 100:g} %" + "<ul>" +
+                                    "".join(["<li>" + o + "</li>" for o in c.origins]) +
+                                    "</ul></li>") for c in result.clones]) + "</ol>"
 
     return webpage.replace("#LOG#", output)
 
