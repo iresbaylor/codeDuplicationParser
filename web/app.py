@@ -24,7 +24,7 @@ def hello():
         with open("result.json", "w", encoding="utf-8") as f:
             f.write(result.json())
 
-        output = "<ol>" + "".join([("<li>" + f"Value: {c.value}; Weight: {c.weight}; Similarity: {c.similarity * 100:g} %" + "<ul>" +
+        output = "<ol>" + "".join([("<li>" + f"{c.value} - Weight: {c.weight} - Similarity: {c.similarity * 100:g} %" + "<ul>" +
                                     "".join(["<li>" + o + "</li>" for o in c.origins]) +
                                     "</ul></li>") for c in result.clones]) + "</ol>"
 
