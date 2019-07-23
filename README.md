@@ -40,7 +40,7 @@ Alternatively you can run the program in a Python virtual environment
 Python packages required for the tool to run
 
 - `gitpython`
-- `bitarray`
+- `bitstring`
 - `fastlog`
 - `windows-curses` (Windows only, required by `fastlog`)
 
