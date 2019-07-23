@@ -1,6 +1,3 @@
-from json import dumps as json_dumps
-
-
 class PatternNode:
     """
     More abstract representation of multiple similar TreeNodes.
