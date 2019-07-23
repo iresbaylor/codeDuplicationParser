@@ -64,18 +64,6 @@ class PatternNode:
 
         return True
 
-    def to_json(self):
-        """
-        Converts the node into its JSON representation
-        for easier use by other tools.
-
-        Returns:
-            string -- JSON representation of the node.
-        """
-
-        return json_dumps({"value": self.value,
-                           "origins": [n.origin for n in self.nodes]})
-
     def __str__(self):
         return f"{self.value}(', '.join{[n.origin for n in self.nodes]})"
 
