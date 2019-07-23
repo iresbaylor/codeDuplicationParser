@@ -1,8 +1,8 @@
 from fastlog import log
 from ..preprocessing.repo_cloner import get_repo_dir
 from ..preprocessing.module_parser import get_modules_from_dir
-from ..output.DetectedClone import DetectedClone
-from ..output.DetectionResult import DetectionResult
+from ..results.DetectedClone import DetectedClone
+from ..results.DetectionResult import DetectionResult
 
 
 def type1_check(modules, weight_limit=25):
