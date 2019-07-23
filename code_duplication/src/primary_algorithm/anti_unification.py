@@ -14,7 +14,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
     """
 
     # mark the pair as checked/True
-    worktable[index1][index2] = True
+    worktable[index1].set(True, index2)
     # determine if subtrees are the same (and lengths same)
     if list1[index1] == list2[index2]:  # if true:
         # check if leaves
