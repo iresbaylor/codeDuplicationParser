@@ -15,9 +15,9 @@ def hello():
     with open(_INDEX_HTML, "r", encoding="utf-8") as f:
         webpage = f.read()
 
-    first_repo = request.args.get("first")
+    first_repo = request.args.get("first_repo")
 
-    return webpage.replace("#LOG#", "\n\n".join([f"{k[:20]} -- {v}" for k, v in type1_check_repo(first_repo, 30).items()]) if first_repo else "")
+    return webpage.replace("#LOG#", "\n\n".join([f"{k[:20]} -- {v}" for k, v in type1_check_repo(first_repo, 15).items()]) if first_repo else "")
 
     # try:
     #     conn = connect(conn_str)
