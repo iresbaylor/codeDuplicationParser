@@ -50,6 +50,6 @@ Alternatively you can run the program in a Python virtual environment
 
 ## Acknowledgments
 
-- [Dr. Tomáš Černý](https://cs.baylor.edu/~cerny/)
-- Dr. Pavel Tišnovský
+- [Tomáš Černý](https://cs.baylor.edu/~cerny/)
+- Pavel Tišnovský
 - [Red Hat](https://www.redhat.com/en)
