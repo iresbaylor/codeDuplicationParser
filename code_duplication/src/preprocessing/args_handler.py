@@ -6,20 +6,13 @@ from ..errors.UserInputError import UserInputError
 _USAGE_TEXT = """\
 Usage:
     python3 -m code_duplication <first repository> <second repository> - Repository comparison mode
-    python3 -m code_duplication <repository>                           - Single repository mode"""
+    python3 -m code_duplication <repository>                           - Single repository mode
 
-
-def _check_url(url):
-    """
-    Performs a basic check of the repository URL.
-    """
-
-    pieces = urlparse(url)
-
-    return pieces.scheme and pieces.netloc and pieces.path and \
-        pieces.scheme in ["http", "https"] and \
-        re.fullmatch(r"^[a-zA-Z0-9\.\-]+\.\w+$", pieces.netloc) and \
-        re.fullmatch(r"^[\w\.\-/_]+$", pieces.path)
+Valid repository path formats:
+    Absolute or relative local directory path   - /home/user/directory
+    Name of a previously cloned repository      - repository
+    Full remote repository path                 - https://github.com/username/repository
+    Short GitHub repository path                - username/repository"""
 
 
 def handle_args(argv):
