@@ -15,4 +15,4 @@ class DetectionResult:
         # TODO: Sort the clones by similarity and weight.
 
     def json(self):
-        return json_dumps(self.clones)
+        return json_dumps([c.dict() for c in self.clones])
