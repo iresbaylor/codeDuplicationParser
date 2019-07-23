@@ -41,4 +41,6 @@ def type1_check_repo(repo, weight):
     repo_dir = get_repo_dir(repo)
     repo_modules = get_modules_from_dir(repo_dir)
 
-    return DetectionResult([DetectedClone(k[:20] + "...", 1, v) for k, v in type1_check(repo_modules, weight).items()])
+    return DetectionResult([
+        DetectedClone(node_list[0].value, 1, node_list) for node_list in
+        type1_check(repo_modules, weight).values()])
