@@ -30,9 +30,14 @@ class DetectedClone:
         self.origins = [n.origin for n in nodes]
 
     def dict(self):
-        return {
-            "value": self.value,
-            "similarity": self.similarity,
-            "weight": self.weight,
-            "origins": self.origins
-        }
+        """
+        Returns a dictionary representation of the detected clone.
+        This is necessary for later conversion to JSON, because
+        there is no easy way to tell the JSON encoder how to encode
+        instances of user-defined classes.
+
+        Returns:
+            dict -- Dictionary representation of the detected clone, including
+                    all the attributes (value, similarity, weight, origins).
+        """
+        return self.__dict__
