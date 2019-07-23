@@ -17,9 +17,9 @@ def hello():
 
     output = ""
 
-    first_repo = request.args.get("first_repo")
-    if first_repo:
-        result = type1_check_repo(first_repo, 15)
+    repo = request.args.get("repo")
+    if repo:
+        result = type1_check_repo(repo, 15)
 
         with open("result.json", "w", encoding="utf-8") as f:
             f.write(result.json())
