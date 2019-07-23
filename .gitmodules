@@ -1,6 +1,1 @@
-[submodule "code_duplication/repos/CodeDuplicateTest1"]
-	path = code_duplication/repos/CodeDuplicateTest1
-	url = https://github.com/SchaefferDuncan/CodeDuplicateTest1.git
-[submodule "code_duplication/repos/CodeDuplicateTest2"]
-	path = code_duplication/repos/CodeDuplicateTest2
-	url = https://github.com/SchaefferDuncan/CodeDuplicateTest2.git
+
