@@ -35,6 +35,15 @@ What things you need to install the software
 Alternatively you can run the program in a Python virtual environment
 `./code-duplication.sh`
 
+### Dependencies
+
+Python packages required for the tool to run
+
+- `gitpython`
+- `bitarray`
+- `fastlog`
+- `windows-curses` (Windows only, required by `fastlog`)
+
 ## Built With
 
 - [Python 3.7.3](https://www.python.org/downloads/release/python-373/) - The Python version used
