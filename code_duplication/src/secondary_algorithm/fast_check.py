@@ -1,7 +1,9 @@
 from fastlog import log
+from ..preprocessing.repo_cloner import get_repo_dir
+from ..preprocessing.module_parser import get_modules_from_dir
 
 
-def type1_check(modules):
+def type1_check(modules, weight_limit=25):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
 
@@ -9,7 +11,6 @@ def type1_check(modules):
         modules (list[list[TreeNode]): Python ASTs from a repository
     """
 
-    WEIGHT_LIMIT = 25
     # PRIORITY_CLASSES = [ast.Module, ast.ClassDef,
     #                     ast.FunctionDef, ast.AsyncFunctionDef]
 
@@ -19,7 +20,7 @@ def type1_check(modules):
         visited = set()
 
         for n in m:
-            if n.parent_index in visited or n.weight < WEIGHT_LIMIT:
+            if n.parent_index in visited or n.weight < weight_limit:
                 visited.add(n.index)
                 continue
 
@@ -31,6 +32,11 @@ def type1_check(modules):
             else:
                 node_dict[node_dump] = [n]
 
-    for v in node_dict.values():
-        if len(v) > 1:
-            log.success(v)
+    return {k: v for k, v in node_dict.items() if len(v) > 1}
+
+
+def type1_check_repo(repo, weight):
+    repo_dir = get_repo_dir(repo)
+    repo_modules = get_modules_from_dir(repo_dir)
+
+    return type1_check(repo_modules, weight)
