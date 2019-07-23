@@ -20,9 +20,8 @@ class DetectionResult:
             clones {list[Detectedlone]} -- List of detected code clones.
         """
 
-        self.clones = clones
-
-        # TODO: Sort the clones by similarity and weight.
+        self.clones = clones.copy()
+        self.clones.sort(reverse=True, key=lambda c: c.weight * c.similarity)
 
     def json(self):
         """
