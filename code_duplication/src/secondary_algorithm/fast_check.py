@@ -1,6 +1,8 @@
 from fastlog import log
 from ..preprocessing.repo_cloner import get_repo_dir
 from ..preprocessing.module_parser import get_modules_from_dir
+from ..output.DetectedClone import DetectedClone
+from ..output.DetectionResult import DetectionResult
 
 
 def type1_check(modules, weight_limit=25):
@@ -39,4 +41,4 @@ def type1_check_repo(repo, weight):
     repo_dir = get_repo_dir(repo)
     repo_modules = get_modules_from_dir(repo_dir)
 
-    return type1_check(repo_modules, weight)
+    return DetectionResult([DetectedClone(k[:20] + "...", 1, v) for k, v in type1_check(repo_modules, weight).items()])
