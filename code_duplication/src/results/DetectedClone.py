@@ -30,9 +30,4 @@ class DetectedClone:
         self.origins = [n.origin for n in nodes]
 
     def dict(self):
-        return {
-            "value": self.value,
-            "similarity": self.similarity,
-            "weight": self.weight,
-            "origins": self.origins
-        }
+        return self.__dict__
