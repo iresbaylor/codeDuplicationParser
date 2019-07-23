@@ -59,6 +59,6 @@ Python packages required for the tool to run
 
 ## Acknowledgments
 
-- [Dr. Tomáš Černý](https://cs.baylor.edu/~cerny/)
-- Pavel Tišnovský
+- [Tomáš Černý](https://cs.baylor.edu/~cerny/)
+- [Pavel Tišnovský](https://github.com/tisnik)
 - [Red Hat](https://www.redhat.com/en)
