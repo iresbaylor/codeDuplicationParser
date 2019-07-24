@@ -140,6 +140,9 @@ def chlorine_single_repo(modules):
 
     Arguments:
         modules {list[list[TreeNode]]} -- List of the repo's modules.
+
+    Returns:
+        DetectionResult -- Result of the code clone detection.
     """
 
     time_snap("Function started")
@@ -194,6 +197,9 @@ def chlorine_two_repos(modules1, modules2):
     Arguments:
         modules1 {list[list[TreeNode]]} -- List of first repo's modules.
         modules2 {list[list[TreeNode]]} -- List of second repo's modules.
+
+    Returns:
+        DetectionResult -- Result of the code clone detection.
     """
 
     time_snap("Function started")
