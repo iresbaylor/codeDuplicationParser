@@ -32,25 +32,6 @@ def _flatten(list_of_lists):  # TODO: Move to utils submodule.
     return flat
 
 
-def _get_all_children(node):  # TODO: Move to TreeNode as a method.
-    """
-    Recursively finds all children of the given node
-    and collects them into a single list.
-
-    Arguments:
-        node {TreeNode} -- Node to find the children of.
-
-    Returns:
-        list[TreeNode] -- List of all the recursively found children.
-    """
-    children = node.children.copy()
-
-    for c in node.children:
-        children.extend(_get_all_children(c))
-
-    return children
-
-
 def _get_skeleton(node_value, child_skeletons):
     return f"{node_value}[{', '.join(child_skeletons)}]" \
         if child_skeletons else node_value
@@ -147,7 +128,7 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
         return
 
     if match_weight == max(n1.weight, n2.weight):
-        ignore_set.update(_get_all_children(n2))
+        ignore_set.update(n2.get_all_children())
 
     if match_weight / min(n1.weight, n2.weight) >= _MIN_MATCH_COEFFICIENT:
         match_dict[match_skeleton] |= {n1, n2}
@@ -167,7 +148,8 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
 
     for k, v in match_dict.items():
         origin_list = list(v)
-        clones.append(DetectedClone(origin_list[0].value, skeleton_weight_dict[k], origin_list))
+        clones.append(DetectedClone(
+            origin_list[0].value, skeleton_weight_dict[k], origin_list))
 
     return DetectionResult(clones)
 
