@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 import re
 from code_duplication import __file__ as base_path
 from ..errors.UserInputError import UserInputError
+from ..app import allow_local_access
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path.join(dirname(base_path), "repos")
@@ -53,13 +54,13 @@ def get_repo_dir(repo):
     """
 
     # Local directory path
-    if isdir(repo):
+    if allow_local_access and isdir(repo):
         return repo
 
-    # Repository path relative to the local base repository directory
-    rel_path_to_repo_dir = path.join(clone_root_dir, repo)
-    if isdir(rel_path_to_repo_dir):
-        return rel_path_to_repo_dir
+    # Name of a previously cloned repository
+    repo_dir_by_name = path.join(clone_root_dir, repo)
+    if re.fullmatch(r"^[\w\-]+$", repo) and isdir(repo_dir_by_name):
+        return repo_dir_by_name
 
     # Shorthand for GitHub URLs: "[repository owner]/[repository name]"
     if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)$", repo):
