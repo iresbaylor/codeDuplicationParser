@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import re
 from code_duplication import __file__ as base_path
 from ..errors.UserInputError import UserInputError
-from ..app import allow_local_access
+from ..app import config
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path.join(dirname(base_path), "repos")
@@ -54,7 +54,7 @@ def get_repo_dir(repo):
     """
 
     # Local directory path
-    if allow_local_access and isdir(repo):
+    if config.allow_local_access and isdir(repo):
         return repo
 
     # Name of a previously cloned repository
