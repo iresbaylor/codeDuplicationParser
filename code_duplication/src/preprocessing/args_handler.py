@@ -9,10 +9,10 @@ Usage:
     python3 -m code_duplication <repository>                           - Single repository mode
 
 Valid repository path formats:
-    Absolute or relative local directory path   - /home/user/directory
-    Name of a previously cloned repository      - repository
+    Short GitHub repository path                - username/repository
     Full remote repository path                 - https://github.com/username/repository
-    Short GitHub repository path                - username/repository"""
+    Absolute or relative local directory path   - /home/user/directory
+    Short path of an already cloned repository  - github/username/repository"""
 
 
 def handle_args(argv):
