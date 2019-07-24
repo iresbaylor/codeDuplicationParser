@@ -1,12 +1,12 @@
+import os.path
+from sys import stderr
 from flask import Flask, request
 # from psycopg2 import connect, Error as PG_Error
-from sys import stderr
+from engine.preprocessing.module_parser import get_modules_from_repo
+from engine.algorithms.algorithm_runner import run_single_repo
+from engine.utils.config import config
+from engine.errors.UserInputError import UserInputError
 # from .credentials import conn_str
-from code_duplication.src.preprocessing.module_parser import get_modules_from_repo
-from code_duplication.src.algorithms.algorithm_runner import run_single_repo
-from code_duplication.src.utils.config import config
-import os.path
-from code_duplication.src.errors.UserInputError import UserInputError
 
 # Disable access to local file system
 config.allow_local_access = False
