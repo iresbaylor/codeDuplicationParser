@@ -1,3 +1,6 @@
+_HOLE = "Hole"
+
+
 class PatternNode:
     """
     More abstract representation of multiple similar TreeNodes.
@@ -19,7 +22,7 @@ class PatternNode:
                               None if the PatternNode represents a hole.
         """
         self.nodes = [node1, node2]
-        self.value = value or "Hole"
+        self.value = value or _HOLE
         self.children = []
 
     def add_node(self, node):
@@ -60,6 +63,17 @@ class PatternNode:
                 return False
 
         return True
+
+    def get_match_weight(self):
+        """
+        Calculates the weight of the matching skeleton of all origin nodes.
+
+        Returns:
+            int -- Weight of the matching skeleton.
+        """
+
+        return 0 if self.value == _HOLE else \
+            (1 + sum([c.get_match_weight() for c in self.children]))
 
     def __str__(self):
         return f"{self.value}(', '.join{[n.origin for n in self.nodes]})"
