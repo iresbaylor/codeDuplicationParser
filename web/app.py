@@ -2,7 +2,8 @@ from flask import Flask, request
 # from psycopg2 import connect, Error as PG_Error
 from sys import stderr
 # from .credentials import conn_str
-from code_duplication.src.secondary_algorithm.fast_check import type1_check_repo
+from code_duplication.src.preprocessing.module_parser import get_modules_from_repo
+from code_duplication.src.algorithms.algorithm_runner import run_single_repo
 from code_duplication.src.utils.config import config
 import os.path
 from code_duplication.src.errors.UserInputError import UserInputError
@@ -25,7 +26,8 @@ def hello():
     repo = request.args.get("repo")
     if repo:
         try:
-            result = type1_check_repo(repo, 15)
+            modules = get_modules_from_repo(repo)
+            result = run_single_repo(modules, "oxygen")
 
             with open("result.json", "w", encoding="utf-8") as f:
                 f.write(result.json())
