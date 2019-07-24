@@ -1,6 +1,3 @@
-from fastlog import log
-from ...preprocessing.repo_cloner import get_repo_dir
-from ...preprocessing.module_parser import get_modules_from_dir
 from ...results.DetectedClone import DetectedClone
 from ...results.DetectionResult import DetectionResult
 
