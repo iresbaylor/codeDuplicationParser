@@ -1,11 +1,11 @@
 from fastlog import log
-from ..preprocessing.repo_cloner import get_repo_dir
-from ..preprocessing.module_parser import get_modules_from_dir
-from ..results.DetectedClone import DetectedClone
-from ..results.DetectionResult import DetectionResult
+from ...preprocessing.repo_cloner import get_repo_dir
+from ...preprocessing.module_parser import get_modules_from_dir
+from ...results.DetectedClone import DetectedClone
+from ...results.DetectionResult import DetectionResult
 
 
-def type1_check(modules, weight_limit=25):
+def _type1_check(modules, weight_limit=25):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
 
@@ -41,10 +41,10 @@ def type1_check_repo(repo, min_weight):
     repo_dir = get_repo_dir(repo)
     log.info("Repo: " + repo)
     log.info("Repo dir: " + repo_dir)
-    from ..utils.config import config
+    from ...utils.config import config
     log.info("Local access: " +
              ("enabled" if config.allow_local_access else "disabled"))
     repo_modules = get_modules_from_dir(repo_dir)
 
     return DetectionResult([DetectedClone(node_list[0].value, node_list[0].weight, node_list)
-                            for node_list in type1_check(repo_modules, min_weight).values()])
+                            for node_list in _type1_check(repo_modules, min_weight).values()])
