@@ -75,7 +75,7 @@ def get_repo_dir(repo):
         return repo_dir_by_name
 
     # Shorthand for GitHub URLs: "[repository owner]/[repository name]"
-    if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)$", repo):
+    if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)?$", repo):
         repo_dir = _clone_repo("https://github.com/" + repo)
 
         if repo_dir:
