@@ -129,26 +129,24 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
     return DetectionResult(clones)
 
 
-def find_clones_in_repo(repo_url):
+def chlorine_single_repo(modules):
     """
     Finds all clones satisfying the settings at the top of this source file
-    in a single repository given its URL.
+    in a single repository given its modules.
     Detected code clones are printed on STDOUT, including the common skeleton,
     path to each clones (source file path, line number, column offset),
     size of each clone (number of nodes in its syntax tree) and their
     similarity percentage (number of matching nodes / total number of nodes).
 
     Arguments:
-        repo_url {string} -- URL of the repository to detect code clones in.
+        modules {list[list[TreeNode]]} -- List of the repo's modules.
     """
 
-    time_snap("Start of function")
-    repo_dir = _clone_repo(repo_url)
-    time_snap("Repository cloned")
-    repo_modules = get_modules_from_dir(repo_dir)
+    time_snap("Function started")
 
-    nodes = [m[0] for m in repo_modules]
-    time_snap("Modules / nodes parsed")
+    nodes = [m[0] for m in modules]
+
+    time_snap("Module lists optimized")
 
     match_dict = defaultdict(set)
     skeleton_weight_dict = {}
@@ -188,7 +186,7 @@ def find_clones_in_repo(repo_url):
 
 def chlorine_two_repos(modules1, modules2):
     """
-    Finds code clones between two repositories given their URLs.
+    Finds code clones between two repositories given their module lists.
     Clones must satisfy rules defined at the top of this source file.
     Detected clones are printed on STDOUT.
     See `find_clones_in_repo(repo_url)` for details on output format.
