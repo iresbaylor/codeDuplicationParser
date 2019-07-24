@@ -1,0 +1,8 @@
+[submodule "code_duplication/test/repos/CodeDuplicateTest1"]
+	path = code_duplication/test/repos/CodeDuplicateTest1
+	url = https://github.com/SchaefferDuncan/CodeDuplicateTest1
+	branch = master
+[submodule "code_duplication/test/repos/CodeDuplicateTest2"]
+	path = code_duplication/test/repos/CodeDuplicateTest2
+	url = https://github.com/SchaefferDuncan/CodeDuplicateTest2
+	branch = master
