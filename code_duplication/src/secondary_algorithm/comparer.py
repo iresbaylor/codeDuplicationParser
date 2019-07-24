@@ -1,16 +1,20 @@
 from fastlog import log
+from collections import defaultdict
 from ..preprocessing.repo_cloner import _clone_repo
 from ..preprocessing.module_parser import get_modules_from_dir
 from ..utils.benchmark import time_snap
+from ..results.DetectedClone import DetectedClone
+from ..results.DetectionResult import DetectionResult
 
-# Minimum combined weight of two nodes required for comparison.
-_MIN_WEIGHT = 80
-# Minimum match / similarity percentage required for two nodes
-# to be considered code clones and therefore printed out.
-_MIN_MATCH_PERCENTAGE = 80
+# Minimum weight of a single node used in comparison.
+_MIN_NODE_WEIGHT = 50
+
+# Minimum match / similarity coefficient required for two subtrees
+# to be considered code clones and therefore returned.
+_MIN_MATCH_COEFFICIENT = 0.8
 
 
-def _flatten(list_of_lists):
+def _flatten(list_of_lists):  # TODO: Move to utils submodule.
     """
     Flattens a list of list into a single flat list.
 
@@ -28,7 +32,7 @@ def _flatten(list_of_lists):
     return flat
 
 
-def _get_all_children(node):
+def _get_all_children(node):  # TODO: Move to TreeNode as a method.
     """
     Recursively finds all children of the given node
     and collects them into a single list.
@@ -58,6 +62,7 @@ def _get_skeleton_recursive(node):
 
 def _can_be_compared(node1, node2):
     """
+    First get rid of nodes with a weight below the specified threshold.
     Checks if two nodes can be possible compared with each other.
     In order to be comparable, the nodes must have an equal value
     and they must have the exact same number of children.
@@ -69,7 +74,11 @@ def _can_be_compared(node1, node2):
     Returns:
         bool -- True if nodes can be compared, False if they cannot.
     """
-    return node1.value == node2.value and len(node1.children) == len(node2.children)
+    return \
+        node1.weight >= _MIN_NODE_WEIGHT and \
+        node2.weight >= _MIN_NODE_WEIGHT and \
+        node1.value == node2.value and \
+        len(node1.children) == len(node2.children)
 
 
 def _type1_compare(node1, node2):
@@ -89,13 +98,14 @@ def _type1_compare(node1, node2):
     combined_weight = node1.weight + node2.weight
 
     if not _can_be_compared(node1, node2):
+        # TODO: Maybe the weight of the hole should be omitted here.
         return 0, f"Hole({combined_weight})"
 
     skeleton = _get_skeleton_recursive(node1)
     if _get_skeleton_recursive(node2) == skeleton:
         return combined_weight, skeleton
 
-    match_weight = 2
+    match_weight = 1
     child_skeletons = []
 
     for i, c in enumerate(node1.children):
@@ -108,10 +118,58 @@ def _type1_compare(node1, node2):
 
 
 def _print_clone(node1, node2, total_weight, match_weight, match_percentage):
+    # TODO: Remove this function once it is definitely not going to be used.
     log.success("Possible code clone detected: " +
                 f"{match_percentage:g} % similarity " +
                 f"({match_weight} out of {total_weight} nodes)" +
                 f"\n{node1}\n{node2}\n")
+
+
+def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
+    """
+    Common logic shared by single-repo analysis and
+    two repository comparison mode.
+
+    Arguments:
+        n1 {TreeNode} -- First node.
+        n2 {TreeNode} -- Second node.
+        ignore_set {set[TreeNode]} -- Set of nodes to ignore.
+        match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
+        skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
+    """
+
+    if not _can_be_compared(n1, n2):
+        return
+
+    match_weight, match_skeleton = _type1_compare(n1, n2)
+
+    if not match_weight:
+        return
+
+    if match_weight == max(n1.weight, n2.weight):
+        ignore_set.update(_get_all_children(n2))
+
+    if match_weight / min(n1.weight, n2.weight) >= _MIN_MATCH_COEFFICIENT:
+        match_dict[match_skeleton] |= {n1, n2}
+        skeleton_weight_dict[match_skeleton] = match_weight
+
+
+def _dict_to_result(match_dict, skeleton_weight_dict):
+    """
+    Compiles the detection result together from the input dictionaries.
+
+    Arguments:
+        match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
+        skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
+    """
+
+    clones = []
+
+    for k, v in match_dict.items():
+        origin_list = list(v)
+        clones.append(DetectedClone(origin_list[0].value, skeleton_weight_dict[k], origin_list))
+
+    return DetectionResult(clones)
 
 
 def find_clones_in_repo(repo_url):
@@ -135,6 +193,9 @@ def find_clones_in_repo(repo_url):
     nodes = [m[0] for m in repo_modules]
     time_snap("Modules / nodes parsed")
 
+    match_dict = defaultdict(set)
+    skeleton_weight_dict = {}
+
     ignore_dict = {}
     start = 0
 
@@ -151,25 +212,8 @@ def find_clones_in_repo(repo_url):
 
                 n2 = nodes[i2]
 
-                if not _can_be_compared(n1, n2):
-                    continue
-
-                total_weight = n1.weight + n2.weight
-                if total_weight < _MIN_WEIGHT:
-                    continue
-
-                match_weight, _ = _type1_compare(n1, n2)
-                if not match_weight:
-                    continue
-
-                match_percentage = round(match_weight / total_weight * 100, 2)
-
-                if match_percentage >= _MIN_MATCH_PERCENTAGE:
-                    _print_clone(n1, n2, total_weight,
-                                 match_weight, match_percentage)
-
-                if match_weight == total_weight:
-                    ignore_set.update(_get_all_children(n2))
+                _compare_internal(n1, n2, ignore_set,
+                                  match_dict, skeleton_weight_dict)
 
             for c in n1.children:
                 index = len(nodes)
@@ -181,6 +225,8 @@ def find_clones_in_repo(repo_url):
         start = end
 
     time_snap("End of function")
+
+    return _dict_to_result(match_dict, skeleton_weight_dict)
 
 
 def compare_two_repos(repo1_url, repo2_url):
@@ -208,6 +254,9 @@ def compare_two_repos(repo1_url, repo2_url):
     repo2_nodes = _flatten(repo2_modules)
     time_snap("Convert modules into nodes")
 
+    match_dict = defaultdict(set)
+    skeleton_weight_dict = {}
+
     ignore_dict = {}
     start = 0
 
@@ -222,22 +271,8 @@ def compare_two_repos(repo1_url, repo2_url):
                 if not _can_be_compared(n1, n2):
                     continue
 
-                total_weight = n1.weight + n2.weight
-                if total_weight < _MIN_WEIGHT:
-                    continue
-
-                match_weight, _ = _type1_compare(n1, n2)
-                if not match_weight:
-                    continue
-
-                match_percentage = round(match_weight / total_weight * 100, 2)
-
-                if match_percentage >= _MIN_MATCH_PERCENTAGE:
-                    _print_clone(n1, n2, total_weight,
-                                 match_weight, match_percentage)
-
-                if match_weight == total_weight:
-                    ignore_set.update(_get_all_children(n2))
+                _compare_internal(n1, n2, ignore_set,
+                                  match_dict, skeleton_weight_dict)
 
             first_index = len(repo1_nodes)
             repo1_nodes.extend(n1.children)
@@ -249,3 +284,5 @@ def compare_two_repos(repo1_url, repo2_url):
         start = end
 
     time_snap("End of function")
+
+    return _dict_to_result(match_dict, skeleton_weight_dict)
