@@ -186,7 +186,7 @@ def find_clones_in_repo(repo_url):
     return _dict_to_result(match_dict, skeleton_weight_dict)
 
 
-def compare_two_repos(repo1_url, repo2_url):
+def chlorine_two_repos(modules1, modules2):
     """
     Finds code clones between two repositories given their URLs.
     Clones must satisfy rules defined at the top of this source file.
@@ -194,22 +194,16 @@ def compare_two_repos(repo1_url, repo2_url):
     See `find_clones_in_repo(repo_url)` for details on output format.
 
     Arguments:
-        repo1_url {string} -- URL of the first repository to compare.
-        repo2_url {string} -- URL of the second repository to compare.
+        modules1 {list[list[TreeNode]]} -- List of first repo's modules.
+        modules2 {list[list[TreeNode]]} -- List of second repo's modules.
     """
 
-    time_snap("Function start")
-    repo1_dir = _clone_repo(repo1_url)
-    time_snap("Clone first")
-    repo2_dir = _clone_repo(repo2_url)
-    time_snap("Clone second")
-    repo1_modules = get_modules_from_dir(repo1_dir)
-    time_snap("Get modules from first")
-    repo2_modules = get_modules_from_dir(repo2_dir)
-    time_snap("Get modules from second")
-    repo1_nodes = [m[0] for m in repo1_modules]
-    repo2_nodes = flatten(repo2_modules)
-    time_snap("Convert modules into nodes")
+    time_snap("Function started")
+
+    repo1_nodes = [m[0] for m in modules1]
+    repo2_nodes = flatten(modules2)
+
+    time_snap("Module lists optimized")
 
     match_dict = defaultdict(set)
     skeleton_weight_dict = {}
