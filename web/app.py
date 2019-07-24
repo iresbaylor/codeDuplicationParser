@@ -29,9 +29,6 @@ def hello():
             modules = get_modules_from_repo(repo)
             result = run_single_repo(modules, "oxygen")
 
-            with open("result.json", "w", encoding="utf-8") as f:
-                f.write(result.json())
-
             output = "<ol>" + "".join([("<li>" + c.value + f" - Weight: {c.match_weight}" + "<ul>" +
                                         "".join(["<li>" + orig + f" - Similarity: {sim * 100:g} %" + "</li>" for orig, sim in c.origins.items()]) +
                                         "</ul></li>") for c in result.clones]) + "</ol>"
