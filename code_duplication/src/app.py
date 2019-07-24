@@ -7,6 +7,9 @@ from .secondary_algorithm.fast_check import type1_check
 from fastlog import log
 from .errors.UserInputError import UserInputError
 
+# Global variable that allows or denies access to local file system.
+allow_local_access = True
+
 
 def main():
     """
