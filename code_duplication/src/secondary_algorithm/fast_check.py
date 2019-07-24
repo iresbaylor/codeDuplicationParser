@@ -37,10 +37,14 @@ def type1_check(modules, weight_limit=25):
     return {k: v for k, v in node_dict.items() if len(v) > 1}
 
 
-def type1_check_repo(repo, weight):
+def type1_check_repo(repo, min_weight):
     repo_dir = get_repo_dir(repo)
+    log.info("Repo: " + repo)
+    log.info("Repo dir: " + repo_dir)
+    from ..utils.config import config
+    log.info("Local access: " +
+             ("enabled" if config.allow_local_access else "disabled"))
     repo_modules = get_modules_from_dir(repo_dir)
 
-    return DetectionResult([
-        DetectedClone(node_list[0].value, 1, node_list) for node_list in
-        type1_check(repo_modules, weight).values()])
+    return DetectionResult([DetectedClone(node_list[0].value, node_list[0].weight, node_list)
+                            for node_list in type1_check(repo_modules, min_weight).values()])
