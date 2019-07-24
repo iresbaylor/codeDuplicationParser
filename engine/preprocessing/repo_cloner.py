@@ -1,9 +1,8 @@
-from git import Git, Repo, InvalidGitRepositoryError, GitCommandError
+import re
 from os import path, makedirs
 from os.path import isdir, dirname
-from urllib.parse import urlparse
-import re
-from code_duplication import __file__ as base_path
+from git import Git, Repo, InvalidGitRepositoryError, GitCommandError
+from engine import __file__ as base_path
 from ..errors.UserInputError import UserInputError
 from ..utils.config import config
 
