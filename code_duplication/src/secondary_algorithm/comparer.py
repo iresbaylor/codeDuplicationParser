@@ -81,14 +81,6 @@ def _type1_compare(node1, node2):
     return match_weight, _get_skeleton(node1.value, child_skeletons)
 
 
-def _print_clone(node1, node2, total_weight, match_weight, match_percentage):
-    # TODO: Remove this function once it is definitely not going to be used.
-    log.success("Possible code clone detected: " +
-                f"{match_percentage:g} % similarity " +
-                f"({match_weight} out of {total_weight} nodes)" +
-                f"\n{node1}\n{node2}\n")
-
-
 def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
     """
     Common logic shared by single-repo analysis and
