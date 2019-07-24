@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import re
 from code_duplication import __file__ as base_path
 from ..errors.UserInputError import UserInputError
-from ..app import config
+from ..utils.config import config
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path.join(dirname(base_path), "repos")
