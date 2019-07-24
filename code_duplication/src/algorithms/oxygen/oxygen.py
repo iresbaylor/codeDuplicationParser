@@ -8,6 +8,9 @@ def oxygen(modules, weight_limit=25):
 
     Arguments:
         modules (list[list[TreeNode]): Modules in locally standardized format.
+
+    Returns:
+        DetectionResult -- Result of the code clone detection.
     """
 
     # Dictionary of all the different shapes of node trees.
