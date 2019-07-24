@@ -10,3 +10,10 @@ def run_single_repo(modules, algorithm):
         return chlorine_single_repo(modules)
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
+
+
+def run_two_repos(modules1, modules2, algorithm):
+    if algorithm == "chlorine":
+        return chlorine_two_repos(modules1, modules2)
+    else:
+        raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
