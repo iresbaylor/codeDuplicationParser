@@ -1,10 +1,10 @@
 import sys
-from .preprocessing.args_handler import handle_args
-from .preprocessing.module_parser import get_modules_from_dir
-from .algorithms.iodine.iodine import iodine
-from .utils.benchmark import time_snap
+from engine.preprocessing.args_handler import handle_args
+from engine.preprocessing.module_parser import get_modules_from_dir
+from engine.algorithms.iodine.iodine import iodine
+from engine.utils.benchmark import time_snap
 from fastlog import log
-from .errors.UserInputError import UserInputError
+from engine.errors.UserInputError import UserInputError
 
 
 def main():
