@@ -5,20 +5,23 @@ from ...results.DetectedClone import DetectedClone
 from ...results.DetectionResult import DetectionResult
 
 
-def _type1_check(modules, weight_limit=25):
+def oxygen(modules, weight_limit=25):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
 
     Arguments:
-        modules (list[list[TreeNode]): Python ASTs from a repository
+        modules (list[list[TreeNode]): Modules in locally standardized format.
     """
 
-    # PRIORITY_CLASSES = [ast.Module, ast.ClassDef,
-    #                     ast.FunctionDef, ast.AsyncFunctionDef]
-
+    # Dictionary of all the different shapes of node trees.
+    # Key is a string representation of the tree.
+    # Value is a list of all nodes with the exact same string representation.
+    # These nodes are often referred to as "origins" throughout the project.
     node_dict = {}
 
     for m in modules:
+        # Set of visited nodes is used to prevent recursively comparing
+        # children of known perfect matches to avoid redundant clones.
         visited = set()
 
         for n in m:
@@ -34,17 +37,14 @@ def _type1_check(modules, weight_limit=25):
             else:
                 node_dict[node_dump] = [n]
 
-    return {k: v for k, v in node_dict.items() if len(v) > 1}
+    # Transform the dictionary into a list of detected clones.
+    clones = []
 
+    for origin_list in node_dict.values():
+        if len(origin_list) <= 1:
+            continue
 
-def type1_check_repo(repo, min_weight):
-    repo_dir = get_repo_dir(repo)
-    log.info("Repo: " + repo)
-    log.info("Repo dir: " + repo_dir)
-    from ...utils.config import config
-    log.info("Local access: " +
-             ("enabled" if config.allow_local_access else "disabled"))
-    repo_modules = get_modules_from_dir(repo_dir)
+        clones.append(DetectedClone(
+            origin_list[0].value, origin_list[0].weight, origin_list))
 
-    return DetectionResult([DetectedClone(node_list[0].value, node_list[0].weight, node_list)
-                            for node_list in _type1_check(repo_modules, min_weight).values()])
+    return DetectionResult(clones)
