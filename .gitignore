@@ -9,3 +9,5 @@ code_duplication/repos/
 venv/
 web/credentials.py
 **/*.json
+*.err
+*.log
