@@ -1,9 +1,8 @@
 import os.path
-from sys import stderr
 from flask import Flask, request
 # from psycopg2 import connect, Error as PG_Error
 from engine.preprocessing.module_parser import get_modules_from_repo
-from engine.algorithms.algorithm_runner import run_single_repo
+from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN, CHLORINE, IODINE
 from engine.utils.config import config
 from engine.errors.UserInputError import UserInputError
 # from .credentials import conn_str
@@ -27,7 +26,7 @@ def hello():
     if repo:
         try:
             modules = get_modules_from_repo(repo)
-            result = run_single_repo(modules, "oxygen")
+            result = run_single_repo(modules, OXYGEN)
 
             output = "<ol>" + "".join([("<li>" + c.value + f" - Weight: {c.match_weight}" + "<ul>" +
                                         "".join(["<li>" + orig + f" - Similarity: {sim * 100:g} %" + "</li>" for orig, sim in c.origins.items()]) +

@@ -1,7 +1,7 @@
 import sys
 from engine.preprocessing.args_handler import handle_args
 from engine.preprocessing.module_parser import get_modules_from_dir
-from engine.algorithms.iodine.iodine import iodine
+from engine.algorithms.algorithm_runner import run_two_repos, IODINE
 from engine.utils.benchmark import time_snap
 from fastlog import log
 from engine.errors.UserInputError import UserInputError
@@ -15,6 +15,7 @@ def main():
     try:
         # Parse command line arguments
         repos = handle_args(sys.argv)
+        algorithm = IODINE
 
         time_snap("Cloned repositories")
 
@@ -37,8 +38,11 @@ def main():
         time_snap("Parsed second repository")
 
         log.info("Beginning full analysis...")
-        iodine(module_list_1, module_list_2)
+        clones = run_two_repos(module_list_1, module_list_2, algorithm)
         time_snap("Analysis completed")
+
+        with open("clones.json", "w") as output_file:
+            output_file.write(clones.json())
 
     except UserInputError as ex:
         if ex.message:

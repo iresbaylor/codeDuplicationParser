@@ -1,6 +1,11 @@
 from .oxygen.oxygen import oxygen
 from .chlorine.chlorine import chlorine_single_repo, chlorine_two_repos
+from .iodine.iodine import iodine
 from ..errors.UserInputError import UserInputError
+
+OXYGEN = 0
+CHLORINE = 1
+IODINE = 2
 
 
 def run_single_repo(modules, algorithm):
@@ -9,7 +14,7 @@ def run_single_repo(modules, algorithm):
 
     Arguments:
         modules {list[list[TreeNode]]} -- List of the repo's modules.
-        algorithm {string} -- Code clone detection algorithm to use.
+        algorithm {int} -- Code clone detection algorithm to use.
 
     Raises:
         UserInputError -- If the algorithm name is invalid.
@@ -18,12 +23,12 @@ def run_single_repo(modules, algorithm):
         DetectionResult -- Result of the code clone detection.
     """
 
-    if algorithm == "oxygen":
+    if algorithm == OXYGEN:
         return oxygen(modules)
-    elif algorithm == "chlorine":
+    elif algorithm == CHLORINE:
         return chlorine_single_repo(modules)
     else:
-        raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
+        raise UserInputError(f"Invalid algorithm selected")
 
 
 def run_two_repos(modules1, modules2, algorithm):
@@ -33,7 +38,7 @@ def run_two_repos(modules1, modules2, algorithm):
     Arguments:
         modules1 {list[list[TreeNode]]} -- List of first repo's modules.
         modules2 {list[list[TreeNode]]} -- List of second repo's modules.
-        algorithm {string} -- Code clone detection algorithm to use.
+        algorithm {int} -- Code clone detection algorithm to use.
 
     Raises:
         UserInputError -- If the algorithm name is invalid.
@@ -42,7 +47,9 @@ def run_two_repos(modules1, modules2, algorithm):
         DetectionResult -- Result of the code clone detection.
     """
 
-    if algorithm == "chlorine":
+    if algorithm == CHLORINE:
         return chlorine_two_repos(modules1, modules2)
+    elif algorithm == IODINE:
+        return iodine(modules1, modules2)
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
