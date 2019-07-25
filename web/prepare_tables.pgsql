@@ -1,6 +1,16 @@
+DROP TABLE IF EXISTS clones;
+DROP TABLE IF EXISTS clusters;
+DROP TABLE IF EXISTS commits;
+DROP TABLE IF EXISTS repos;
+
 CREATE TABLE repos (
     id SERIAL PRIMARY KEY,
-    url TEXT NOT NULL
+    url TEXT UNIQUE NOT NULL,
+    dir TEXT UNIQUE NOT NULL,
+    "server" TEXT NOT NULL,
+    "user" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    UNIQUE("server", "user", "name")
 );
 
 CREATE TABLE commits (
@@ -15,7 +25,7 @@ CREATE TABLE commits (
 CREATE TABLE clusters (
     id SERIAL PRIMARY KEY,
     commit_id INTEGER REFERENCES commits(id) NOT NULL,
-    skeleton TEXT NOT NULL,
+    "value" TEXT NOT NULL,
     weight INTEGER NOT NULL
 );
 
