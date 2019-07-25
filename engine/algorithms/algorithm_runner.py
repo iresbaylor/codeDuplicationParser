@@ -1,6 +1,8 @@
 from .oxygen.oxygen import oxygen
 from .chlorine.chlorine import chlorine_single_repo, chlorine_two_repos
+from .iodine.iodine import iodine
 from ..errors.UserInputError import UserInputError
+from . import OXYGEN, IODINE, CHLORINE
 
 
 def run_single_repo(modules, algorithm):
@@ -18,9 +20,9 @@ def run_single_repo(modules, algorithm):
         DetectionResult -- Result of the code clone detection.
     """
 
-    if algorithm == "oxygen":
+    if algorithm == OXYGEN:
         return oxygen(modules)
-    elif algorithm == "chlorine":
+    elif algorithm == CHLORINE:
         return chlorine_single_repo(modules)
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
@@ -42,7 +44,9 @@ def run_two_repos(modules1, modules2, algorithm):
         DetectionResult -- Result of the code clone detection.
     """
 
-    if algorithm == "chlorine":
+    if algorithm == CHLORINE:
         return chlorine_two_repos(modules1, modules2)
+    elif algorithm == IODINE:
+        return iodine(modules1, modules2)
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")

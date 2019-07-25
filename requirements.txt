@@ -6,3 +6,5 @@ bitstring
 windows-curses; platform_system == 'Windows'
 # Used for better-looking logging
 fastlog
+# Front-end
+flask

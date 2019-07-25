@@ -4,3 +4,6 @@
 engine/repos/
 venv/
 web/credentials.py
+**/*.json
+*.err
+*.log

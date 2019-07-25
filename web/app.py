@@ -5,7 +5,7 @@ from flask import Flask, request
 from fastlog import log
 from psycopg2 import connect, Error as PG_Error
 from engine.preprocessing.module_parser import get_repo_modules_and_info
-from engine.algorithms.algorithm_runner import run_single_repo
+from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN, CHLORINE, IODINE
 from engine.utils.config import config
 from engine.errors.UserInputError import UserInputError
 from .credentials import conn_str
@@ -21,7 +21,7 @@ def _read_html(file_name):
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-
+      
 _INDEX_HTML = _read_html("index")
 _MESSAGE_HTML = _read_html("message")
 _RESULTS_HTML = _read_html("results")
@@ -58,7 +58,7 @@ def _analyze_repo(repo):
 
         conn.commit()
 
-        result = run_single_repo(modules, "oxygen")
+        result = run_single_repo(modules, OXYGEN)
 
         for c in result.clones:
             cur.execute("""INSERT INTO clusters (commit_id, "value", weight) VALUES (%s, %s, %s) RETURNING id;""",
