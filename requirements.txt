@@ -1,2 +1,10 @@
 # GitPython - Package used for cloning Git(Hub) repositories
 gitpython
+# Bit String - Package used for "work list" array in Lee's algorithm
+bitstring
+# Fastlog uses the "curses" package, which is part of stdlib on Linux, but not on Windows
+windows-curses; platform_system == 'Windows'
+# Used for better-looking logging
+fastlog
+# Front-end
+flask
