@@ -2,10 +2,7 @@ from .oxygen.oxygen import oxygen
 from .chlorine.chlorine import chlorine_single_repo, chlorine_two_repos
 from .iodine.iodine import iodine
 from ..errors.UserInputError import UserInputError
-
-OXYGEN = 0
-CHLORINE = 1
-IODINE = 2
+from . import OXYGEN, IODINE, CHLORINE
 
 
 def run_single_repo(modules, algorithm):
@@ -28,7 +25,7 @@ def run_single_repo(modules, algorithm):
     elif algorithm == CHLORINE:
         return chlorine_single_repo(modules)
     else:
-        raise UserInputError(f"Invalid algorithm selected")
+        raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
 
 
 def run_two_repos(modules1, modules2, algorithm):
