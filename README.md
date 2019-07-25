@@ -43,6 +43,7 @@ Python packages required for the tool to run
 - `bitstring`
 - `fastlog`
 - `windows-curses` (Windows only, required by `fastlog`)
+- `flask`
 
 ## Built With
 
