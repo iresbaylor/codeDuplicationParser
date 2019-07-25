@@ -1,7 +1,9 @@
 import sys
+import os
+from datetime import datetime
 from engine.preprocessing.args_handler import handle_args
 from engine.preprocessing.module_parser import get_modules_from_dir
-from engine.algorithms.algorithm_runner import run_two_repos, IODINE
+from engine.algorithms.algorithm_runner import run_two_repos, IODINE, CHLORINE
 from engine.utils.benchmark import time_snap
 from fastlog import log
 from engine.errors.UserInputError import UserInputError
@@ -41,7 +43,12 @@ def main():
         clones = run_two_repos(module_list_1, module_list_2, algorithm)
         time_snap("Analysis completed")
 
-        with open("clones.json", "w") as output_file:
+        # Create output directory if it doesn't exist and print output
+        output_path = os.getcwd()
+        now = datetime.now()
+        output_filename = "clones_" + f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}" + ".json"
+        os.makedirs(output_path, exist_ok=True)
+        with open(os.path.join(output_path, output_filename), "w") as output_file:
             output_file.write(clones.json())
 
     except UserInputError as ex:
