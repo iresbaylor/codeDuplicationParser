@@ -11,7 +11,7 @@ def run_single_repo(modules, algorithm):
 
     Arguments:
         modules {list[list[TreeNode]]} -- List of the repo's modules.
-        algorithm {int} -- Code clone detection algorithm to use.
+        algorithm {string} -- Code clone detection algorithm to use.
 
     Raises:
         UserInputError -- If the algorithm name is invalid.
@@ -35,7 +35,7 @@ def run_two_repos(modules1, modules2, algorithm):
     Arguments:
         modules1 {list[list[TreeNode]]} -- List of first repo's modules.
         modules2 {list[list[TreeNode]]} -- List of second repo's modules.
-        algorithm {int} -- Code clone detection algorithm to use.
+        algorithm {string} -- Code clone detection algorithm to use.
 
     Raises:
         UserInputError -- If the algorithm name is invalid.
