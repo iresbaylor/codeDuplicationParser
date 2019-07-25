@@ -75,6 +75,21 @@ class TreeNode:
         """
         return ast.dump(self.node)
 
+    def get_all_children(self):
+        """
+        Recursively finds all children of the node
+        and collects them into a single list.
+
+        Returns:
+            list[TreeNode] -- List of all the recursively found children.
+        """
+        children = self.children.copy()
+
+        for c in self.children:
+            children.extend(c.get_all_children())
+
+        return children
+
     def __eq__(self, other):
         """
         Compares the node to another node recursively.
