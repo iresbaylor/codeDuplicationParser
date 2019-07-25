@@ -1,11 +1,10 @@
 import sys
-from .preprocessing.args_handler import handle_args
-from .preprocessing.module_parser import get_modules_from_dir
-from .primary_algorithm.pattern_collection import pattern_collection
-from .utils.benchmark import time_snap
-from .secondary_algorithm.fast_check import type1_check
+from engine.preprocessing.args_handler import handle_args
+from engine.preprocessing.module_parser import get_modules_from_dir
+from engine.algorithms.iodine.iodine import iodine
+from engine.utils.benchmark import time_snap
 from fastlog import log
-from .errors.UserInputError import UserInputError
+from engine.errors.UserInputError import UserInputError
 
 
 def main():
@@ -37,28 +36,9 @@ def main():
 
         time_snap("Parsed second repository")
 
-        log.info("Beginning fast analysis...")
-        type1_check(module_list_1)
-        time_snap("Type 1 check for first repository")
-
-        type1_check(module_list_2)
-        time_snap("Type 1 check for second repository")
-
         log.info("Beginning full analysis...")
-        clusters = []
-        for module_tree_1 in module_list_1:
-            for module_tree_2 in module_list_2:
-                clusters.append(pattern_collection(
-                    module_tree_1, module_tree_2))
-
+        iodine(module_list_1, module_list_2)
         time_snap("Analysis completed")
-        log.info("")
-
-        log.info("Possible clones:")
-        for cluster_list in clusters:
-            for pattern in cluster_list:
-                if pattern:
-                    log.info(pattern)
 
     except UserInputError as ex:
         if ex.message:

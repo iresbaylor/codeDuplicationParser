@@ -17,7 +17,7 @@ class DetectionResult:
         """
         Initializes a new detection result given the list of detected clones.
         The list of code clones will be copied and the copy will be sorted by
-        the clones' weight multiplied by their similarity coefficient.
+        the clones' weight of their matching subtrees.
         The original list of clones will not be modified in any way.
 
         Arguments:
@@ -25,7 +25,7 @@ class DetectionResult:
         """
 
         self.clones = clones.copy()
-        self.clones.sort(reverse=True, key=lambda c: c.weight * c.similarity)
+        self.clones.sort(reverse=True, key=lambda c: c.match_weight)
 
     def json(self):
         """
