@@ -10,13 +10,27 @@ from ..utils.config import config
 clone_root_dir = path.join(dirname(base_path), "repos")
 
 
+class RepoInfo:  # TODO: Add docstrings.
+    def __init__(self, url, server, user, name):
+        self.url = url
+        self.server = server
+        self.user = user
+        self.name = name
+
+        self.dir = path.join(clone_root_dir, server, user, name)
+        self.hash = None
+
+
 def _clone_repo(repo_url):
     """
     Clones the specified repository into a special internal directory and
     returns the directory path of the cloned repository.
 
+    Arguments:
+        repo_url {string} -- URL of the repository to clone.
+
     Returns:
-        string -- Cloned repository directory on success; None on failure.
+        ClonedRepo -- Information about the cloned repository.
     """
 
     # Make sure the base clone dir exists.
@@ -29,29 +43,38 @@ def _clone_repo(repo_url):
     if not match:
         return None
 
-    repo_dir = path.join(clone_root_dir, match[1], match[2], match[3])
+    info = RepoInfo(repo_url, match[1], match[2], match[3])
 
-    # If repo dir already exists, pull it.
-    if isdir(repo_dir):
-        try:
-            Repo(repo_dir).remotes.origin.pull()
-        except InvalidGitRepositoryError:
-            return None
+    try:
+        # If repo dir already exists, pull it.
+        if isdir(info.dir):
+            repo = Repo(info.dir)
+            repo.remotes.origin.pull()
 
-    # If the repo hasn't been cloned yet, clone it.
+        # If the repo hasn't been cloned yet, clone it.
+        else:
+            repo = Repo.clone_from(info.url, info.dir)
+
+        # Get HEAD's hash and store it in repo info.
+        info.hash = repo.head.object.hexsha
+
+    except InvalidGitRepositoryError:
+        return None
+
+    except GitCommandError:
+        return None
+
+    return info
+
+
+def _clone_github_short(short_path):  # TODO: Add docstring.
+    if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)?$", short_path):
+        return _clone_repo("https://github.com/" + short_path)
     else:
-        # NOTE: Repo.clone_from() seems to return a Repo instance.
-        # That might be useful for something later on.
-
-        try:
-            Repo.clone_from(repo_url, repo_dir)
-        except GitCommandError:
-            return None
-
-    return repo_dir
+        return None
 
 
-def get_repo_dir(repo):
+def get_repo_or_dir(repo):
     """
     Attempts to process the given repository path in many different ways.
     If all of them fail, an error message will be printed and
@@ -74,11 +97,9 @@ def get_repo_dir(repo):
         return repo_dir_by_name
 
     # Shorthand for GitHub URLs: "[repository owner]/[repository name]"
-    if re.fullmatch(r"^[\w\-]+/[\w\-]+(?:\.git)?$", repo):
-        repo_dir = _clone_repo("https://github.com/" + repo)
-
-        if repo_dir:
-            return repo_dir
+    repo_info = _clone_github_short(repo)
+    if repo_info:
+        return repo_info.dir
 
     # Local directory path
     if isdir(repo):
@@ -89,8 +110,12 @@ def get_repo_dir(repo):
                 f"Access to local directory denied: \"{repo}\"")
 
     # Full remote repository URL
-    repo_dir = _clone_repo(repo)
-    if repo_dir:
-        return repo_dir
+    repo_info = _clone_repo(repo)
+    if repo_info:
+        return repo_info.dir
 
     raise UserInputError(f"Invalid repository path: \"{repo}\"")
+
+
+def get_repo_info(repo):  # TODO: Add docstring.
+    return _clone_github_short(repo) or _clone_repo(repo)
