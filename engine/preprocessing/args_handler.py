@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 import re
-from .repo_cloner import get_repo_dir
+from .repo_cloner import get_repo_or_dir
 from ..errors.UserInputError import UserInputError
 
 _USAGE_TEXT = """\
@@ -40,4 +40,4 @@ def handle_args(argv):
         raise UserInputError(
             f"Invalid number of command line arguments: {len(argv) - 1}")
 
-    return tuple(get_repo_dir(a) for a in argv[1:])
+    return tuple(get_repo_or_dir(a) for a in argv[1:])
