@@ -2,7 +2,7 @@ from ...results.DetectedClone import DetectedClone
 from ...results.DetectionResult import DetectionResult
 
 
-def oxygen(modules, weight_limit=25):
+def oxygen(modules, weight_limit=15):
     """
     Very simple type 1 code duplication check based on AST.dump() function.
 
