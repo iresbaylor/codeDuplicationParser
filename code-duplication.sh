@@ -6,4 +6,4 @@ function prepare_venv() {
 
 prepare_venv
 
-python3 -m code_duplication $@
+python3 -m cli $@

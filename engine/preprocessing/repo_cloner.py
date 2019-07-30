@@ -1,7 +1,7 @@
 import re
 from os import path, makedirs
 from os.path import isdir, dirname
-from git import Git, Repo, InvalidGitRepositoryError, GitCommandError
+from git import Repo, InvalidGitRepositoryError, GitCommandError
 from engine import __file__ as base_path
 from ..errors.UserInputError import UserInputError
 from ..utils.config import config

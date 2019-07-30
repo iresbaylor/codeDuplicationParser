@@ -1,11 +1,10 @@
 import os.path
-from sys import stderr
 from threading import Thread
 from flask import Flask, request
 from fastlog import log
 from psycopg2 import connect, Error as PG_Error
 from engine.preprocessing.module_parser import get_repo_modules_and_info
-from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN, CHLORINE, IODINE
+from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN #, CHLORINE, IODINE
 from engine.utils.config import config
 from engine.errors.UserInputError import UserInputError
 from .credentials import conn_str
