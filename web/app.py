@@ -2,12 +2,13 @@ import os.path
 from threading import Thread
 from flask import Flask, request
 from fastlog import log
-from psycopg2 import connect, Error as PG_Error
+from psycopg2 import Error as PG_Error
+from postgres import Postgres
 from engine.preprocessing.module_parser import get_repo_modules_and_info
-from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN #, CHLORINE, IODINE
+from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.utils.config import config
 from engine.errors.UserInputError import UserInputError
-from .credentials import conn_str
+from .credentials import db_url
 
 # Disable access to local file system
 config.allow_local_access = False
@@ -20,7 +21,7 @@ def _read_html(file_name):
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-      
+
 _INDEX_HTML = _read_html("index")
 _MESSAGE_HTML = _read_html("message")
 _RESULTS_HTML = _read_html("results")
@@ -28,8 +29,7 @@ _RESULTS_HTML = _read_html("results")
 
 def _analyze_repo(repo):
     try:
-        conn = connect(conn_str)
-        cur = conn.cursor()
+        db = Postgres(db_url)
 
         modules, repo_info = get_repo_modules_and_info(repo)
 
@@ -37,87 +37,60 @@ def _analyze_repo(repo):
             log.error("Unable to get the repository information")
             return
 
-        cur.execute("""SELECT COUNT(*) FROM repos WHERE url = %s OR dir = %s OR ("server" = %s AND "user" = %s AND "name" = %s);""",
-                    (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
-
-        count = cur.fetchone()[0]
+        count = db.one("""SELECT COUNT(*) FROM repos WHERE url = %s OR dir = %s OR ("server" = %s AND "user" = %s AND "name" = %s);""",
+                       (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
 
         if count:
             return
 
-        cur.execute("""INSERT INTO repos ("url", "dir", "server", "user", "name") VALUES (%s, %s, %s, %s, %s) RETURNING id;""",
-                    (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
+        repo_id = db.one("""INSERT INTO repos ("url", "dir", "server", "user", "name") VALUES (%s, %s, %s, %s, %s) RETURNING id;""",
+                         (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
 
-        repo_id = cur.fetchone()[0]
-
-        cur.execute(
-            """INSERT INTO commits (repo_id, hash) VALUES (%s, %s) RETURNING id;""", (repo_id, repo_info.hash))
-
-        commit_id = cur.fetchone()[0]
-
-        conn.commit()
+        commit_id = db.one("""INSERT INTO commits (repo_id, hash) VALUES (%s, %s) RETURNING id;""",
+                           (repo_id, repo_info.hash))
 
         result = run_single_repo(modules, OXYGEN)
 
         for c in result.clones:
-            cur.execute("""INSERT INTO clusters (commit_id, "value", weight) VALUES (%s, %s, %s) RETURNING id;""",
-                        (commit_id, c.value, c.match_weight))
-
-            cluster_id = cur.fetchone()[0]
+            cluster_id = db.one("""INSERT INTO clusters (commit_id, "value", weight) VALUES (%s, %s, %s) RETURNING id;""",
+                                (commit_id, c.value, c.match_weight))
 
             for o, s in c.origins.items():
-                cur.execute(
-                    """INSERT INTO clones (cluster_id, origin, similarity) VALUES (%s, %s, %s);""", (cluster_id, o, s))
+                db.run("""INSERT INTO clones (cluster_id, origin, similarity) VALUES (%s, %s, %s);""",
+                       (cluster_id, o, s))
 
-        cur.execute(
-            """UPDATE commits SET finished = TRUE WHERE id = %s;""", (commit_id,))
-
-        conn.commit()
+        db.run("""UPDATE commits SET finished = TRUE WHERE id = %s;""",
+               (commit_id,))
 
     except PG_Error as ex:
         log.error("PostgreSQL: " + str(ex))
 
-    finally:
-        if conn:
-            cur.close()
-            conn.close()
-
 
 def _get_repo_analysis(repo):  # TODO: Add docstring.
     try:
-        conn = connect(conn_str)
-        conn.autocommit = True
+        db = Postgres(db_url)
 
-        cur = conn.cursor()
-
-        cur.execute(
-            """SELECT id FROM repos WHERE "url" = %s OR "name" = %s;""", (repo, repo))
-
-        repos = cur.fetchall()
+        repos = db.all("""SELECT id FROM repos WHERE "url" = %(repo)s OR "name" = %(repo)s;""",
+                       {"repo": repo})
 
         if repos:
-            repo_id = repos[0][0]
+            repo_id = repos[0]
 
-            cur.execute(
-                """SELECT id FROM commits WHERE finished AND repo_id = %s;""", (repo_id,))
-
-            commits = cur.fetchall()
+            commits = db.all("""SELECT id FROM commits WHERE finished AND repo_id = %s;""",
+                             (repo_id,))
 
             if commits:
-                commit_id = commits[0][0]
+                commit_id = commits[0]
 
-                cur.execute(
-                    """SELECT id, "value", weight FROM clusters WHERE commit_id = %s;""", (commit_id,))
-
-                clusters = cur.fetchall()
+                clusters = db.all("""SELECT * FROM clusters WHERE commit_id = %s;""",
+                                  (commit_id,))
 
                 output = []
 
                 for c in clusters:
-                    cur.execute(
-                        """SELECT origin, similarity FROM clones WHERE cluster_id = %s;""", (c[0],))
-
-                    clones = cur.fetchall()
+                    print(c, c.__class__)
+                    clones = db.all("""SELECT * FROM clones WHERE cluster_id = %s;""",
+                                    (c.id,))
 
                     output.append((c, clones))
 
@@ -136,11 +109,6 @@ def _get_repo_analysis(repo):  # TODO: Add docstring.
         log.error("PostgreSQL: " + str(ex))
         return None
 
-    finally:
-        if conn:
-            cur.close()
-            conn.close()
-
 
 @app.route("/")
 def hello():
@@ -154,9 +122,9 @@ def hello():
             if isinstance(result, str):
                 content = _MESSAGE_HTML.replace("#MSG#", "Result: " + result)
             elif result:
-                clones = "<ol>" + "".join([("<li>" + c[0][1] + f" - Weight: {c[0][2]}" + "<ul>" +
-                                            "".join(["<li>" + o[0] + f" - Similarity: {o[1] * 100:g} %" + "</li>" for o in c[1]]) +
-                                            "</ul></li>") for c in result]) + "</ol>"
+                clones = "<ol>" + "".join([("<li>" + c[0].value + f" - Weight: {c[0].weight}" + "<ul>" +
+                                            "".join(["<li>" + o.origin + f" - Similarity: {o.similarity * 100:g} %" + "</li>" for o in c[1]]) +
+                                            "</ul></li><br>") for c in result]) + "</ol>"
 
                 content = _RESULTS_HTML.replace("#CLONES#", clones)
 
