@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-import re
 from .repo_cloner import get_repo_or_dir
 from ..errors.UserInputError import UserInputError
 

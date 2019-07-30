@@ -1,7 +1,4 @@
-from fastlog import log
 from collections import defaultdict
-from ...preprocessing.repo_cloner import _clone_repo
-from ...preprocessing.module_parser import get_modules_from_dir
 from ...utils.benchmark import time_snap
 from ...utils.list_tools import flatten
 from ...results.DetectedClone import DetectedClone
