@@ -41,6 +41,7 @@ def _analyze_repo(repo):
                        repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name)
 
         if count:
+            log.warning("Repository already present in database:", repo)
             return
 
         repo_id = db.one("""INSERT INTO repos ("url", "dir", "server", "user", "name") VALUES (%s, %s, %s, %s, %s) RETURNING id;""",
@@ -88,7 +89,6 @@ def _get_repo_analysis(repo):  # TODO: Add docstring.
                 output = []
 
                 for c in clusters:
-                    print(c, c.__class__)
                     clones = db.all_dict("""SELECT origin, similarity FROM clones WHERE cluster_id = %s;""",
                                          c.id)
 
