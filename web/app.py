@@ -3,7 +3,7 @@ from threading import Thread
 from flask import Flask, request
 from fastlog import log
 from psycopg2 import Error as PG_Error
-from postgres import Postgres
+from easy_postgres import Connection as pg_conn
 from engine.preprocessing.module_parser import get_repo_modules_and_info
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.utils.config import config
@@ -29,7 +29,7 @@ _RESULTS_HTML = _read_html("results")
 
 def _analyze_repo(repo):
     try:
-        db = Postgres(db_url)
+        db = pg_conn(db_url)
 
         modules, repo_info = get_repo_modules_and_info(repo)
 
@@ -38,29 +38,29 @@ def _analyze_repo(repo):
             return
 
         count = db.one("""SELECT COUNT(*) FROM repos WHERE url = %s OR dir = %s OR ("server" = %s AND "user" = %s AND "name" = %s);""",
-                       (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
+                       repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name)
 
         if count:
             return
 
         repo_id = db.one("""INSERT INTO repos ("url", "dir", "server", "user", "name") VALUES (%s, %s, %s, %s, %s) RETURNING id;""",
-                         (repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name))
+                         repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name)
 
         commit_id = db.one("""INSERT INTO commits (repo_id, hash) VALUES (%s, %s) RETURNING id;""",
-                           (repo_id, repo_info.hash))
+                           repo_id, repo_info.hash)
 
         result = run_single_repo(modules, OXYGEN)
 
         for c in result.clones:
             cluster_id = db.one("""INSERT INTO clusters (commit_id, "value", weight) VALUES (%s, %s, %s) RETURNING id;""",
-                                (commit_id, c.value, c.match_weight))
+                                commit_id, c.value, c.match_weight)
 
             for o, s in c.origins.items():
-                db.run("""INSERT INTO clones (cluster_id, origin, similarity) VALUES (%s, %s, %s);""",
-                       (cluster_id, o, s))
+                db.one("""INSERT INTO clones (cluster_id, origin, similarity) VALUES (%s, %s, %s);""",
+                       cluster_id, o, s)
 
-        db.run("""UPDATE commits SET finished = TRUE WHERE id = %s;""",
-               (commit_id,))
+        db.one("""UPDATE commits SET finished = TRUE WHERE id = %s;""",
+               commit_id)
 
     except PG_Error as ex:
         log.error("PostgreSQL: " + str(ex))
@@ -68,29 +68,29 @@ def _analyze_repo(repo):
 
 def _get_repo_analysis(repo):  # TODO: Add docstring.
     try:
-        db = Postgres(db_url)
+        db = pg_conn(db_url)
 
         repos = db.all("""SELECT id FROM repos WHERE "url" = %(repo)s OR "name" = %(repo)s;""",
-                       {"repo": repo})
+                       repo=repo)
 
         if repos:
             repo_id = repos[0]
 
             commits = db.all("""SELECT id FROM commits WHERE finished AND repo_id = %s;""",
-                             (repo_id,))
+                             repo_id)
 
             if commits:
                 commit_id = commits[0]
 
-                clusters = db.all("""SELECT * FROM clusters WHERE commit_id = %s;""",
-                                  (commit_id,))
+                clusters = db.all_dict("""SELECT id, "value", weight FROM clusters WHERE commit_id = %s;""",
+                                       commit_id)
 
                 output = []
 
                 for c in clusters:
                     print(c, c.__class__)
-                    clones = db.all("""SELECT * FROM clones WHERE cluster_id = %s;""",
-                                    (c.id,))
+                    clones = db.all_dict("""SELECT origin, similarity FROM clones WHERE cluster_id = %s;""",
+                                         c.id)
 
                     output.append((c, clones))
 
@@ -102,7 +102,6 @@ def _get_repo_analysis(repo):  # TODO: Add docstring.
         else:
             thread = Thread(target=_analyze_repo, args=(repo,))
             thread.start()
-            # _analyze_repo(repo)
             return "Added to queue"
 
     except PG_Error as ex:
