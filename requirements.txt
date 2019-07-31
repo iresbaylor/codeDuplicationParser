@@ -9,4 +9,4 @@ fastlog
 # Web UI back-end
 flask
 # Web UI database
-postgres
+easy-postgres
