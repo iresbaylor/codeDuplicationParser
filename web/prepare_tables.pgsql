@@ -6,10 +6,11 @@ DROP TABLE IF EXISTS repos;
 CREATE TABLE repos (
     id SERIAL PRIMARY KEY,
     url TEXT UNIQUE NOT NULL,
-    dir TEXT UNIQUE NOT NULL,
     "server" TEXT NOT NULL,
     "user" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    dir TEXT UNIQUE NOT NULL,
+    valid BOOLEAN, -- NULL = validation in progress; FALSE = invalid repo; TRUE = valid and available
     UNIQUE("server", "user", "name")
 );
 
