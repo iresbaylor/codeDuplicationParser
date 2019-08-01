@@ -11,8 +11,8 @@ def oxygen(modules, weight_limit=15):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     # Dictionary of all the different shapes of node trees.
     # Key is a string representation of the tree.
     # Value is a list of all nodes with the exact same string representation.

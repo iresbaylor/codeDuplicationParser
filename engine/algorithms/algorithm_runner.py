@@ -1,3 +1,5 @@
+"""Module used for algorithm abstraction by providing a common interface."""
+
 from .oxygen.oxygen import oxygen
 from .chlorine.chlorine import chlorine_single_repo, chlorine_two_repos
 from .iodine.iodine import iodine
@@ -7,7 +9,7 @@ from . import OXYGEN, IODINE, CHLORINE
 
 def run_single_repo(modules, algorithm):
     """
-    Runs the specified code clone detection algorithm on a single repository.
+    Run the specified code clone detection algorithm on a single repository.
 
     Arguments:
         modules {list[list[TreeNode]]} -- List of the repo's modules.
@@ -18,8 +20,8 @@ def run_single_repo(modules, algorithm):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     if algorithm == OXYGEN:
         return oxygen(modules)
     elif algorithm == CHLORINE:
@@ -30,7 +32,7 @@ def run_single_repo(modules, algorithm):
 
 def run_two_repos(modules1, modules2, algorithm):
     """
-    Runs the specified code clone detection algorithm on two repositores.
+    Run the specified code clone detection algorithm on two repositores.
 
     Arguments:
         modules1 {list[list[TreeNode]]} -- List of first repo's modules.
@@ -42,8 +44,8 @@ def run_two_repos(modules1, modules2, algorithm):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     if algorithm == CHLORINE:
         return chlorine_two_repos(modules1, modules2)
     elif algorithm == IODINE:

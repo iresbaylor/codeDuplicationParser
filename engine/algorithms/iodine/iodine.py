@@ -5,7 +5,7 @@ from ...results.DetectionResult import DetectionResult
 
 def iodine(module_list_1, module_list_2):
     """
-    Finds clones between the two modules by comparing all possible subtrees of
+    Find clones between the two modules by comparing all possible subtrees of
     their methods. Returns the results.
 
     Arguments:
@@ -14,7 +14,9 @@ def iodine(module_list_1, module_list_2):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
+
     """
+    
     clusters = []
     for module_tree_1 in module_list_1:
         for module_tree_2 in module_list_2:

@@ -5,7 +5,7 @@ from .anti_unification import anti_unify
 
 def pattern_collection(tree_list_1, tree_list_2):
     """
-    Compares two Abstract Syntax Trees representing two methods. The trees are
+    Compare two Abstract Syntax Trees representing two methods. The trees are
     provided as lists to provides indexes for the nodes within the tree.
 
     Arguments:

@@ -3,7 +3,7 @@ from ...nodes.PatternNode import PatternNode
 
 def anti_unify(list1, list2, index1, index2, worktable):
     """
-    Creates a tree of PatternNodes from two lists
+    Create a tree of PatternNodes from two lists
 
     Arguments:
         list1 {list of TreeNodes} -- first tree to be compared
@@ -12,7 +12,6 @@ def anti_unify(list1, list2, index1, index2, worktable):
         index2 {int} -- index of current TreeNode to be compared from list2
         worktable {2D boolean array} -- keeps track of which two nodes have been checked together
     """
-
     # mark the pair as checked/True
     worktable[index1].set(True, index2)
     # determine if subtrees are the same (and lengths same)
