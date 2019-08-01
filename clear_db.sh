@@ -2,5 +2,5 @@
 
 set -e
 
-psql -f web/prepare_tables.pgsql code_duplication
+psql -f web/prepare_tables.pgsql cyclone
 rm -rf engine/repos/

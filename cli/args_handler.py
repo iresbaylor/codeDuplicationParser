@@ -5,8 +5,8 @@ from engine.preprocessing.repoinfo import RepoInfo
 
 _USAGE_TEXT = """\
 Usage:
-    python3 -m code_duplication <first repository> <second repository> - Repository comparison mode
-    python3 -m code_duplication <repository>                           - Single repository mode
+    python3 -m cli <first repository> <second repository> - Repository comparison mode
+    python3 -m cli <repository>                           - Single repository mode
 
 Valid repository path formats:
     Short GitHub repository path                - username/repository
