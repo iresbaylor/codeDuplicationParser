@@ -2,6 +2,21 @@ DROP TABLE IF EXISTS origins;
 DROP TABLE IF EXISTS clusters;
 DROP TABLE IF EXISTS commits;
 DROP TABLE IF EXISTS repos;
+DROP INDEX IF EXISTS states_name_index;
+DROP TABLE IF EXISTS states;
+
+CREATE TABLE states (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+);
+
+INSERT INTO states (name, description) VALUES
+    ('queue', 'The repository has been added to the queue.'),
+    ('invalid', 'This is not a valid repository.'),
+    ('done', 'The repository has been successfully analyzed.');
+
+CREATE INDEX states_name_index ON states (name);
 
 CREATE TABLE repos (
     id SERIAL PRIMARY KEY,
@@ -10,7 +25,7 @@ CREATE TABLE repos (
     "user" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     dir TEXT UNIQUE NOT NULL,
-    valid BOOLEAN, -- NULL = validation in progress; FALSE = invalid repo; TRUE = valid and available
+    status INTEGER REFERENCES states(id) NOT NULL,
     UNIQUE("server", "user", "name")
 );
 
@@ -35,7 +50,7 @@ CREATE TABLE origins (
     cluster_id INTEGER REFERENCES clusters(id) NOT NULL,
     file TEXT NOT NULL,
     line INTEGER,
-    offset INTEGER, -- column offset (number of characters on the same line before the token)
+    col_offset INTEGER, -- column offset (number of characters on the same line before the token)
     similarity FLOAT NOT NULL,
-    UNIQUE(cluster_id, file, line, offset)
+    UNIQUE(cluster_id, file, line, col_offset)
 );
