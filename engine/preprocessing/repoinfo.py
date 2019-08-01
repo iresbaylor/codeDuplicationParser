@@ -51,7 +51,8 @@ class RepoInfo:
                 or parts.scheme not in {"https", "http", ""}:
             return None
 
-        path_match = re.fullmatch(r"/*([\w\-\.]+)/*([\w\-\.]+)/*", parts.path)
+        path_match = re.fullmatch(
+            r"/*([\w\-\.]+)/*([\w\-\.]+?)(?:\.git)?/*", parts.path)
 
         if not path_match:
             return None if parts.scheme else parse_repo_info("https://" + repo_path)
