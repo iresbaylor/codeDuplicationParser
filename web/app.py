@@ -1,3 +1,5 @@
+"""Module containing the core of the web UI application."""
+
 import os.path
 from threading import Thread
 from flask import Flask, request
