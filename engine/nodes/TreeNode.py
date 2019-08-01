@@ -1,3 +1,5 @@
+"""Module containing the `TreeNode` class."""
+
 import ast
 
 _IGNORE_CLASSES = [ast.Load, ast.Store, ast.Del,
@@ -6,7 +8,8 @@ _IGNORE_CLASSES = [ast.Load, ast.Store, ast.Del,
 
 class TreeNode:
     """
-    Represents a single node of the Python code AST (Abstract Syntax Tree).
+    Represent a single node of the Python code AST (Abstract Syntax Tree).
+
     Every node is also a tree of its own,
     with the exception of leaf (childless) nodes.
 
@@ -24,7 +27,7 @@ class TreeNode:
 
     def __init__(self, node, origin_file):
         """
-        Arguments:
+        Argument:
             node -- Single raw node produced by the Python AST parser.
             origin_file {string} -- Relative path to the source file.
         """
@@ -68,10 +71,11 @@ class TreeNode:
 
     def dump(self):
         """
-        Converts the node into a string using the built-in function.
+        Convert the node into a string using the built-in function.
 
         Returns:
             string -- String representation of the AST node.
+
         """
         return ast.dump(self.node)
 
@@ -82,6 +86,7 @@ class TreeNode:
 
         Returns:
             list[TreeNode] -- List of all the recursively found children.
+
         """
         children = self.children.copy()
 
@@ -92,7 +97,8 @@ class TreeNode:
 
     def __eq__(self, other):
         """
-        Compares the node to another node recursively.
+        Compare the node to another node recursively.
+
         This operator overload can be used for Type 1 clone detection.
 
         Arguments:
@@ -100,6 +106,7 @@ class TreeNode:
 
         Returns:
             bool -- True if the nodes are equivalent, False if they are not.
+
         """
         if not isinstance(other, TreeNode):
             return False

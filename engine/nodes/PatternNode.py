@@ -1,3 +1,5 @@
+"""Module containing the `PatternNode` class."""
+
 _HOLE = "Hole"
 
 
@@ -13,7 +15,7 @@ class PatternNode:
 
     def __init__(self, node1, node2, value=None):
         """
-        Creates a new PatternNode from two nodes and their common value.
+        Create a new PatternNode from two nodes and their common value.
 
         Arguments:
             node1 {TreeNode} -- First TreeNode sharing common skeleton.
@@ -27,33 +29,35 @@ class PatternNode:
 
     def add_node(self, node):
         """
-        Appends the supplied nodes to this node's list of origin nodes.
+        Append the supplied nodes to this node's list of origin nodes.
 
         Arguments:
             node {TreeNode} -- Node to be added to the list of origin nodes.
+
         """
         self.nodes.append(node)
 
     def add_child(self, child):
         """
-        Appends the supplied nodes to this node's list of child nodes.
+        Append the supplied nodes to this node's list of child nodes.
 
         Arguments:
             child {PatternNode} -- Node that is a child of this node.
+
         """
         self.children.append(child)
 
     def skeleton_equals(self, other):
         """
-        Checks if this node's skeleton is equal to another node's.
+        Check if this node's skeleton is equal to another node's.
 
         Arguments:
             other {PatterNode} -- Another node to compare this one with.
 
         Returns:
             bool -- True if the nodes have an equal skeleton, False otherwise.
-        """
 
+        """
         if not isinstance(other, PatternNode) or other.value != self.value or \
                 len(other.children) != len(self.children):
             return False
@@ -66,12 +70,12 @@ class PatternNode:
 
     def get_match_weight(self):
         """
-        Calculates the weight of the matching skeleton of all origin nodes.
+        Calculate the weight of the matching skeleton of all origin nodes.
 
         Returns:
             int -- Weight of the matching skeleton.
-        """
 
+        """
         return 0 if self.value == _HOLE else \
             (1 + sum([c.get_match_weight() for c in self.children]))
 
