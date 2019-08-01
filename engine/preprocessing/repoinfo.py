@@ -47,8 +47,8 @@ class RepoInfo:
         except ValueError:
             return None
 
-        if parts.username or parts.password or parts.query or parts.fragment \
-                or parts.scheme not in {"https", "http", ""}:
+        if parts.username or parts.password or parts.params or parts.query or \
+                parts.fragment or parts.scheme not in {"https", "http", ""}:
             return None
 
         path_match = re.fullmatch(
