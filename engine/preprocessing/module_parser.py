@@ -3,7 +3,7 @@ from os import listdir, path
 from os.path import isdir, isfile
 from ..nodes.TreeNode import TreeNode
 from collections import deque
-from .repo_cloner import clone_root_dir, get_repo_info
+from .repoinfo import clone_root_dir
 
 
 def _read_whole_file(file_path):
@@ -117,20 +117,3 @@ def get_modules_from_dir(directory):
 
     return [_flatten_module_nodes(_get_tree_node_from_file(f))
             for f in _recursive_listdir_py(directory)]
-
-
-def get_repo_modules_and_info(repo):
-    """
-    Clones the repository or finds its directory and then finds
-    all modules inside of that directory and returns them.
-
-    Arguments:
-        repo {string} -- Repository path.
-
-    Returns:
-        list[list[TreeNode]] -- List of lists of nodes from parsed modules.
-        ClonedRepo -- Information about the cloned repository.
-    """
-
-    info = get_repo_info(repo)
-    return get_modules_from_dir(info.dir) if info else None, info

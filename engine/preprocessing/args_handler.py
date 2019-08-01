@@ -1,4 +1,4 @@
-from .repo_cloner import get_repo_or_dir
+from .path_handler import repo_path_to_local_path
 from ..errors.UserInputError import UserInputError
 
 _USAGE_TEXT = """\
@@ -9,8 +9,7 @@ Usage:
 Valid repository path formats:
     Short GitHub repository path                - username/repository
     Full remote repository path                 - https://github.com/username/repository
-    Absolute or relative local directory path   - /home/user/directory
-    Short path of an already cloned repository  - github/username/repository"""
+    Absolute or relative local directory path   - /home/user/directory"""
 
 
 def handle_args(argv):
@@ -38,4 +37,4 @@ def handle_args(argv):
         raise UserInputError(
             f"Invalid number of command line arguments: {len(argv) - 1}")
 
-    return tuple(get_repo_or_dir(a) for a in argv[1:])
+    return tuple(repo_path_to_local_path(a) for a in argv[1:])
