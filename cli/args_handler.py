@@ -28,7 +28,8 @@ def repo_path_to_local_path(repo_path):
 
 def handle_args(argv):
     """
-    Checks the command line arguments and handles them.
+    Check the command line arguments and handles them.
+
     If there is any problem, an error message will be printed
     and the script will exit with a non-zero exit code.
     If everything goes right, tuple of local repository paths will be returned.
@@ -38,8 +39,8 @@ def handle_args(argv):
 
     Returns:
         tuple[string] -- Tuple of local repository paths.
-    """
 
+    """
     if len(argv) == 1 or (len(argv) == 2 and argv[1] in ['-h', '--help', '--usage']):
         # Special case where the usage text is printed using the built-in
         # print function instead of the logging library because

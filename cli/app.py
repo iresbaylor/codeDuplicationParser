@@ -10,10 +10,7 @@ from engine.errors.UserInputError import UserInputError
 
 
 def main():
-    """
-    Entry point of the application.
-    """
-
+    """Entry point of the application."""
     try:
         # Parse command line arguments
         repos = handle_args(sys.argv)
