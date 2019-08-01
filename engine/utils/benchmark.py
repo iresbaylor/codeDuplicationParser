@@ -1,3 +1,7 @@
+"""
+Module containing helper functions used for benchmarking.
+"""
+
 from time import time
 from fastlog import log
 
