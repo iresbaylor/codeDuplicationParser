@@ -19,6 +19,27 @@ class RepoInfo:
         self.dir = local_dir
         self.hash = commit_hash
 
+    def clone_or_pull(self):
+        try:
+            # If repo dir already exists, pull it.
+            if isdir(self.dir):
+                repo = Repo(self.dir)
+                repo.remotes.origin.pull()
+
+            # If the repo hasn't been cloned yet, clone it.
+            else:
+                repo = Repo.clone_from(self.url, self.dir)
+
+            # Get HEAD's hash and store it in repo info.
+            self.hash = repo.head.object.hexsha
+            return True
+
+        except InvalidGitRepositoryError:
+            return False
+
+        except GitCommandError:
+            return False
+
     @staticmethod
     def parse_repo_info(repo_path):
         try:
