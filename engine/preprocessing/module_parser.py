@@ -1,3 +1,5 @@
+"""Module containing code used for parsing of modules and nodes from Python code."""
+
 import ast
 from os import listdir, path
 from os.path import isdir, isfile
@@ -9,6 +11,7 @@ from .repoinfo import clone_root_dir
 def _read_whole_file(file_path):
     """
     Read a text file into a single string.
+
     Assumes UTF-8 encoding.
     """
     with open(file_path, "r", encoding="utf-8") as f:
@@ -17,26 +20,28 @@ def _read_whole_file(file_path):
 
 def _read_ast_from_file(file_path):
     """
-    Parses a module AST from the specified file.
+    Parse a module AST from the specified file.
 
     Arguments:
         file_path {string} -- Path of file to parse the AST from.
 
     Returns:
         AST parsed from the specified file.
+
     """
     return ast.parse(_read_whole_file(file_path))
 
 
 def _get_tree_node_from_file(file_path):
     """
-    Parses a TreeNode representing the module in the specified file.
+    Parse a TreeNode representing the module in the specified file.
 
     Arguments:
         file_path {string} -- Path of file to parse the TreeNode from.
 
     Returns:
         TreeNode -- TreeNode parsed from the specified file.
+
     """
     module_node = _read_ast_from_file(file_path)
     file_rel_path = file_path.replace(clone_root_dir, "...")
@@ -45,12 +50,12 @@ def _get_tree_node_from_file(file_path):
 
 def _recursive_listdir_py(directory):
     """
-    Returns relative paths of all *.py files in the specified directory.
+    Return relative paths of all *.py files in the specified directory.
+
     If the provided argument is not a valid directory,
     an internal exception will be thrown by Python.
     That exception will most likely be NotImplementedError.
     """
-
     files = []
 
     for item in listdir(directory):
@@ -66,13 +71,14 @@ def _recursive_listdir_py(directory):
 
 def _flatten_module_nodes(module):
     """
-    Converts a module TreeNode into a flat list of nodes in the module's AST.
+    Convert a module TreeNode into a flat list of nodes in the module's AST.
 
     Arguments:
         module {TreeNode} -- TreeNode representing a module root node.
 
     Returns:
         list[TreeNode] -- List of all the nodes in the module's AST.
+
     """
     module_nodes = []
     node_queue = deque([module])
@@ -103,7 +109,8 @@ def _flatten_module_nodes(module):
 
 def get_modules_from_dir(directory):
     """
-    Finds all *.py files in the specified directory recursively.
+    Find all *.py files in the specified directory recursively.
+
     Every file is parsed as a module and converted into an AST.
     The parsed ASTs are converted into lists of all nodes in the ASTs.
     A list of all these lists is then constructed a returned.
@@ -113,7 +120,7 @@ def get_modules_from_dir(directory):
 
     Returns:
         list[list[TreeNode]] -- List of lists of nodes from parsed modules.
-    """
 
+    """
     return [_flatten_module_nodes(_get_tree_node_from_file(f))
             for f in _recursive_listdir_py(directory)]

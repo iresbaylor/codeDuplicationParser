@@ -1,3 +1,8 @@
+"""
+Module containing the `RepoInfo` class, which is used to encapsulate
+all available information about a repository into a single object.
+"""
+
 import re
 from os.path import isdir, dirname, join as path_join
 from git import Repo, InvalidGitRepositoryError, GitCommandError
