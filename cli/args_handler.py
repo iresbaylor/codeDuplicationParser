@@ -1,5 +1,7 @@
-from .path_handler import repo_path_to_local_path
-from ..errors.UserInputError import UserInputError
+from os.path import isdir
+from engine.errors.UserInputError import UserInputError
+from engine.preprocessing.repoinfo import RepoInfo
+
 
 _USAGE_TEXT = """\
 Usage:
@@ -10,6 +12,18 @@ Valid repository path formats:
     Short GitHub repository path                - username/repository
     Full remote repository path                 - https://github.com/username/repository
     Absolute or relative local directory path   - /home/user/directory"""
+
+
+def repo_path_to_local_path(repo_path):
+    if isdir(repo_path):
+        return repo_path
+
+    info = RepoInfo.parse_repo_info(repo_path)
+
+    if info and info.clone_or_pull():
+        return info.dir
+    else:
+        return None
 
 
 def handle_args(argv):

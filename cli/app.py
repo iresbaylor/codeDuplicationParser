@@ -1,7 +1,7 @@
 import sys
 import os
 from datetime import datetime
-from engine.preprocessing.args_handler import handle_args
+from .args_handler import handle_args
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_two_repos, IODINE
 from engine.utils.benchmark import time_snap
