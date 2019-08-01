@@ -1,3 +1,9 @@
+"""
+Module containing the `DetectedClone` class for
+storing information about a single detected clone.
+"""
+
+
 class DetectedClone:
     """
     Represents a single detected code clone.
@@ -12,6 +18,7 @@ class DetectedClone:
         origins {dict[string: float]} -- Origins and similarity coefficients.
                                          Origins are used for keys.
                                          Similarity coefficients are values.
+
     """
 
     def __init__(self, value, match_weight, nodes):
@@ -23,6 +30,7 @@ class DetectedClone:
             value {string} -- String representation common to all the nodes.
             match_weight {int} -- Weight of the matching subtree skeleton.
             nodes {list[TreeNode]} -- List of origin nodes.
+
         """
 
         self.value = value
@@ -39,6 +47,7 @@ class DetectedClone:
         Returns:
             dict -- Dictionary representation of the detected clone,
                     including all of its attributes.
+
         """
 
         return self.__dict__

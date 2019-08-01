@@ -1,3 +1,8 @@
+"""
+Module containing the `DetectionResult` class for storing
+final results about a code clone detection run.
+"""
+
 from json import dumps as json_dumps
 
 
@@ -11,6 +16,7 @@ class DetectionResult:
     Attributes:
         clones {list[DetectedClone]} -- List of detected code clones ordered
                                         by their significance (see __init__).
+
     """
 
     def __init__(self, clones):
@@ -22,6 +28,7 @@ class DetectionResult:
 
         Arguments:
             clones {list[Detectedlone]} -- List of detected code clones.
+
         """
 
         self.clones = clones.copy()
@@ -34,5 +41,6 @@ class DetectionResult:
 
         Returns:
             string -- JSON representation of the detection result.
+
         """
         return json_dumps([c.dict() for c in self.clones])
