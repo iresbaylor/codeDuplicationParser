@@ -4,7 +4,8 @@ from flask import Flask, request
 from fastlog import log
 from psycopg2 import Error as PG_Error
 from easy_postgres import Connection as pg_conn
-from engine.preprocessing.module_parser import get_repo_modules_and_info
+from engine.preprocessing.repoinfo import RepoInfo
+from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.errors.UserInputError import UserInputError
 from .credentials import db_url
@@ -23,11 +24,17 @@ _MESSAGE_HTML = _read_html("message")
 _RESULTS_HTML = _read_html("results")
 
 
-def _analyze_repo(repo):
+def _analyze_repo(repo_path):
     try:
         db = pg_conn(db_url)
 
-        modules, repo_info = get_repo_modules_and_info(repo)
+        repo_info = RepoInfo.parse_repo_info(repo_path)
+
+        if not repo_info.clone_or_pull():
+            log.error("Unable to clone repository:", repo_path)
+            return
+
+        modules = get_modules_from_dir(repo_info.dir)
 
         if not modules or not repo_info:
             log.error("Unable to get the repository information")
@@ -37,7 +44,7 @@ def _analyze_repo(repo):
                        repo_info.url, repo_info.dir, repo_info.server, repo_info.user, repo_info.name)
 
         if count:
-            log.warning("Repository already present in database:", repo)
+            log.warning("Repository already present in database:", repo_path)
             return
 
         repo_id = db.one("""INSERT INTO repos ("url", "dir", "server", "user", "name") VALUES (%s, %s, %s, %s, %s) RETURNING id;""",
