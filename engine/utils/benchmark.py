@@ -1,6 +1,4 @@
-"""
-Module containing helper functions used for benchmarking.
-"""
+"""Module containing helper functions used for benchmarking."""
 
 from time import time
 from fastlog import log
@@ -10,11 +8,13 @@ _last_time = time()
 
 def time_snap(text=None):
     """
-    Prints the time since the last call to this function in seconds.
+    Print the time since the last call to this function in seconds.
+
     It is possible to supply a message to print along with the time.
 
     Arguments:
         text {str} (optional) -- Message to print with the time.
+
     """
     global _last_time
     current_time = time()
