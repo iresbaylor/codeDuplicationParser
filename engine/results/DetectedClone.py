@@ -1,12 +1,9 @@
-"""
-Module containing the `DetectedClone` class for
-storing information about a single detected clone.
-"""
+"""Module containing the `DetectedClone` class for storing clone information."""
 
 
 class DetectedClone:
     """
-    Represents a single detected code clone.
+    Represent a single detected code clone.
 
     Similarity coefficient is a floating-point number between 0 and 1,
     where 0 means the subtrees are completely different and 1 means
@@ -23,8 +20,7 @@ class DetectedClone:
 
     def __init__(self, value, match_weight, nodes):
         """
-        Initializes a new detected clone
-        given its values and origin nodes.
+        Initialize a new detected clone given its values and origin nodes.
 
         Arguments:
             value {string} -- String representation common to all the nodes.
@@ -32,14 +28,14 @@ class DetectedClone:
             nodes {list[TreeNode]} -- List of origin nodes.
 
         """
-
         self.value = value
         self.match_weight = match_weight
         self.origins = {n.origin: match_weight / n.weight for n in nodes}
 
     def dict(self):
         """
-        Converts the detected clone into its dictionary representation.
+        Convert the detected clone into its dictionary representation.
+
         This is necessary for later conversion to JSON, because
         there is no easy way to tell the JSON encoder how to encode
         instances of user-defined classes.
@@ -49,5 +45,4 @@ class DetectedClone:
                     including all of its attributes.
 
         """
-
         return self.__dict__
