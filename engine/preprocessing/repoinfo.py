@@ -1,13 +1,11 @@
 import re
-from os import path, makedirs
-from os.path import isdir, dirname
+from os.path import isdir, dirname, join as path_join
 from git import Repo, InvalidGitRepositoryError, GitCommandError
 from engine import __file__ as base_path
-from ..errors.UserInputError import UserInputError
 from urllib.parse import urlparse, urlunparse
 
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
-clone_root_dir = path.join(dirname(base_path), "repos")
+clone_root_dir = path_join(dirname(base_path), "repos")
 
 
 class RepoInfo:
@@ -55,7 +53,9 @@ class RepoInfo:
             r"/*([\w\-\.]+)/*([\w\-\.]+?)(?:\.git)?/*", parts.path)
 
         if not path_match:
-            return None if parts.scheme else parse_repo_info("https://" + repo_path)
+            # If there is no scheme, try to prepend HTTPS
+            return None if parts.scheme else \
+                RepoInfo.parse_repo_info("https://" + repo_path)
 
         repo_user = path_match[1]
         repo_name = path_match[2]
@@ -67,6 +67,6 @@ class RepoInfo:
         full_url = urlunparse((scheme, ":@" + server,
                                f"/{repo_user}/{repo_name}", "", "", ""))
 
-        clone_dir = path.join(clone_root_dir, server, repo_user, repo_name)
+        clone_dir = path_join(clone_root_dir, server, repo_user, repo_name)
 
         return RepoInfo(full_url, server, repo_user, repo_name, clone_dir)
