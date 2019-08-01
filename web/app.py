@@ -6,12 +6,8 @@ from psycopg2 import Error as PG_Error
 from easy_postgres import Connection as pg_conn
 from engine.preprocessing.module_parser import get_repo_modules_and_info
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
-from engine.utils.config import config
 from engine.errors.UserInputError import UserInputError
 from .credentials import db_url
-
-# Disable access to local file system
-config.allow_local_access = False
 
 app = Flask(__name__)
 
