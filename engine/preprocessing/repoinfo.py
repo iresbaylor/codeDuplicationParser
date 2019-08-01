@@ -18,3 +18,33 @@ class RepoInfo:
         self.name = name
         self.dir = local_dir
         self.hash = commit_hash
+
+    @staticmethod
+    def parse_repo_info(repo_path):
+        try:
+            parts = urlparse(repo_path)
+        except ValueError:
+            return None
+
+        if parts.username or parts.password or parts.query or parts.fragment \
+                or parts.scheme not in {"https", "http", ""}:
+            return None
+
+        path_match = re.fullmatch(r"/*([\w\-\.]+)/*([\w\-\.]+)/*", parts.path)
+
+        if not path_match:
+            return None if parts.scheme else parse_repo_info("https://" + repo_path)
+
+        repo_user = path_match[1]
+        repo_name = path_match[2]
+
+        scheme = parts.scheme or "https"
+        server = parts.netloc or "github.com"
+
+        # Inserting ":@" before hostname prevents username/password prompt
+        full_url = urlunparse((scheme, ":@" + server,
+                               f"/{repo_user}/{repo_name}", "", "", ""))
+
+        clone_dir = path.join(clone_root_dir, server, repo_user, repo_name)
+
+        return RepoInfo(full_url, server, repo_user, repo_name, clone_dir)
