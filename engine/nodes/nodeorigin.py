@@ -1,23 +1,23 @@
 class NodeOrigin:
-    def __init__(self, file_path, line=None, col_offset=None, node_id=None):
-        if file_path is None or \
-            (node_id is None and (line is None or col_offset is None)) or \
-                (node_id is not None and (line is not None or col_offset is not None)):
-
+    def __init__(self, file_path, line=None, col_offset=None):
+        if file_path is None:
             raise ValueError(
-                "File path and either ID or both line and column offset must be set to a non-None value")
+                "File path must always be set to a non-None value")
+
+        if line is None != col_offset is None:
+            raise ValueError(
+                "Either both line number and column offset must be set or neither")
 
         self.file = file_path
         self.line = line
         self.col_offset = col_offset
-        self.id = node_id
 
     def __str__(self):
-        return self.file + (f" (ID: {self.id:x})" if self.id else
-                            f" (L: {self.line} C: {self.col_offset})")
+        return self.file + (f" (L: {self.line} C: {self.col_offset})"
+                            if self.line and self.col_offset else "")
 
     def __repr__(self):
         return self.__str__()
 
     def __hash__(self):
-        return hash(self.__str__())
+        return hash(id(self))

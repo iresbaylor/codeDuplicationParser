@@ -33,8 +33,8 @@ class TreeNode:
             origin_file {string} -- Relative path to the source file.
         """
         self.node = node
-        self.origin = NodeOrigin(origin_file, node.lineno, node.col_offset) if \
-            node._attributes else NodeOrigin(origin_file, node_id=id(node))
+        self.origin = NodeOrigin(origin_file, node.lineno, node.col_offset) \
+            if node._attributes else NodeOrigin(origin_file)
 
         # Check if this type of node can have docstring.
         can_have_docstring = node.__class__ in [ast.ClassDef, ast.FunctionDef]
