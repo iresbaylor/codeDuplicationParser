@@ -12,9 +12,10 @@ CREATE TABLE states (
 );
 
 INSERT INTO states (name, description) VALUES
-    ('queue', 'The repository has been added to the queue.'),
-    ('invalid', 'This is not a valid repository.'),
-    ('done', 'The repository has been successfully analyzed.');
+    ('queue', 'The repository is already in the queue'),
+    ('err_clone', 'Error: Unable to clone the repository'),
+    ('err_analysis', 'Error: Repository analysis failed'),
+    ('done', 'The repository has been successfully analyzed');
 
 CREATE INDEX states_name_index ON states (name);
 
@@ -33,8 +34,7 @@ CREATE TABLE commits (
     id SERIAL PRIMARY KEY,
     repo_id INTEGER REFERENCES repos(id) NOT NULL,
     hash TEXT NOT NULL,
-    finished BOOLEAN DEFAULT FALSE NOT NULL,
-    cloned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    analyzed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     UNIQUE(repo_id, hash)
 );
 
