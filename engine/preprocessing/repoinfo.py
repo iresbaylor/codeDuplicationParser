@@ -75,3 +75,11 @@ class RepoInfo:
         clone_dir = path_join(clone_root_dir, server, repo_user, repo_name)
 
         return RepoInfo(full_url, server, repo_user, repo_name, clone_dir)
+
+    def __str__(self):
+        info_str = f"{self.url} -> {self.dir}"
+
+        if self.hash:
+            info_str += f" (commit: {self.hash})"
+
+        return info_str
