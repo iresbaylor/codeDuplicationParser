@@ -115,7 +115,7 @@ def _get_repo_analysis(repo):  # TODO: Add docstring.
 
 
 @app.route("/")
-def hello():
+def web_index():
     content = ""
 
     repo = request.args.get("repo")
