@@ -2,7 +2,7 @@
 
 import ast
 from os import listdir, path
-from os.path import isdir, isfile
+from os.path import isdir, isfile, relpath
 from ..nodes.TreeNode import TreeNode
 from collections import deque
 from .repoinfo import clone_root_dir
@@ -32,7 +32,7 @@ def _read_ast_from_file(file_path):
     return ast.parse(_read_whole_file(file_path))
 
 
-def _get_tree_node_from_file(file_path):
+def _get_tree_node_from_file(file_path, repo_path):
     """
     Parse a TreeNode representing the module in the specified file.
 
@@ -43,9 +43,8 @@ def _get_tree_node_from_file(file_path):
         TreeNode -- TreeNode parsed from the specified file.
 
     """
-    module_node = _read_ast_from_file(file_path)
-    file_rel_path = file_path.replace(clone_root_dir, "...")
-    return TreeNode(module_node, file_rel_path)
+    return TreeNode(_read_ast_from_file(file_path),
+                    relpath(file_path, repo_path))
 
 
 def _recursive_listdir_py(directory):
@@ -122,5 +121,5 @@ def get_modules_from_dir(directory):
         list[list[TreeNode]] -- List of lists of nodes from parsed modules.
 
     """
-    return [_flatten_module_nodes(_get_tree_node_from_file(f))
+    return [_flatten_module_nodes(_get_tree_node_from_file(f, directory))
             for f in _recursive_listdir_py(directory)]
