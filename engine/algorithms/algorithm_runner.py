@@ -3,7 +3,7 @@
 from .oxygen.oxygen import oxygen
 from .chlorine.chlorine import chlorine_single_repo, chlorine_two_repos
 from .iodine.iodine import iodine
-from ..errors.user_input import UserInputError
+from engine.errors.user_input import UserInputError
 from . import OXYGEN, IODINE, CHLORINE
 
 
