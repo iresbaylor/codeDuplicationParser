@@ -114,7 +114,8 @@ def _find_repo_results(conn, repo_id):
 
 
 def _get_repo_analysis(repo_path):
-    repo_info = RepoInfo.parse_repo_info(repo_path)
+    # Strip leading and trailing whitespace from the path and parse repo info.
+    repo_info = RepoInfo.parse_repo_info(repo_path.strip())
 
     if not repo_info:
         return "Invalid Git repository path format"
