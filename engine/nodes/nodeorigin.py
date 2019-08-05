@@ -1,3 +1,6 @@
+"""Module containing the `NodeOrigin` class used to store node origin info."""
+
+
 class NodeOrigin:
     """
     Class representing the origin of an AST node.
@@ -51,10 +54,10 @@ class NodeOrigin:
     def __hash__(self):
         """
         Get hash of the node origin.
-        
+
         The `id` of the node origin is used right now, so two equivalent
         node origins may not necessarily have the same hash.
         That would be a problem normally, but it works fine in this project.
-        
+
         """
         return hash(id(self))
