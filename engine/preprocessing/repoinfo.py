@@ -101,7 +101,15 @@ class RepoInfo:
         scheme = parts.scheme or "https"
         server = parts.netloc or "github.com"
 
-        # Inserting ":@" before hostname prevents username/password prompt
+        server_regex = re.compile(r"^(?:www\.)?(git(?:hub|lab)\.com)$",
+                                  re.IGNORECASE)
+
+        server_match = server_regex.fullmatch(server)
+        if parts.netloc and server_match:
+            scheme = "https"
+            server = server_match[1].lower()
+
+        # Inserting ":@" before hostname prevents a username/password prompt.
         full_url = urlunparse((scheme, ":@" + server,
                                f"/{repo_user}/{repo_name}", "", "", ""))
 
