@@ -1,7 +1,4 @@
-"""
-Module containing the `RepoInfo` class, which is used to encapsulate
-all available information about a repository into a single object.
-"""
+"""Module containing the `RepoInfo` class."""
 
 import re
 from os.path import isdir, dirname, join as path_join
@@ -14,7 +11,32 @@ clone_root_dir = path_join(dirname(base_path), "repos")
 
 
 class RepoInfo:
+    """
+    Encapsulates all available information about a repository into a single object.
+
+    Attributes:
+        url {string} -- Full remote source URL of the repository.
+        server {string} -- Name of the source server (e.g., "github.com").
+        user {string} -- Username of the repository owner.
+        name {string} -- Name of the repository on the server.
+        dir {string} -- Path to the local clone of the repository.
+        hash {string} -- Hash of the last pulled commit.
+
+    """
+
     def __init__(self, url, server, user, name, local_dir, commit_hash=None):
+        """
+        Initialize a new repository information object.
+
+        Arguments:
+            url {string} -- Full remote source URL of the repository.
+            server {string} -- Name of the source server (e.g., "github.com").
+            user {string} -- Username of the repository owner.
+            name {string} -- Name of the repository on the server.
+            local_dir {string} -- Path to the local clone of the repository.
+            commit_hash {string} -- Hash of the last pulled commit.
+
+        """
         self.url = url
         self.server = server
         self.user = user
@@ -23,6 +45,7 @@ class RepoInfo:
         self.hash = commit_hash
 
     def clone_or_pull(self):
+        """Clone the repository or pull it if it has already been cloned."""
         try:
             # If repo dir already exists, pull it.
             if isdir(self.dir):
@@ -45,6 +68,16 @@ class RepoInfo:
 
     @staticmethod
     def parse_repo_info(repo_path):
+        """
+        Parse repository information from a repository path.
+
+        There are two valid repository path formats:
+            - Full remote repository URL (supports both GitHub and GitLab).
+                "https://github.com/user/repo"
+            - Short GitHub repository URL (only works with GitHub).
+                "user/repo"
+
+        """
         try:
             parts = urlparse(repo_path)
         except ValueError:
@@ -77,9 +110,14 @@ class RepoInfo:
         return RepoInfo(full_url, server, repo_user, repo_name, clone_dir)
 
     def __str__(self):
+        """Convert the most useful repo info into a human-readable string."""
         info_str = f"{self.url} -> {self.dir}"
 
         if self.hash:
             info_str += f" (commit: {self.hash})"
 
         return info_str
+
+    def __repr__(self):
+        """Return string representation of the repository information."""
+        return self.__str__()
