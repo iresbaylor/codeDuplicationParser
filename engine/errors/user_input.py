@@ -12,6 +12,7 @@ class UserInputError(Exception):
     Attributes:
         message {string} -- Error message to print.
         code {int} -- Exit code to use.
+
     """
 
     def __init__(self, message, code=1):

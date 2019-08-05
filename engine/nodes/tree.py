@@ -24,6 +24,7 @@ class TreeNode:
         index {int} -- Index of this node (in an external flat list of nodes).
         parent_index {int} -- Index of parent node. None if this is root node.
         child_indices {list[int]} -- Indices of this node's direct children.
+
     """
 
     def __init__(self, node, origin_file):
@@ -31,6 +32,7 @@ class TreeNode:
         Argument:
             node -- Single raw node produced by the Python AST parser.
             origin_file {string} -- Relative path to the source file.
+
         """
         self.node = node
         self.origin = NodeOrigin(origin_file, node.lineno, node.col_offset) \

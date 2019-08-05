@@ -11,6 +11,7 @@ def anti_unify(list1, list2, index1, index2, worktable):
         index1 {int} -- index of current TreeNode to be compared from list1
         index2 {int} -- index of current TreeNode to be compared from list2
         worktable {2D boolean array} -- keeps track of which two nodes have been checked together
+
     """
     # mark the pair as checked/True
     worktable[index1].set(True, index2)

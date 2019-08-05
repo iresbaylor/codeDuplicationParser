@@ -11,6 +11,7 @@ class PatternNode:
         nodes {list[TreeNode]} -- List of TreeNodes with the same skeleton.
         value {string} -- Common string representation of all the nodes.
         children {list[PatternNode]} -- List of node's direct children.
+
     """
 
     def __init__(self, node1, node2, value=None):
@@ -22,6 +23,7 @@ class PatternNode:
             node2 {TreeNode} -- Second TreeNode sharing common skeleton.
             value {string} -- String representation common for all the nodes.
                               None if the PatternNode represents a hole.
+
         """
         self.nodes = [node1, node2]
         self.value = value or _HOLE

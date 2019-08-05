@@ -56,6 +56,7 @@ def _type1_compare(node1, node2):
     Returns:
         int -- Weight of the matching subtrees.
         string -- Common skeleton of the two nodes.
+
     """
     combined_weight = node1.weight + node2.weight
 
@@ -90,6 +91,7 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
         ignore_set {set[TreeNode]} -- Set of nodes to ignore.
         match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
         skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
+
     """
     if not _can_be_compared(n1, n2):
         return
@@ -114,6 +116,7 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
     Arguments:
         match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
         skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
+
     """
     clones = []
 
