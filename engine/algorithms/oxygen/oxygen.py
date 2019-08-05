@@ -1,5 +1,5 @@
-from ...results.DetectedClone import DetectedClone
-from ...results.DetectionResult import DetectionResult
+from ...results.detected_clone import DetectedClone
+from ...results.detection_result import DetectionResult
 
 
 def oxygen(modules, weight_limit=15):

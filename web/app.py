@@ -11,7 +11,7 @@ from engine.preprocessing.repoinfo import RepoInfo
 from engine.nodes.nodeorigin import NodeOrigin
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
-from engine.errors.UserInputError import UserInputError
+from engine.errors.user_input import UserInputError
 from .credentials import db_url
 
 app = Flask(__name__)

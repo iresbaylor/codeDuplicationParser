@@ -6,7 +6,7 @@ from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_two_repos, IODINE
 from engine.utils.benchmark import time_snap
 from fastlog import log
-from engine.errors.UserInputError import UserInputError
+from engine.errors.user_input import UserInputError
 
 
 def main():

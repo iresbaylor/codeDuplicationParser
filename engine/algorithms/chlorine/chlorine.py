@@ -1,8 +1,8 @@
 from collections import defaultdict
 from ...utils.benchmark import time_snap
 from ...utils.list_tools import flatten
-from ...results.DetectedClone import DetectedClone
-from ...results.DetectionResult import DetectionResult
+from ...results.detected_clone import DetectedClone
+from ...results.detection_result import DetectionResult
 
 # Minimum weight of a single node used in comparison.
 _MIN_NODE_WEIGHT = 50

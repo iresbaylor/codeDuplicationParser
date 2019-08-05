@@ -3,7 +3,7 @@
 import ast
 from os import listdir, path
 from os.path import isdir, isfile, relpath
-from ..nodes.TreeNode import TreeNode
+from ..nodes.tree import TreeNode
 from collections import deque
 from .repoinfo import clone_root_dir
 

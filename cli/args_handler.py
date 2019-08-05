@@ -1,5 +1,5 @@
 from os.path import isdir
-from engine.errors.UserInputError import UserInputError
+from engine.errors.user_input import UserInputError
 from engine.preprocessing.repoinfo import RepoInfo
 
 
