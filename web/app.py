@@ -159,6 +159,7 @@ def _get_repo_analysis(repo_path):
 
 @app.route("/")
 def web_index():
+    """Homepage of the web interface."""
     content = ""
 
     repo = request.args.get("repo")
