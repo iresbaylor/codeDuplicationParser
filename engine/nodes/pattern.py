@@ -82,8 +82,10 @@ class PatternNode:
             (1 + sum([c.get_match_weight() for c in self.children]))
 
     def __str__(self):
+        """Convert the pattern node into a human-readable string."""
         # FIXME: This doesn't seem right.
         return f"{self.value}(', '.join{[n.origin for n in self.nodes]})"
 
     def __repr__(self):
+        """Return string representation of the pattern node."""
         return self.__str__()

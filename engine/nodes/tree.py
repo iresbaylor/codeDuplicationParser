@@ -9,7 +9,7 @@ _IGNORE_CLASSES = [ast.Load, ast.Store, ast.Del,
 
 class TreeNode:
     """
-    Represent a single node of the Python code AST (Abstract Syntax Tree).
+    Represents a single node of the Python code AST (Abstract Syntax Tree).
 
     Every node is also a tree of its own,
     with the exception of leaf (childless) nodes.
@@ -29,7 +29,9 @@ class TreeNode:
 
     def __init__(self, node, origin_file):
         """
-        Argument:
+        Initialize a new tree node instance.
+
+        Arguments:
             node -- Single raw node produced by the Python AST parser.
             origin_file {string} -- Relative path to the source file.
 
@@ -84,8 +86,7 @@ class TreeNode:
 
     def get_all_children(self):
         """
-        Recursively finds all children of the node
-        and collects them into a single list.
+        Find all children of the node recursively and collect them into a single list.
 
         Returns:
             list[TreeNode] -- List of all the recursively found children.
@@ -127,13 +128,23 @@ class TreeNode:
         return True
 
     def __ne__(self, other):
+        """Check if this node is not equal to another tree node."""
         return not self.__eq__(other)
 
     def __str__(self):
+        """Convert the tree node into a human-readable string."""
         return f"{self.origin} - {self.value} (W={self.weight})"
 
     def __repr__(self):
+        """Return string representation of this tree node."""
         return self.__str__()
 
     def __hash__(self):
+        """
+        Get the tree node's hash.
+
+        The origin's hash is used for the whole node,
+        so if two different nodes somehow have the same origin,
+        it will cause the nodes to be treated as equal by hash-based types.
+        """
         return hash(self.origin)
