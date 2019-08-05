@@ -3,7 +3,7 @@
 
 def print_node_list(node_list):
     """
-    Print a list of TreeNodes for debugging
+    Print a list of TreeNodes for debugging.
 
     Arguments:
         node_list (list[TreeNode]): a list of tree nodes
@@ -16,7 +16,7 @@ def print_node_list(node_list):
 
 def print_node(node, indent, level, node_list):
     """
-    Print a TreeNode for debugging
+    Print a TreeNode for debugging.
 
     Arguments:
         node (TreeNode): node to print
