@@ -16,5 +16,13 @@ class UserInputError(Exception):
     """
 
     def __init__(self, message, code=1):
+        """
+        Initialize a new user input error instance.
+        
+        Arguments:
+            message {string} -- Message to display.
+            code {int} -- Preferred exit code (only if application exits).
+            
+        """
         self.message = message
         self.code = code
