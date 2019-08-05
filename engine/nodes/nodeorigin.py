@@ -34,7 +34,7 @@ class NodeOrigin:
             raise ValueError(
                 "File path must always be set to a non-None value")
 
-        if line is None != col_offset is None:
+        if (line is None) != (col_offset is None):
             raise ValueError(
                 "Either both line number and column offset must be set or neither")
 

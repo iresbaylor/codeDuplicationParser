@@ -49,7 +49,7 @@ def _can_be_compared(node1, node2):
 def _type1_compare(node1, node2):
     """
     Compare two nodes and return the weight of their matching subtree.
-    
+
     Also return a string representing their common syntax tree skeleton.
 
     Arguments:
@@ -133,7 +133,7 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
 def chlorine_single_repo(modules):
     """
     Find all clones in a single repository given its modules.
-    
+
     Clones must satisfy the settings at the top of this source file.
     Detected code clones are printed on STDOUT, including the common skeleton,
     path to each clones (source file path, line number, column offset),
