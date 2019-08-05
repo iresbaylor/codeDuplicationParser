@@ -1,3 +1,5 @@
+"""Module containing the Iodine algorithm's interface."""
+
 from .pattern_collection import pattern_collection
 from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
@@ -16,7 +18,6 @@ def iodine(module_list_1, module_list_2):
         DetectionResult -- Result of the code clone detection.
 
     """
-
     clusters = []
     for module_tree_1 in module_list_1:
         for module_tree_2 in module_list_2:

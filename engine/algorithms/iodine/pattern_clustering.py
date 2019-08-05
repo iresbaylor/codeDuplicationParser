@@ -1,9 +1,14 @@
 def clustering(ps):
     """
-    :param ps: a set of patterns
-    :return: a set of clustered-patterns
-    """
-    
+    Perform pattern clustering and return clusters.
+
+    Arguments:
+        ps -- a set of patterns
+
+    Returns:
+        a set of clustered-patterns
+
+    """    
     cs = []  # initialize the set
     for p in ps:  # iterate through the patterns in the set of patterns
         merged = False

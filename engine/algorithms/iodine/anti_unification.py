@@ -3,7 +3,7 @@ from ...nodes.pattern import PatternNode
 
 def anti_unify(list1, list2, index1, index2, worktable):
     """
-    Create a tree of PatternNodes from two lists
+    Create a tree of PatternNodes from two lists.
 
     Arguments:
         list1 {list of TreeNodes} -- first tree to be compared
