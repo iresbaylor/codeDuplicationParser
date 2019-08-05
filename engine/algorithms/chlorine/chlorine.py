@@ -1,3 +1,5 @@
+"""Module containing implementation of the Chlorine algorithm."""
+
 from collections import defaultdict
 from ...utils.benchmark import time_snap
 from ...utils.list_tools import flatten
@@ -46,8 +48,9 @@ def _can_be_compared(node1, node2):
 
 def _type1_compare(node1, node2):
     """
-    Compare two nodes and returns the weight of their matching subtrees
-    and a skeleton string representing their common syntax tree skeleton.
+    Compare two nodes and return the weight of their matching subtree.
+    
+    Also return a string representing their common syntax tree skeleton.
 
     Arguments:
         node1 {TreeNode} -- First node.
@@ -82,8 +85,7 @@ def _type1_compare(node1, node2):
 
 def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
     """
-    Common logic shared by single-repo analysis and
-    two repository comparison mode.
+    Run common logic shared by single-repo analysis and 2-repo comparison mode.
 
     Arguments:
         n1 {TreeNode} -- First node.
@@ -130,8 +132,9 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
 
 def chlorine_single_repo(modules):
     """
-    Find all clones satisfying the settings at the top of this source file
-    in a single repository given its modules.
+    Find all clones in a single repository given its modules.
+    
+    Clones must satisfy the settings at the top of this source file.
     Detected code clones are printed on STDOUT, including the common skeleton,
     path to each clones (source file path, line number, column offset),
     size of each clone (number of nodes in its syntax tree) and their
