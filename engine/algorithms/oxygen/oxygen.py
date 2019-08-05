@@ -1,10 +1,12 @@
+"""Module containing logic and interface of the Oxygen algorithm."""
+
 from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
 
 
 def oxygen(modules, weight_limit=15):
     """
-    Very simple type 1 code duplication check based on AST.dump() function.
+    Run basic type 1 code duplication check based on AST.dump() function.
 
     Arguments:
         modules (list[list[TreeNode]): Modules in locally standardized format.
