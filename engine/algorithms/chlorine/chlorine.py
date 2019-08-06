@@ -1,8 +1,8 @@
 """Module containing implementation of the Chlorine algorithm."""
 
 from collections import defaultdict
+from itertools import chain
 from ...utils.benchmark import time_snap
-from ...utils.list_tools import flatten
 from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
 
@@ -208,7 +208,7 @@ def chlorine_two_repos(modules1, modules2):
     time_snap("Function started")
 
     repo1_nodes = [m[0] for m in modules1]
-    repo2_nodes = flatten(modules2)
+    repo2_nodes = chain.from_iterable(modules2)
 
     time_snap("Module lists optimized")
 
