@@ -3,7 +3,7 @@
 
 class DetectedClone:
     """
-    Represent a single detected code clone.
+    Representation of a single detected code clone.
 
     Similarity coefficient is a floating-point number between 0 and 1,
     where 0 means the subtrees are completely different and 1 means

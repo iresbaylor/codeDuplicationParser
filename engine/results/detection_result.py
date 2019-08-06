@@ -5,7 +5,7 @@ from json import dumps as json_dumps
 
 class DetectionResult:
     """
-    Represent the final result of a detection query.
+    Representation of the final result of a detection query.
 
     For now it only contains a list of detected clones,
     but more information may be added in the future.
