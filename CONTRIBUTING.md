@@ -1,5 +1,13 @@
 # Guidelines for Contributors
 
+## Code Style
+
+Make sure to follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) guidelines.
+
+You can run `qa/check-all.sh` to check for various common programming errors and PEP 8 violations.
+
+Installing the `pylint` and `autopep8` Python packages might help you with following the PEP 8 rules, assuming your IDE supports the integration of these packages.
+
 ## Code Documentation
 
 Every public class and function should have at least some kind of a basic docstring. For more detailed information about Python docstrings, please see [PEP 257](https://www.python.org/dev/peps/pep-0257/).
@@ -33,6 +41,16 @@ Once you decide that you want to work on an issue, assign yourself to the issue 
 Where applicable, close issues by adding `Close #N` to a commit message or the description of a related pull request.
 
 To avoid any confusion, it is best to prefix the `#N` part with the username of the upstream fork's owner (e.g., `Close username#123`), otherwise you may accidentally end up referencing an issue or a pull request from a different fork.
+
+## Testing
+
+Tests are written using the `pytest` framework.
+
+All testing logic should be in the `tests` package, including helper functions. Do not put tests into regular source code files because it makes their maintenance tedious.
+
+Prefix names of files that contain tests as well as the test functions themselves with `test_`. Test cases inherit from `unittest.TestCase` and their name should end with `Test`.
+
+Avoid conditional statements and `print` calls. Instead, use the `assert condition, message` statement. The message part is optional and in many cases not necessary.
 
 ## Libraries and Dependencies
 
