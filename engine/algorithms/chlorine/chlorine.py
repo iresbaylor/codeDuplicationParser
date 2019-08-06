@@ -208,7 +208,7 @@ def chlorine_two_repos(modules1, modules2):
     time_snap("Function started")
 
     repo1_nodes = [m[0] for m in modules1]
-    repo2_nodes = chain.from_iterable(modules2)
+    repo2_nodes = list(chain.from_iterable(modules2))
 
     time_snap("Module lists optimized")
 
