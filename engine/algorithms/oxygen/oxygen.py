@@ -1,18 +1,20 @@
-from ...results.DetectedClone import DetectedClone
-from ...results.DetectionResult import DetectionResult
+"""Module containing logic and interface of the Oxygen algorithm."""
+
+from ...results.detected_clone import DetectedClone
+from ...results.detection_result import DetectionResult
 
 
-def oxygen(modules, weight_limit=25):
+def oxygen(modules, weight_limit=15):
     """
-    Very simple type 1 code duplication check based on AST.dump() function.
+    Run basic type 1 code duplication check based on AST.dump() function.
 
     Arguments:
         modules (list[list[TreeNode]): Modules in locally standardized format.
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     # Dictionary of all the different shapes of node trees.
     # Key is a string representation of the tree.
     # Value is a list of all nodes with the exact same string representation.

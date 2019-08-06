@@ -1,11 +1,13 @@
+"""Module containing the Iodine algorithm's interface."""
+
 from .pattern_collection import pattern_collection
-from ...results.DetectedClone import DetectedClone
-from ...results.DetectionResult import DetectionResult
+from ...results.detected_clone import DetectedClone
+from ...results.detection_result import DetectionResult
 
 
 def iodine(module_list_1, module_list_2):
     """
-    Finds clones between the two modules by comparing all possible subtrees of
+    Find clones between the two modules by comparing all possible subtrees of
     their methods. Returns the results.
 
     Arguments:
@@ -14,6 +16,7 @@ def iodine(module_list_1, module_list_2):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
+
     """
     clusters = []
     for module_tree_1 in module_list_1:

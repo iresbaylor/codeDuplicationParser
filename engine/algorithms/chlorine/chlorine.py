@@ -1,8 +1,10 @@
+"""Module containing implementation of the Chlorine algorithm."""
+
 from collections import defaultdict
+from itertools import chain
 from ...utils.benchmark import time_snap
-from ...utils.list_tools import flatten
-from ...results.DetectedClone import DetectedClone
-from ...results.DetectionResult import DetectionResult
+from ...results.detected_clone import DetectedClone
+from ...results.detection_result import DetectionResult
 
 # Minimum weight of a single node used in comparison.
 _MIN_NODE_WEIGHT = 50
@@ -24,6 +26,7 @@ def _get_skeleton_recursive(node):
 def _can_be_compared(node1, node2):
     """
     First get rid of nodes with a weight below the specified threshold.
+
     Checks if two nodes can be possible compared with each other.
     In order to be comparable, the nodes must have an equal value
     and they must have the exact same number of children.
@@ -34,6 +37,7 @@ def _can_be_compared(node1, node2):
 
     Returns:
         bool -- True if nodes can be compared, False if they cannot.
+
     """
     return \
         node1.weight >= _MIN_NODE_WEIGHT and \
@@ -44,8 +48,9 @@ def _can_be_compared(node1, node2):
 
 def _type1_compare(node1, node2):
     """
-    Compares two nodes and returns the weight of their matching subtrees
-    and a skeleton string representing their common syntax tree skeleton.
+    Compare two nodes and return the weight of their matching subtree.
+
+    Also return a string representing their common syntax tree skeleton.
 
     Arguments:
         node1 {TreeNode} -- First node.
@@ -54,8 +59,8 @@ def _type1_compare(node1, node2):
     Returns:
         int -- Weight of the matching subtrees.
         string -- Common skeleton of the two nodes.
-    """
 
+    """
     combined_weight = node1.weight + node2.weight
 
     if not _can_be_compared(node1, node2):
@@ -80,8 +85,7 @@ def _type1_compare(node1, node2):
 
 def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
     """
-    Common logic shared by single-repo analysis and
-    two repository comparison mode.
+    Run common logic shared by single-repo analysis and 2-repo comparison mode.
 
     Arguments:
         n1 {TreeNode} -- First node.
@@ -89,8 +93,8 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
         ignore_set {set[TreeNode]} -- Set of nodes to ignore.
         match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
         skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
-    """
 
+    """
     if not _can_be_compared(n1, n2):
         return
 
@@ -109,13 +113,13 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
 
 def _dict_to_result(match_dict, skeleton_weight_dict):
     """
-    Compiles the detection result together from the input dictionaries.
+    Compile the detection result together from the input dictionaries.
 
     Arguments:
         match_dict {dict[string: set[TreeNode]]} -- Origin nodes of matches.
         skeleton_weight_dict {dict[string: int]} -- Skeleton weights.
-    """
 
+    """
     clones = []
 
     for k, v in match_dict.items():
@@ -128,8 +132,9 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
 
 def chlorine_single_repo(modules):
     """
-    Finds all clones satisfying the settings at the top of this source file
-    in a single repository given its modules.
+    Find all clones in a single repository given its modules.
+
+    Clones must satisfy the settings at the top of this source file.
     Detected code clones are printed on STDOUT, including the common skeleton,
     path to each clones (source file path, line number, column offset),
     size of each clone (number of nodes in its syntax tree) and their
@@ -140,8 +145,8 @@ def chlorine_single_repo(modules):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     time_snap("Function started")
 
     nodes = [m[0] for m in modules]
@@ -186,7 +191,8 @@ def chlorine_single_repo(modules):
 
 def chlorine_two_repos(modules1, modules2):
     """
-    Finds code clones between two repositories given their module lists.
+    Find code clones between two repositories given their module lists.
+
     Clones must satisfy rules defined at the top of this source file.
     Detected clones are printed on STDOUT.
     See `find_clones_in_repo(repo_url)` for details on output format.
@@ -197,12 +203,12 @@ def chlorine_two_repos(modules1, modules2):
 
     Returns:
         DetectionResult -- Result of the code clone detection.
-    """
 
+    """
     time_snap("Function started")
 
     repo1_nodes = [m[0] for m in modules1]
-    repo2_nodes = flatten(modules2)
+    repo2_nodes = list(chain.from_iterable(modules2))
 
     time_snap("Module lists optimized")
 

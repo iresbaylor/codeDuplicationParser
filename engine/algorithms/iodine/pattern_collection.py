@@ -5,14 +5,16 @@ from .anti_unification import anti_unify
 
 def pattern_collection(tree_list_1, tree_list_2):
     """
-    Compares two Abstract Syntax Trees representing two methods. The trees are
+    Compare two Abstract Syntax Trees representing two methods. The trees are
     provided as lists to provides indexes for the nodes within the tree.
 
     Arguments:
         tree_list_1 {list[TreeNode]}: A TreeNode tree represented as a list
         tree_list_2 {list[TreeNode]}: A TreeNode tree represented as a list
 
-    Returns: list[list[PatternNode]]: The clustered patterns identified in the repositories
+    Returns:
+        list[list[PatternNode]]: The clustered patterns identified in the repositories
+
     """
     # Get the sizes of the trees
     size_tree_1 = len(tree_list_1)
@@ -37,7 +39,8 @@ def pattern_collection(tree_list_1, tree_list_2):
                 # if the root nodes of the subtrees are equal
                 if tree_list_1[i] == tree_list_2[j]:
                     # Add the results of anti-unify to the list of subtrees
-                    pats[i].append(anti_unify(tree_list_1, tree_list_2, i, j, work_list))
+                    pats[i].append(anti_unify(
+                        tree_list_1, tree_list_2, i, j, work_list))
     # for every set of patterns (one per node in the first tree)
     for pattern_set in pats:
         # run the clustering function on the pattern set

@@ -1,19 +1,18 @@
+"""Module containing the CLI's core logic."""
+
 import sys
 import os
 from datetime import datetime
-from engine.preprocessing.args_handler import handle_args
+from .args_handler import handle_args
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_two_repos, IODINE
 from engine.utils.benchmark import time_snap
 from fastlog import log
-from engine.errors.UserInputError import UserInputError
+from engine.errors.user_input import UserInputError
 
 
 def main():
-    """
-    Entry point of the application.
-    """
-
+    """Entry point of the application."""
     try:
         # Parse command line arguments
         repos = handle_args(sys.argv)
@@ -46,7 +45,8 @@ def main():
         # Create output directory if it doesn't exist and print output
         output_path = os.getcwd()
         now = datetime.now()
-        output_filename = "clones_" + f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}" + ".json"
+        output_filename = "clones_" + \
+            f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}" + ".json"
         os.makedirs(output_path, exist_ok=True)
         with open(os.path.join(output_path, output_filename), "w") as output_file:
             output_file.write(clones.json())
