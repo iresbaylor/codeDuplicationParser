@@ -87,14 +87,7 @@ class RepoInfoCloneTest(TestCase):
     # Delete the clone target directory before and after the test.
     tearDown = setUp = lambda self: rmtree(self.clone_dir, ignore_errors=True)
 
-    def test_repoinfo_clone(self):
-        """Test the RepoInfo's ability to clone a repository."""
-        info = RepoInfo.parse_repo_info(
-            "https://github.com/calebdehaan/codeDuplicationParser")
-
-        assert info is not None
-        assert info.clone_or_pull()
-
+    def _check_repo_info(self, info):
         assert info.url == "https://:@github.com/calebdehaan/codeDuplicationParser"
         assert info.server == "github.com"
         assert info.user == "calebdehaan"
@@ -106,3 +99,28 @@ class RepoInfoCloneTest(TestCase):
 
         assert info.hash is not None
         assert re.fullmatch(r"[0-9a-f]{40}", info.hash)
+
+    def test_repoinfo_clone(self):
+        """Test the RepoInfo's ability to clone a repository."""
+        info = RepoInfo.parse_repo_info(
+            "https://github.com/calebdehaan/codeDuplicationParser")
+
+        assert info is not None
+        assert info.clone_or_pull()
+
+        self._check_repo_info(info)
+
+    def test_repoinfo_pull_no_change(self):
+        """Test the RepoInfo's ability to pull a repo without any change."""
+        info = RepoInfo.parse_repo_info(
+            "https://github.com/calebdehaan/codeDuplicationParser")
+
+        assert info is not None
+
+        # Clone the repository for the first time.
+        assert info.clone_or_pull()
+        self._check_repo_info(info)
+
+        # Pull the repository because it already exists.
+        assert info.clone_or_pull()
+        self._check_repo_info(info)
