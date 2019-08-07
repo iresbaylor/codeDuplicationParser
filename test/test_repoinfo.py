@@ -31,7 +31,29 @@ def test_repoinfo_parse_valid():
     ]
 
     for p in VALID_PATHS:
-        assert RepoInfo.parse_repo_info(p) is not None
+        assert RepoInfo.parse_repo_info(p) is not None, \
+            f"\"{p}\" is a valid repository path"
+
+
+def test_repoinfo_parse_invalid():
+    """Test RepoInfo parser's ability to detect invalid repository paths."""
+    INVALID_PATHS = [
+        "",
+        "https://",
+        "https//github.com/user/repo",
+        "https/github.com/user/repo",
+        "://github.com/user/repo",
+        "//github.com/user/repo"
+        "/github.com/user/repo"
+        "https://github,com/user/repo",
+        "https://github;com/user/repo",
+        "https;//github.com/user/repo",
+        "https:\\\\github.com\\user\\repo",
+    ]
+
+    for p in INVALID_PATHS:
+        assert RepoInfo.parse_repo_info(p) is None, \
+            f"\"{p}\" is not a valid repository path"
 
 
 def test_repoinfo_parse_attrib():
