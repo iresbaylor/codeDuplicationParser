@@ -4,6 +4,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from os.path import isdir
 from engine.errors.user_input import UserInputError
 from engine.preprocessing.repoinfo import RepoInfo
+from engine.algorithms import IODINE, CHLORINE, OXYGEN
 
 
 _REPO_PATH_FORMATS = """\
@@ -22,6 +23,10 @@ parser.add_argument("first_repo", metavar="first-repo", type=str,
 
 parser.add_argument("second_repo", metavar="second-repo", type=str, nargs="?",
                     help="Path to the second repository")
+
+parser.add_argument("-a", "--algorithm",
+                    choices=[IODINE, CHLORINE, OXYGEN], default=IODINE,
+                    help="Clone detection algorithm to use (default: iodine)")
 
 
 def repo_path_to_local_path(repo_path):
@@ -72,4 +77,4 @@ def handle_cli_args():
     args = parser.parse_args()
 
     return tuple(repo_path_to_local_path(p) for p in
-                 (args.first_repo, args.second_repo))
+                 (args.first_repo, args.second_repo)), args.algorithm
