@@ -15,12 +15,9 @@ def main():
     """Entry point of the application."""
     try:
         # Parse command line arguments
-        repos = handle_cli_args()
-        algorithm = IODINE
+        repos, algorithm = handle_cli_args()
 
         time_snap("Cloned repositories")
-
-        # ------- FOR TESTING PURPOSES ------------
 
         # Find all functions and parse their syntax tree using the TreeNode wrapper
         log.info("Parsing methods in repositories...")
