@@ -7,8 +7,8 @@ from os.path import join as path_join, relpath, isdir, samefile
 from engine.preprocessing.repoinfo import RepoInfo, clone_root_dir
 
 
-def test_repoinfo_parse():
-    """Test the RepoInfo's static method for parsing repo path."""
+def test_repoinfo_parse_attrib():
+    """Test RepoInfo's attributes after parsing a repository path."""
     info = RepoInfo.parse_repo_info("hTTpS://GiTHuB.CoM/username/repository")
 
     assert info is not None
