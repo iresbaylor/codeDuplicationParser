@@ -3,7 +3,7 @@
 import sys
 import os
 from datetime import datetime
-from .args_handler import handle_args
+from .args_handler import handle_cli_args
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_two_repos, IODINE
 from engine.utils.benchmark import time_snap
@@ -15,7 +15,7 @@ def main():
     """Entry point of the application."""
     try:
         # Parse command line arguments
-        repos = handle_args(sys.argv)
+        repos = handle_cli_args()
         algorithm = IODINE
 
         time_snap("Cloned repositories")
