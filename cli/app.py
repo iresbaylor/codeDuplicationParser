@@ -41,9 +41,8 @@ def main():
 
         # Create output directory if it doesn't exist and print output
         output_path = os.getcwd()
-        now = datetime.now()
         output_filename = "clones_" + \
-            f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}" + ".json"
+            datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".json"
         os.makedirs(output_path, exist_ok=True)
         with open(os.path.join(output_path, output_filename), "w") as output_file:
             output_file.write(clones.json())
