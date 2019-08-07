@@ -7,6 +7,33 @@ from os.path import join as path_join, relpath, isdir, samefile
 from engine.preprocessing.repoinfo import RepoInfo, clone_root_dir
 
 
+def test_repoinfo_parse_valid():
+    """Test RepoInfo parser's ability to parse valid repository paths."""
+    VALID_PATHS = [
+        "https://github.com/user/repo",
+        "HTTPS://GITHUB.COM/user/repo",
+        "https://www.github.com/user/repo",
+        "https://gitlab.com/user/repo",
+        "HTTPS://GITLAB.COM/user/repo",
+        "https://www.gitlab.com/user/repo",
+        "http://github.com/user/repo",
+        "https://github.com/user_user-user.user/repo.repo-repo_repo",
+        "github.com/user/repo",
+        "user/repo",
+        "user//repo",
+        "/user/repo",
+        "user/repo/",
+        "/user/repo/",
+        "////user/repo////",
+        "////user////repo////",
+        "user_user-user.user/repo.repo-repo_repo",
+        "///user_user-user.user///repo.repo-repo_repo///"
+    ]
+
+    for p in VALID_PATHS:
+        assert RepoInfo.parse_repo_info(p) is not None
+
+
 def test_repoinfo_parse_attrib():
     """Test RepoInfo's attributes after parsing a repository path."""
     info = RepoInfo.parse_repo_info("hTTpS://GiTHuB.CoM/username/repository")
