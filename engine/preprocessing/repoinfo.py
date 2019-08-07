@@ -109,6 +109,9 @@ class RepoInfo:
             scheme = "https"
             server = server_match[1].lower()
 
+        if not re.fullmatch(r"^[\w\.\-]+(:\d+)?$", server):
+            return None
+
         # Inserting ":@" before hostname prevents a username/password prompt.
         full_url = urlunparse((scheme, ":@" + server,
                                f"/{repo_user}/{repo_name}", "", "", ""))
