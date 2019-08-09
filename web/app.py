@@ -1,6 +1,5 @@
 """Module containing the core of the web UI application."""
 
-import os.path
 from threading import Thread
 from traceback import format_exc
 from flask import Flask, request
@@ -13,23 +12,13 @@ from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.errors.user_input import UserInputError
 from .credentials import db_url
+from web import html
 
 app = Flask(__name__)
 
 # Clean up the repository table
 with pg_conn(db_url) as conn:
     conn.run("""UPDATE repos SET status = (SELECT id FROM states WHERE name = 'err_analysis') WHERE status = (SELECT id FROM states WHERE name = 'queue');""")
-
-
-def _read_html(file_name):
-    file_path = os.path.join(os.path.dirname(__file__), file_name + ".html")
-    with open(file_path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
-_INDEX_HTML = _read_html("index")
-_MESSAGE_HTML = _read_html("message")
-_RESULTS_HTML = _read_html("results")
 
 
 def _postgres_err(ex):
@@ -169,20 +158,20 @@ def web_index():
             result = _get_repo_analysis(repo)
 
             if isinstance(result, str):
-                content = _MESSAGE_HTML.replace("#MSG#", result)
+                content = html.message.replace("#MSG#", result)
             elif result:
                 clones = "<ol>" + "".join([(f"<li>{c.value} - Weight: {c.weight}<ul>" +
                                             "".join([f"<li>{o[0]} - Similarity: {o[1] * 100:g} %</li>" for o in c.origins]) +
                                             "</ul></li><br>") for c in result]) + "</ol>"
 
-                content = _RESULTS_HTML.replace("#CLONES#", clones)
+                content = html.results.replace("#CLONES#", clones)
 
             else:
-                content = _MESSAGE_HTML.replace(
+                content = html.message.replace(
                     "#MSG#", "No code clones detected. Congratulations!")
 
         except UserInputError as ex:
-            content = _MESSAGE_HTML.replace(
+            content = html.message.replace(
                 "#MSG#", "User Input Error: " + ex.message)
 
-    return _INDEX_HTML.replace("#CONTENT#", content)
+    return html.index.replace("#CONTENT#", content)
