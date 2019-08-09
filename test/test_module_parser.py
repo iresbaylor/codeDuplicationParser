@@ -6,6 +6,7 @@ from engine.nodes.tree import TreeNode
 
 
 def test_get_modules():
+    """Check if any modules are parsed from a valid directory. Check types."""
     modules = get_modules_from_dir(test_repo1_dir)
 
     assert isinstance(modules, list)

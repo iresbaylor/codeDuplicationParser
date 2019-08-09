@@ -6,6 +6,7 @@ from engine.algorithms.chlorine.chlorine import chlorine_two_repos
 
 
 def test_chlorine_two_not_none():
+    """Check if two-repo mode of Chlorine returns non-empty result."""
     modules1 = get_modules_from_dir(test_repo1_dir)
     assert modules1
 

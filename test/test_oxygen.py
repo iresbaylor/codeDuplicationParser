@@ -6,6 +6,7 @@ from engine.algorithms.oxygen.oxygen import oxygen
 
 
 def test_oxygen_not_none():
+    """Check if running Oxygen on a valid repo returns a non-empty result."""
     modules = get_modules_from_dir(test_repo1_dir)
 
     assert modules
