@@ -1,7 +1,6 @@
 """Module containing the core of the web UI application."""
 
 from threading import Thread
-from traceback import format_exc
 from flask import Flask, request
 from fastlog import log
 from psycopg2 import Error as PG_Error
@@ -11,26 +10,15 @@ from engine.nodes.nodeorigin import NodeOrigin
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.errors.user_input import UserInputError
-from .credentials import db_url
 from web import html
+from .credentials import db_url
+from .pg_error_handler import handle_pg_error
 
 app = Flask(__name__)
 
 # Clean up the repository table
 with pg_conn(db_url) as conn:
     conn.run("""UPDATE repos SET status = (SELECT id FROM states WHERE name = 'err_analysis') WHERE status = (SELECT id FROM states WHERE name = 'queue');""")
-
-
-def _postgres_err(ex):
-    log.error(f"PostgreSQL: {ex}\n{format_exc()}")
-
-
-def _pg_error_handler(ex, conn, repo_id):
-    _postgres_err(ex)
-
-    if conn and repo_id is not None:
-        conn.run("""UPDATE repos SET status = (SELECT id FROM states WHERE name = 'err_analysis') WHERE id = %s;""",
-                 repo_id)
 
 
 def _analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
@@ -78,7 +66,7 @@ def _analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
                  repo_id)
 
     except PG_Error as ex:
-        _pg_error_handler(ex, conn, repo_id)
+        handle_pg_error(ex, conn, repo_id)
 
     finally:
         conn.close()
@@ -140,7 +128,7 @@ def _get_repo_analysis(repo_path):
             return "Unexpected repository status"
 
     except PG_Error as ex:
-        _pg_error_handler(ex, conn, repo_id)
+        handle_pg_error(ex, conn, repo_id)
         return "Database error"
 
     finally:
