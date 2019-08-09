@@ -1,3 +1,5 @@
+"""Module containing tests for the Oxygen algorithm (single-repo only)."""
+
 from . import test_repo1_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.oxygen.oxygen import oxygen
