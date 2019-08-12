@@ -27,9 +27,9 @@ def web_index():
             if isinstance(result, str):
                 content = html.message.replace("#MSG#", result)
             elif result:
-                clones = "<ol>" + "".join([(f"<li>{c.value} - Weight: {c.weight}<ul>" +
-                                            "".join([f"<li>{o[0]} - Similarity: {o[1] * 100:g} %</li>" for o in c.origins]) +
-                                            "</ul></li><br>") for c in result]) + "</ol>"
+                clones = "".join([(f"""<li class="collection-item"><ul class="collection with-header"><li class="collection-header"><h5>{c.value} - Weight: {c.weight}</h5></li>""" +
+                                   "".join([f"""<li class="collection-header">{o[0]} - Similarity: {o[1] * 100:g} %</li>""" for o in c.origins]) +
+                                   "</ul></li>") for c in result])
 
                 content = html.results.replace("#CLONES#", clones)
 
