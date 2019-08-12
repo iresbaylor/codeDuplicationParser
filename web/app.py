@@ -1,7 +1,6 @@
 """Module containing the core of the web UI application."""
 
 from flask import Flask, request
-from fastlog import log
 from easy_postgres import Connection as pg_conn
 from engine.errors.user_input import UserInputError
 from web import html
