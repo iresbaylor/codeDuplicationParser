@@ -1,3 +1,5 @@
+"""Module containing logic for handling PostgreSQL exceptions."""
+
 from traceback import format_exc
 from fastlog import log
 
