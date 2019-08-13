@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from .args_handler import handle_cli_args
 from engine.preprocessing.module_parser import get_modules_from_dir
-from engine.algorithms.algorithm_runner import run_two_repos, IODINE
+from engine.algorithms.algorithm_runner import run_two_repos
 from engine.utils.benchmark import time_snap
 from fastlog import log
 from engine.errors.user_input import UserInputError

@@ -2,7 +2,6 @@
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from os.path import isdir
-from engine.errors.user_input import UserInputError
 from engine.preprocessing.repoinfo import RepoInfo
 from engine.algorithms import IODINE, CHLORINE, OXYGEN
 
