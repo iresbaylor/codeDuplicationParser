@@ -88,8 +88,8 @@ def get_repo_analysis(repo_path):
     Get analysis of a repository given its path.
 
     Returns:
-        DetectionResult -- If everything works correctly, result is returned.
-        string -- If anything fails, string with an error message is returned.
+        list[(NodeOrigin, float)] -- Clones in repo (origin and similarity).
+        string -- Message describing the state of repo analysis.
 
     """
     # Strip leading and trailing whitespace from the path and parse repo info.
