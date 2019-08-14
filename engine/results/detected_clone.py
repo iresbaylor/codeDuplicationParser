@@ -30,7 +30,7 @@ class DetectedClone:
         """
         self.value = value
         self.match_weight = match_weight
-        self.origins = {str(n.origin): match_weight / n.weight for n in nodes}
+        self.origins = {n.origin: match_weight / n.weight for n in nodes}
 
     def dict(self):
         """
