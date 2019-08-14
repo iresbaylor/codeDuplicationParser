@@ -8,7 +8,9 @@ windows-curses; platform_system == 'Windows'
 fastlog
 # Web UI back-end
 flask
-# Web UI database
+# Web UI database manipulation
 easy-postgres
+# Web UI front-end templating
+mako
 # Unit test framework
 pytest
