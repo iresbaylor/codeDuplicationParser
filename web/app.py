@@ -27,16 +27,16 @@ def web_index():
     repo = request.args.get("repo")
     if repo:
         try:
-            result = get_repo_analysis(repo)
+            clones, msg = get_repo_analysis(repo)
 
-            if result is None:
+            if clones == []:
                 msg = "No code clones detected. Congratulations!"
 
-            elif isinstance(result, str):
-                msg = result
-                result = None
+            # Should not happen, but just to be sure...
+            elif not clones and not msg:
+                msg = "Unable to analyze the repository"
 
         except UserInputError as ex:
             msg = "User Input Error: " + ex.message
 
-    return index_template.render(msg=msg, result=result)
+    return index_template.render(msg=msg, clones=clones)

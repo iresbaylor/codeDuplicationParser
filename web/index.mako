@@ -60,7 +60,7 @@
         </div>
         % endif
 
-        % if result:
+        % if clones:
         <div class="row">
             <div class="col s8 offset-s2">
                 <ul class="collection with-header">
@@ -70,7 +70,7 @@
                         </h4>
                     </li>
 
-                    % for c in result:
+                    % for c in clones:
                     <li class="collection-item">
                         <ul class="collection with-header">
                             <li class="collection-header">
