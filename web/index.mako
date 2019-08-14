@@ -60,15 +60,35 @@
         </div>
         % endif
 
-        % if clones:
+        % if result:
         <div class="row">
             <div class="col s8 offset-s2">
                 <ul class="collection with-header">
                     <li class="collection-header">
-                        <h4>Detected clones</h4>
+                        <h4>
+                            Detected clones
+                        </h4>
                     </li>
 
-                    ${clones}
+                    % for c in result:
+                    <li class="collection-item">
+                        <ul class="collection with-header">
+                            <li class="collection-header">
+                                <h5>
+                                    ${c.value} - Weight: ${c.weight}
+                                </h5>
+                            </li>
+
+                            % for o in c.origins:
+                            <li class="collection-header">
+                                ${o[0]} - Similarity: ${format(o[1] * 100, "g")} %
+                            </li>
+                            % endfor
+
+                        </ul>
+                    </li>
+                    % endfor
+
                 </ul>
             </div>
         </div>

@@ -29,18 +29,14 @@ def web_index():
         try:
             result = get_repo_analysis(repo)
 
-            if isinstance(result, str):
-                msg = result
-
-            elif result:
-                clones = "".join([(f"""<li class="collection-item"><ul class="collection with-header"><li class="collection-header"><h5>{c.value} - Weight: {c.weight}</h5></li>""" +
-                                   "".join([f"""<li class="collection-header">{o[0]} - Similarity: {o[1] * 100:g} %</li>""" for o in c.origins]) +
-                                   "</ul></li>") for c in result])
-
-            else:
+            if result is None:
                 msg = "No code clones detected. Congratulations!"
+
+            elif isinstance(result, str):
+                msg = result
+                result = None
 
         except UserInputError as ex:
             msg = "User Input Error: " + ex.message
 
-    return index_template.render(msg=msg, clones=clones)
+    return index_template.render(msg=msg, result=result)
