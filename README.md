@@ -45,7 +45,9 @@ Python packages required for the tool to run
 - `bitstring`
 - `fastlog`
 - `windows-curses` (Windows only, required by `fastlog`)
-- `flask`
+- `flask` (for web UI)
+- `easy-postgres` (for web UI's database)
+- `pytest` (for unit tests)
 
 ## Algorithms
 
