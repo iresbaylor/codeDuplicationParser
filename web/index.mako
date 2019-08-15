@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<%
+    proj_name = "Cyclone"
+    proj_brief = "Python 3 Code Clone Detector"
+%>
+
 <head>
 
     <meta charset="UTF-8">
-    <title>Cyclone - Python 3 Code Clone Detector</title>
+    <title>${proj_name} - ${proj_brief}</title>
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,12 +24,13 @@
 
 <body>
     <div class="container">
+
         <div class="center-align">
             <h2 class="blue-text text-accent-4">
-                Cyclone
+                ${proj_name}
             </h2>
             <div class="blue-text text-accent-2">
-                Python 3 Code Clone Detector
+                ${proj_brief}
             </div>
         </div>
 
@@ -44,9 +50,50 @@
             </form>
         </div>
 
+        % if msg:
         <div class="row">
-            #CONTENT#
+            <div class="col s12 center-align">
+                <h4>
+                    ${msg}
+                </h4>
+            </div>
         </div>
+        % endif
+
+        % if clones:
+        <div class="row">
+            <div class="col s8 offset-s2">
+                <ul class="collection with-header">
+                    <li class="collection-header">
+                        <h4>
+                            Detected clones
+                        </h4>
+                    </li>
+
+                    % for c in clones:
+                    <li class="collection-item">
+                        <ul class="collection with-header">
+                            <li class="collection-header">
+                                <h5>
+                                    ${c.value} - Weight: ${c.weight}
+                                </h5>
+                            </li>
+
+                            % for o in c.origins:
+                            <li class="collection-header">
+                                ${o[0]} - Similarity: ${format(o[1] * 100, "g")} %
+                            </li>
+                            % endfor
+
+                        </ul>
+                    </li>
+                    % endfor
+
+                </ul>
+            </div>
+        </div>
+        % endif
+
     </div>
 </body>
 

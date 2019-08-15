@@ -8,6 +8,7 @@ from engine.preprocessing.repoinfo import RepoInfo
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.nodes.nodeorigin import NodeOrigin
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
+from engine.errors.user_input import UserInputError
 from .credentials import db_url
 from .pg_error_handler import handle_pg_error
 
@@ -88,15 +89,15 @@ def get_repo_analysis(repo_path):
     Get analysis of a repository given its path.
 
     Returns:
-        DetectionResult -- If everything works correctly, result is returned.
-        string -- If anything fails, string with an error message is returned.
+        list[(NodeOrigin, float)] -- Clones in repo (origin and similarity).
+        string -- Message describing the state of repo analysis.
 
     """
     # Strip leading and trailing whitespace from the path and parse repo info.
     repo_info = RepoInfo.parse_repo_info(repo_path.strip())
 
     if not repo_info:
-        return "Invalid Git repository path format"
+        raise UserInputError("Invalid Git repository path format")
 
     try:
         conn = pg_conn(db_url)
@@ -108,7 +109,7 @@ def get_repo_analysis(repo_path):
 
         if repo_id is not None:
             Thread(target=analyze_repo, args=(repo_info, repo_id)).start()
-            return "The repository has been added to the queue"
+            return None, "The repository has been added to the queue"
 
         repo = conn.one_dict("""SELECT repos.id, states.name AS "status_name", states.description AS "status_desc" """ +
                              """FROM repos JOIN states ON (repos.status = states.id) """ +
@@ -117,20 +118,20 @@ def get_repo_analysis(repo_path):
 
         # Theoretically, this should never happend, but it's better to check anyways.
         if repo is None:
-            return "Database error"
+            return None, "Database error"
 
         elif repo.status_name in {"queue", "err_clone", "err_analysis"}:
-            return repo.status_desc
+            return None, repo.status_desc
 
         elif repo.status_name == "done":
-            return find_repo_results(conn, repo.id)
+            return find_repo_results(conn, repo.id), None
 
         else:
-            return "Unexpected repository status"
+            return None, "Unexpected repository status"
 
     except PG_Error as ex:
         handle_pg_error(ex, conn, repo_id)
-        return "Database error"
+        return None, "Database error"
 
     finally:
         conn.close()

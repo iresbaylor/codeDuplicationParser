@@ -1,11 +1,15 @@
 """Module containing the core of the web UI application."""
 
+from os.path import dirname, join as path_join
 from flask import Flask, request
 from easy_postgres import Connection as pg_conn
+from mako.template import Template
 from engine.errors.user_input import UserInputError
-from web import html
 from .credentials import db_url
 from .analyzer import get_repo_analysis
+
+_index_path = path_join(dirname(__file__), "index.mako")
+index_template = Template(filename=_index_path)
 
 app = Flask(__name__)
 
@@ -17,28 +21,22 @@ with pg_conn(db_url) as conn:
 @app.route("/")
 def web_index():
     """Homepage of the web interface."""
-    content = ""
+    msg = None
+    clones = None
 
     repo = request.args.get("repo")
     if repo:
         try:
-            result = get_repo_analysis(repo)
+            clones, msg = get_repo_analysis(repo)
 
-            if isinstance(result, str):
-                content = html.message.replace("#MSG#", result)
-            elif result:
-                clones = "".join([(f"""<li class="collection-item"><ul class="collection with-header"><li class="collection-header"><h5>{c.value} - Weight: {c.weight}</h5></li>""" +
-                                   "".join([f"""<li class="collection-header">{o[0]} - Similarity: {o[1] * 100:g} %</li>""" for o in c.origins]) +
-                                   "</ul></li>") for c in result])
+            if clones == []:
+                msg = "No code clones detected. Congratulations!"
 
-                content = html.results.replace("#CLONES#", clones)
-
-            else:
-                content = html.message.replace(
-                    "#MSG#", "No code clones detected. Congratulations!")
+            # Should not happen, but just to be sure...
+            elif not clones and not msg:
+                msg = "Unable to analyze the repository"
 
         except UserInputError as ex:
-            content = html.message.replace(
-                "#MSG#", "User Input Error: " + ex.message)
+            msg = "User Input Error: " + ex.message
 
-    return html.index.replace("#CONTENT#", content)
+    return index_template.render(msg=msg, clones=clones)
