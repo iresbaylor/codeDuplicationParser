@@ -88,7 +88,7 @@ class RepoInfo:
             return None
 
         path_match = re.fullmatch(
-            r"/*([\w\-\.]+)/*([\w\-\.]+?)(?:\.git)?/*", parts.path)
+            r"^/*([\w\-\.]+)/+([\w\-\.]+?)(?:\.git)?/*$", parts.path)
 
         if not path_match:
             # If there is no scheme, try to prepend HTTPS
