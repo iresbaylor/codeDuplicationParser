@@ -1,5 +1,6 @@
 """Module containing logic used by the web app for repository analysis."""
 
+import re
 from threading import Thread
 from fastlog import log
 from psycopg2 import Error as PG_Error
@@ -84,6 +85,51 @@ def find_repo_results(conn, repo_id):
     return clusters
 
 
+def _find_repos_select_query(conn, where, params):
+    """Helper function for running `SELECT` SQL queries to find repos."""
+    return [RepoInfo(r.url, r.server, r.user, r.name, r.dir)
+            for r in conn.all_dict(f"""SELECT * FROM repos WHERE ({where}) AND status = (SELECT id FROM states WHERE name = 'done');""", params)]
+
+
+def _find_repos_by_metadata(conn, repo_path):
+    """Attempt to find the best match for the specified repository."""
+    CONDITIONS = [
+        # Exact repo name match.
+        (""""name" = %s""", repo_path),
+        ("""LOWER("name") = LOWER(%s)""", repo_path),
+        # Exact user name match.
+        (""""user" = %s""", repo_path),
+        ("""LOWER("user") = LOWER(%s)""", repo_path),
+        # Exact server name match.
+        (""""server" = %s""", repo_path),
+        ("""LOWER("server") = LOWER(%s)""", repo_path),
+        # Partial repo name match.
+        (""""name" LIKE %s""", f"{repo_path}%"),
+        (""""name" LIKE %s""", f"%{repo_path}"),
+        (""""name" LIKE %s""", f"%{repo_path}%"),
+        (""""name" ILIKE %s""", f"{repo_path}%"),
+        (""""name" ILIKE %s""", f"%{repo_path}"),
+        (""""name" ILIKE %s""", f"%{repo_path}%"),
+        # Partial user name match.
+        (""""user" LIKE %s""", f"{repo_path}%"),
+        (""""user" LIKE %s""", f"%{repo_path}"),
+        (""""user" LIKE %s""", f"%{repo_path}%"),
+        (""""user" ILIKE %s""", f"{repo_path}%"),
+        (""""user" ILIKE %s""", f"%{repo_path}"),
+        (""""user" ILIKE %s""", f"%{repo_path}%"),
+        # Partial server name (e.g., "github" instead of "github.com").
+        (""""server" ILIKE %s""", f"%{repo_path}%")
+    ]
+
+    for c in CONDITIONS:
+        repos = _find_repos_select_query(conn, *c)
+
+        if repos:
+            return repos
+
+    return None
+
+
 def get_repo_analysis(repo_path):
     """
     Get analysis of a repository given its path.
@@ -93,14 +139,32 @@ def get_repo_analysis(repo_path):
         string -- Message describing the state of repo analysis.
 
     """
-    # Strip leading and trailing whitespace from the path and parse repo info.
-    repo_info = RepoInfo.parse_repo_info(repo_path.strip())
-
-    if not repo_info:
-        raise UserInputError("Invalid Git repository path format")
+    # Strip leading and trailing whitespace from the repo path.
+    repo_path = repo_path.strip()
 
     try:
         conn = pg_conn(db_url)
+
+        repo_info = RepoInfo.parse_repo_info(repo_path)
+
+        if not repo_info:
+            if re.fullmatch(r"^[\w\.\-]+$", repo_path):
+                repos = _find_repos_by_metadata(conn, repo_path)
+
+                if repos:
+                    # HACK: This is a quick and dirty code written
+                    # to check what data are coming out of the database.
+                    # TODO: Present the list of matching repos in a nice way.
+                    # TODO: If exactly one repository has been found, process it
+                    # in the same way as if a normal path was specified.
+                    return None, "<br>".join([f"""<a href="?repo={r.server}%2F{r.user}%2F{r.name}">{r.url}</a>""" for r in repos])
+
+                else:
+                    raise UserInputError(
+                        "No such repository found in the database")
+
+            else:
+                raise UserInputError("Invalid Git repository path format")
 
         repo_id = conn.one("""INSERT INTO repos ("url", "server", "user", "name", "dir", "status") """ +
                            """VALUES (%s, %s, %s, %s, %s, (SELECT id FROM states WHERE name = 'queue')) """ +
