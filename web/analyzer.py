@@ -10,8 +10,13 @@ from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.nodes.nodeorigin import NodeOrigin
 from engine.algorithms.algorithm_runner import run_single_repo, OXYGEN
 from engine.errors.user_input import UserInputError
+from engine.results.detected_clone import DetectedClone
+from engine.results.detection_result import DetectionResult
 from .credentials import db_url
 from .pg_error_handler import handle_pg_error
+
+_SELECT_REPO_JOIN_STATUS = """SELECT repos.*, states.name AS "status_name", states.description AS "status_desc" """ + \
+    """FROM repos JOIN states ON (repos.status = states.id) """
 
 
 def analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
@@ -74,51 +79,52 @@ def find_repo_results(conn, repo_id):
     if commit_id is None:
         return "No commit has been analyzed yet for this repository"
 
-    clusters = conn.all_dict("""SELECT id, "value", weight FROM clusters WHERE commit_id = %s;""",
-                             commit_id)
+    clones = []
 
-    for c in clusters:
-        c.origins = [(NodeOrigin(o.file, o.line, o.col_offset), o.similarity) for o in
-                     conn.all_dict("""SELECT file, line, col_offset, similarity FROM origins WHERE cluster_id = %s;""",
-                                   c.id)]
+    for c in conn.iter_dict("""SELECT id, "value", weight FROM clusters WHERE commit_id = %s;""", commit_id):
+        origins = {}
 
-    return clusters
+        for o in conn.iter_dict("""SELECT file, line, col_offset, similarity FROM origins WHERE cluster_id = %s;""", c.id):
+            origins[NodeOrigin(o.file, o.line, o.col_offset)] = o.similarity
+
+        clones.append(DetectedClone(c.value, c.weight, origins=origins))
+
+    return DetectionResult(clones)
 
 
 def _find_repos_select_query(conn, where, params):
     """Helper function for running `SELECT` SQL queries to find repos."""
-    return [RepoInfo(r.url, r.server, r.user, r.name, r.dir)
-            for r in conn.all_dict(f"""SELECT * FROM repos WHERE ({where}) AND status = (SELECT id FROM states WHERE name = 'done');""", params)]
+    return conn.all_dict(_SELECT_REPO_JOIN_STATUS + f"""WHERE ({where});""", params)
 
 
 def _find_repos_by_metadata(conn, repo_path):
     """Attempt to find the best match for the specified repository."""
     CONDITIONS = [
         # Exact repo name match.
-        (""""name" = %s""", repo_path),
-        ("""LOWER("name") = LOWER(%s)""", repo_path),
+        ("""repos."name" = %s""", repo_path),
+        ("""LOWER(repos."name") = LOWER(%s)""", repo_path),
         # Exact user name match.
-        (""""user" = %s""", repo_path),
-        ("""LOWER("user") = LOWER(%s)""", repo_path),
+        ("""repos."user" = %s""", repo_path),
+        ("""LOWER(repos."user") = LOWER(%s)""", repo_path),
         # Exact server name match.
-        (""""server" = %s""", repo_path),
-        ("""LOWER("server") = LOWER(%s)""", repo_path),
+        ("""repos."server" = %s""", repo_path),
+        ("""LOWER(repos."server") = LOWER(%s)""", repo_path),
         # Partial repo name match.
-        (""""name" LIKE %s""", f"{repo_path}%"),
-        (""""name" LIKE %s""", f"%{repo_path}"),
-        (""""name" LIKE %s""", f"%{repo_path}%"),
-        (""""name" ILIKE %s""", f"{repo_path}%"),
-        (""""name" ILIKE %s""", f"%{repo_path}"),
-        (""""name" ILIKE %s""", f"%{repo_path}%"),
+        ("""repos."name" LIKE %s""", f"{repo_path}%"),
+        ("""repos."name" LIKE %s""", f"%{repo_path}"),
+        ("""repos."name" LIKE %s""", f"%{repo_path}%"),
+        ("""repos."name" ILIKE %s""", f"{repo_path}%"),
+        ("""repos."name" ILIKE %s""", f"%{repo_path}"),
+        ("""repos."name" ILIKE %s""", f"%{repo_path}%"),
         # Partial user name match.
-        (""""user" LIKE %s""", f"{repo_path}%"),
-        (""""user" LIKE %s""", f"%{repo_path}"),
-        (""""user" LIKE %s""", f"%{repo_path}%"),
-        (""""user" ILIKE %s""", f"{repo_path}%"),
-        (""""user" ILIKE %s""", f"%{repo_path}"),
-        (""""user" ILIKE %s""", f"%{repo_path}%"),
-        # Partial server name (e.g., "github" instead of "github.com").
-        (""""server" ILIKE %s""", f"%{repo_path}%")
+        ("""repos."user" LIKE %s""", f"{repo_path}%"),
+        ("""repos."user" LIKE %s""", f"%{repo_path}"),
+        ("""repos."user" LIKE %s""", f"%{repo_path}%"),
+        ("""repos."user" ILIKE %s""", f"{repo_path}%"),
+        ("""repos."user" ILIKE %s""", f"%{repo_path}"),
+        ("""repos."user" ILIKE %s""", f"%{repo_path}%"),
+        # Partial server name (e.g., repos."github" instead of repos."github.com").
+        ("""repos."server" ILIKE %s""", f"%{repo_path}%")
     ]
 
     for c in CONDITIONS:
@@ -130,72 +136,105 @@ def _find_repos_by_metadata(conn, repo_path):
     return None
 
 
+def _try_insert_repo(conn, repo_info):
+    """
+    Attempt to insert a new entry into the repository database.
+
+    Returns:
+        int -- Repository ID if the `INSERT` was successful, `None` otherwise.
+
+    """
+    return conn.one("""INSERT INTO repos ("url", "server", "user", "name", "dir", "status") """ +
+                    """VALUES (%s, %s, %s, %s, %s, (SELECT id FROM states WHERE name = 'queue')) """ +
+                    """ON CONFLICT DO NOTHING RETURNING id;""",
+                    repo_info.url, repo_info.server, repo_info.user, repo_info.name, repo_info.dir)
+
+
+def _get_repo_dict_from_repoinfo(conn, repo_info):
+    """
+    Find repository ID and status given its RepoInfo.
+
+    Returns:
+        Dictionary -- Available keys:
+                      `id` - Repository ID,
+                      `url`, `server`, `user`, `name`, `dir`,
+                      `status` - Status ID,
+                      `status_name` - Name of the repo's status,
+                      `status_desc` - Verbose status description.
+
+    """
+    return conn.one_dict(_SELECT_REPO_JOIN_STATUS + """WHERE repos.url = %s OR repos.dir = %s OR """ +
+                         """(repos.server = %s AND repos.user = %s AND repos.name = %s);""",
+                         repo_info.url, repo_info.server, repo_info.user, repo_info.name, repo_info.dir)
+
+
+def _get_repo_summary(conn, repo_dict):
+    """Get repo status message or a list of detected clones from the db."""
+    # Theoretically, this should never happend, but it's better to check anyways.
+    if repo_dict is None:
+        return "Database error"
+
+    elif repo_dict.status_name in {"queue", "err_clone", "err_analysis"}:
+        return repo_dict.status_desc
+
+    elif repo_dict.status_name == "done":
+        return find_repo_results(conn, repo_dict.id)
+
+    else:
+        return "Unexpected repository status"
+
+
 def get_repo_analysis(repo_path):
     """
     Get analysis of a repository given its path.
 
+    Only one of the possible return values will be returned.
+    Use `isinstance` to determine the type of the returned value.
+
     Returns:
-        list[(NodeOrigin, float)] -- Clones in repo (origin and similarity).
-        string -- Message describing the state of repo analysis.
+        string -- Message describing the state of the repo's analysis.
+        DetectionResult -- Detection result retrieved from the database.
+        list[dict] -- List of repositories matching the repository path.
 
     """
     # Strip leading and trailing whitespace from the repo path.
     repo_path = repo_path.strip()
+    repo_id = None
 
     try:
-        conn = pg_conn(db_url)
-
         repo_info = RepoInfo.parse_repo_info(repo_path)
+
+        conn = pg_conn(db_url)
 
         if not repo_info:
             if re.fullmatch(r"^[\w\.\-]+$", repo_path):
                 repos = _find_repos_by_metadata(conn, repo_path)
 
+                # TODO: If exactly one repository has been found, process it
+                # in the same way as if a normal path was specified.
                 if repos:
-                    # HACK: This is a quick and dirty code written
-                    # to check what data are coming out of the database.
-                    # TODO: Present the list of matching repos in a nice way.
-                    # TODO: If exactly one repository has been found, process it
-                    # in the same way as if a normal path was specified.
-                    return None, "<br>".join([f"""<a href="?repo={r.server}%2F{r.user}%2F{r.name}">{r.url}</a>""" for r in repos])
+                    return repos
 
                 else:
                     raise UserInputError(
-                        "No such repository found in the database")
+                        "No matching repository found in the database")
 
             else:
                 raise UserInputError("Invalid Git repository path format")
 
-        repo_id = conn.one("""INSERT INTO repos ("url", "server", "user", "name", "dir", "status") """ +
-                           """VALUES (%s, %s, %s, %s, %s, (SELECT id FROM states WHERE name = 'queue')) """ +
-                           """ON CONFLICT DO NOTHING RETURNING id;""",
-                           repo_info.url, repo_info.server, repo_info.user, repo_info.name, repo_info.dir)
+        repo_id = _try_insert_repo(conn, repo_info)
 
         if repo_id is not None:
             Thread(target=analyze_repo, args=(repo_info, repo_id)).start()
-            return None, "The repository has been added to the queue"
+            return "The repository has been added to the queue"
 
-        repo = conn.one_dict("""SELECT repos.id, states.name AS "status_name", states.description AS "status_desc" """ +
-                             """FROM repos JOIN states ON (repos.status = states.id) """ +
-                             """WHERE repos.url = %s OR (repos.server = %s AND repos.user = %s AND repos.name = %s) OR repos.dir = %s;""",
-                             repo_info.url, repo_info.server, repo_info.user, repo_info.name, repo_info.dir)
+        repo_dict = _get_repo_dict_from_repoinfo(conn, repo_info)
 
-        # Theoretically, this should never happend, but it's better to check anyways.
-        if repo is None:
-            return None, "Database error"
-
-        elif repo.status_name in {"queue", "err_clone", "err_analysis"}:
-            return None, repo.status_desc
-
-        elif repo.status_name == "done":
-            return find_repo_results(conn, repo.id), None
-
-        else:
-            return None, "Unexpected repository status"
+        return _get_repo_summary(conn, repo_dict)
 
     except PG_Error as ex:
         handle_pg_error(ex, conn, repo_id)
-        return None, "Database error"
+        return "Database error"
 
     finally:
         conn.close()
