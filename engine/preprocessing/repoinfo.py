@@ -9,6 +9,17 @@ from urllib.parse import urlparse, urlunparse
 # Base directory for all cloned repositories is "[main module root directory]/repos/".
 clone_root_dir = path_join(dirname(engine_base_path), "repos")
 
+_URL_IMPLICIT_SCHEME = "https"
+_URL_IMPLICIT_SERVER = "github.com"
+
+_REGEX_GITHUBLAB = re.compile(
+    r"^(?:www\.)?(git(?:hub|lab)\.com)$", re.IGNORECASE)
+
+_REGEX_HOSTNAME = re.compile(r"^[\w\.\-]+(:\d+)?$")
+
+_REGEX_PATH = re.compile(
+    r"^/*([\w\-\.]+)/+([\w\-\.]+?)(?:\.git)?/*$", re.IGNORECASE)
+
 
 class RepoInfo:
     """
@@ -84,32 +95,32 @@ class RepoInfo:
             return None
 
         if parts.username or parts.password or parts.params or parts.query or \
-                parts.fragment or parts.scheme not in {"https", "http", ""}:
+                parts.fragment or parts.scheme.lower() not in {"https", "http", ""}:
             return None
 
-        path_match = re.fullmatch(
-            r"^/*([\w\-\.]+)/+([\w\-\.]+?)(?:\.git)?/*$", parts.path)
+        path_match = _REGEX_PATH.fullmatch(parts.path)
 
         if not path_match:
-            # If there is no scheme, try to prepend HTTPS
-            return None if parts.scheme else \
-                RepoInfo.parse_repo_info("https://" + repo_path)
+            # If there is no scheme, try to prepend HTTPS.
+            return None if parts.scheme else RepoInfo.parse_repo_info(
+                _URL_IMPLICIT_SCHEME + "://" + repo_path)
 
         repo_user = path_match[1]
         repo_name = path_match[2]
 
-        scheme = parts.scheme or "https"
-        server = parts.netloc or "github.com"
+        scheme = parts.scheme.lower() or _URL_IMPLICIT_SCHEME
 
-        server_regex = re.compile(r"^(?:www\.)?(git(?:hub|lab)\.com)$",
-                                  re.IGNORECASE)
+        # Using `hostname` instead of `netloc`
+        # ignores username, password and port.
+        server = parts.hostname or _URL_IMPLICIT_SERVER
 
-        server_match = server_regex.fullmatch(server)
-        if parts.netloc and server_match:
-            scheme = "https"
+        server_match = _REGEX_GITHUBLAB.fullmatch(server)
+
+        if parts.hostname and server_match:
+            scheme = _URL_IMPLICIT_SCHEME
             server = server_match[1].lower()
 
-        if not re.fullmatch(r"^[\w\.\-]+(:\d+)?$", server):
+        elif not _REGEX_HOSTNAME.fullmatch(server):
             return None
 
         # Inserting ":@" before hostname prevents a username/password prompt.
