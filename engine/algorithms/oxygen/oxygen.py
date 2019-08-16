@@ -47,6 +47,6 @@ def oxygen(modules, weight_limit=15):
             continue
 
         clones.append(DetectedClone(
-            origin_list[0].value, origin_list[0].weight, origin_list))
+            origin_list[0].value, origin_list[0].weight, nodes=origin_list))
 
     return DetectionResult(clones)
