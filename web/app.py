@@ -5,6 +5,7 @@ from flask import Flask, request
 from easy_postgres import Connection as pg_conn
 from mako.template import Template
 from engine.errors.user_input import UserInputError
+from engine.results.detection_result import DetectionResult
 from .credentials import db_url
 from .analyzer import get_repo_analysis
 
@@ -22,21 +23,37 @@ with pg_conn(db_url) as conn:
 def web_index():
     """Homepage of the web interface."""
     msg = None
+    repos = None
     clones = None
 
-    repo = request.args.get("repo")
-    if repo:
-        try:
-            clones, msg = get_repo_analysis(repo)
+    repo_path = request.args.get("repo")
 
-            if clones == []:
-                msg = "No code clones detected. Congratulations!"
+    if repo_path:
+        try:
+            result = get_repo_analysis(repo_path)
+
+            # Should not happen.
+            if result is None:
+                msg = "Analysis error"
+
+            elif isinstance(result, str):
+                msg = result
+
+            elif isinstance(result, DetectionResult):
+                clones = result.clones
+
+                if clones == []:
+                    msg = "No code clones detected. Congratulations!"
+
+            elif isinstance(result, list):
+                repos = result
 
             # Should not happen, but just to be sure...
-            elif not clones and not msg:
+            # This make sure that something is always presented to the user.
+            if not msg and not repos and not clones:
                 msg = "Unable to analyze the repository"
 
         except UserInputError as ex:
             msg = "User Input Error: " + ex.message
 
-    return index_template.render(msg=msg, clones=clones)
+    return index_template.render(msg=msg, repos=repos, clones=clones)
