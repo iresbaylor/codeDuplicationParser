@@ -210,14 +210,18 @@ def get_repo_analysis(repo_path):
             if re.fullmatch(r"^[\w\.\-]+$", repo_path):
                 repos = _find_repos_by_metadata(conn, repo_path)
 
-                # TODO: If exactly one repository has been found, process it
-                # in the same way as if a normal path was specified.
-                if repos:
-                    return repos
-
-                else:
+                # No repository matches the given repository path.
+                if not repos:
                     raise UserInputError(
                         "No matching repository found in the database")
+
+                # Exact one matching repository.
+                if len(repos) == 1:
+                    return _get_repo_summary(conn, repos[0])
+
+                # Multiple repositories match the repository path.
+                else:
+                    return repos
 
             else:
                 raise UserInputError("Invalid Git repository path format")
