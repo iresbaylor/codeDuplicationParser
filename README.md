@@ -1,13 +1,15 @@
 # Code Duplication Project
 
-This Python 3 script takes two repositories and checks for "code clones," or code which has likely been taken from elsewhere, between the two. The algorithm used comes from Lee et al. (2018) - *Tree-Pattern-Based Clone Detection with High Precision and Recall*. There are four main types of code clones:
+This Python 3 script takes two repositories and checks for "code clones," or code which has likely been taken from elsewhere, between the two. The primary algorithm (Iodine) used comes from Lee et al. (2018) - *Tree-Pattern-Based Clone Detection with High Precision and Recall*. There are four main types of code clones:
 
 - Type 1: exact copies
 - Type 2: copies with renamed elements (ex. variables)
 - Type 3: copies that have been slightly modified
 - Type 4: "semantic" copies (code that is not copied, but does the same thing)
 
-This code checks for Type 1, 2, and 3 clones.
+This code currently only checks for Type 1 clones.
+However, the majority of Type 2 clones are also detected successfully as ~80% matches.
+Hopefully, proper support for Type 2 and 3 clones will be added in a foreseeable future.
 
 ## Getting Started
 
@@ -30,7 +32,7 @@ What things you need to install the software
 3. Install dependencies
    - `pip3 install -r requirements.txt`
 4. Run the program
-   - `python3 -m code_duplication [args]`
+   - `python3 -m cli [args]`
 
 Alternatively you can run the program in a Python virtual environment
 `./code-duplication.sh`
@@ -43,7 +45,15 @@ Python packages required for the tool to run
 - `bitstring`
 - `fastlog`
 - `windows-curses` (Windows only, required by `fastlog`)
-- `flask`
+- `flask` (for web UI)
+- `easy-postgres` (for web UI's database)
+- `pytest` (for unit tests)
+
+## Algorithms
+
+- **Iodine** - The most complex one, therefore also the slowest. Performs a very thorough analysis and should be able to find (nearly) all clones.
+- **Chlorine** - Performs a relatively simple string-based analysis and therefore is somewhat faster than Iodine.
+- **Oxygen** - Very simple algorithm based on string comparison. By far the fastest algorithm if you only care about perfect code duplicates (100% type 1 clones).
 
 ## Built With
 

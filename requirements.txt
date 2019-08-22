@@ -1,10 +1,16 @@
-# GitPython - Package used for cloning Git(Hub) repositories
+# Interface for working with Git repositories
 gitpython
-# Bit String - Package used for "work list" array in Lee's algorithm
+# "Work list" binary table in Lee's algorithm (Iodine)
 bitstring
 # Fastlog uses the "curses" package, which is part of stdlib on Linux, but not on Windows
 windows-curses; platform_system == 'Windows'
-# Used for better-looking logging
+# Prettier, uniform log messages
 fastlog
-# Front-end
+# Web UI back-end
 flask
+# Web UI database manipulation
+easy-postgres
+# Web UI front-end templating
+mako
+# Unit test framework
+pytest

@@ -1,1 +1,1 @@
-python -m cProfile -o profiling.dat -m code_duplication > output.txt
+python -m cProfile -o profiling.dat -m cli > output.txt
