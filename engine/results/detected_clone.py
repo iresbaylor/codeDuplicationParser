@@ -59,4 +59,8 @@ class DetectedClone:
                     including all of its attributes.
 
         """
-        return self.__dict__
+        # HACK: Maybe there's a prettier solution.
+        # This was just a quick fix to make the to-JSON conversion work.
+        return {"value": self.value,
+                "match_weight": self.match_weight,
+                "origins": {str(k): v for k, v in self.origins.items()}}
