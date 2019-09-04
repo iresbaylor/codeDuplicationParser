@@ -64,3 +64,10 @@ class AlgorithmRunnerTwoRepoTest(TestCase):
         """
         with raises(UserInputError):
             run_two_repos(self.modules1, self.modules2, OXYGEN)
+
+    def test_two_repo_chlorine(self):
+        """Compare direct Chlorine result with the algorithm runner result."""
+        direct_result = chlorine_two_repos(self.modules1, self.modules2)
+        runner_result = run_two_repos(self.modules1, self.modules2, CHLORINE)
+
+        assert direct_result.json() == runner_result.json()
