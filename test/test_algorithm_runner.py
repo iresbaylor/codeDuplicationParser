@@ -32,6 +32,11 @@ class AlgorithmRunnerSingleRepoTest(TestCase):
         # way of comparing results is using their JSON representations.
         assert direct_result.json() == runner_result.json()
 
+    def test_single_repo_iodine(self):
+        """Make sure single-repo Iodine fails. It is not implemented yet."""
+        with raises(UserInputError):
+            run_single_repo(self.modules1, IODINE)
+
 
 class AlgorithmRunnerTwoRepoTest(TestCase):
     """Test case for two-repository mode of algorithm runner."""
