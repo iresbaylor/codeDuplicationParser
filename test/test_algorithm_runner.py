@@ -47,7 +47,7 @@ class AlgorithmRunnerSingleRepoTest(TestCase):
             run_single_repo(self.modules1, IODINE)
 
 
-class AlgorithmRunnerTwoRepoTest(TestCase):
+class AlgorithmRunnerTwoReposTest(TestCase):
     """Test case for two-repository mode of algorithm runner."""
 
     def setUp(self):
@@ -55,7 +55,7 @@ class AlgorithmRunnerTwoRepoTest(TestCase):
         self.modules1 = get_modules_from_dir(test_repo1_dir)
         self.modules2 = get_modules_from_dir(test_repo2_dir)
 
-    def test_two_repo_oxygen(self):
+    def test_two_repos_oxygen(self):
         """
         Make sure that running Oxygen on two repos throws an error.
 
@@ -65,7 +65,7 @@ class AlgorithmRunnerTwoRepoTest(TestCase):
         with raises(UserInputError):
             run_two_repos(self.modules1, self.modules2, OXYGEN)
 
-    def test_two_repo_chlorine(self):
+    def test_two_repos_chlorine(self):
         """Compare direct Chlorine result with the algorithm runner result."""
         direct_result = chlorine_two_repos(self.modules1, self.modules2)
         runner_result = run_two_repos(self.modules1, self.modules2, CHLORINE)
