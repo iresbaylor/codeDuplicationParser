@@ -11,8 +11,10 @@ from unittest import TestCase
 from engine.errors.user_input import UserInputError
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.oxygen.oxygen import oxygen
-from engine.algorithms.algorithm_runner import OXYGEN, CHLORINE, IODINE, \
-    run_single_repo, run_two_repos
+from engine.algorithms.chlorine.chlorine import \
+    chlorine_single_repo, chlorine_two_repos
+from engine.algorithms.algorithm_runner import \
+    OXYGEN, CHLORINE, IODINE, run_single_repo, run_two_repos
 from . import test_repo1_dir, test_repo2_dir
 
 
@@ -30,6 +32,13 @@ class AlgorithmRunnerSingleRepoTest(TestCase):
 
         # Equality operator is not overloaded (yet), so the easiest
         # way of comparing results is using their JSON representations.
+        assert direct_result.json() == runner_result.json()
+
+    def test_single_repo_chlorine(self):
+        """Compare direct Chlorine result with the algorithm runner result."""
+        direct_result = chlorine_single_repo(self.modules1)
+        runner_result = run_single_repo(self.modules1, CHLORINE)
+
         assert direct_result.json() == runner_result.json()
 
     def test_single_repo_iodine(self):
