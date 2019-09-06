@@ -6,7 +6,7 @@ The results of directly running algorithms are compared with results
 returned by the algorithm runner to make sure they're always exactly equal.
 """
 
-from pytest import raises
+from pytest import raises, mark
 from unittest import TestCase
 from engine.errors.user_input import UserInputError
 from engine.preprocessing.module_parser import get_modules_from_dir
@@ -73,7 +73,8 @@ class AlgorithmRunnerTwoReposTest(TestCase):
 
         assert direct_result.json() == runner_result.json()
 
-    # NOTE: This test is very slow.
+    # NOTE: This test is very slow, hence the "slow" PyTest mark.
+    @mark.slow
     def test_two_repos_iodine(self):
         """Compare direct Iodine result with the algorithm runner result."""
         direct_result = iodine(self.modules1, self.modules2)
