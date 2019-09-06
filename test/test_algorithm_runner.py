@@ -13,6 +13,7 @@ from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.oxygen.oxygen import oxygen
 from engine.algorithms.chlorine.chlorine import \
     chlorine_single_repo, chlorine_two_repos
+from engine.algorithms.iodine.iodine import iodine
 from engine.algorithms.algorithm_runner import \
     OXYGEN, CHLORINE, IODINE, run_single_repo, run_two_repos
 from . import test_repo1_dir, test_repo2_dir
@@ -69,5 +70,13 @@ class AlgorithmRunnerTwoReposTest(TestCase):
         """Compare direct Chlorine result with the algorithm runner result."""
         direct_result = chlorine_two_repos(self.modules1, self.modules2)
         runner_result = run_two_repos(self.modules1, self.modules2, CHLORINE)
+
+        assert direct_result.json() == runner_result.json()
+
+    # NOTE: This test is very slow.
+    def test_two_repos_iodine(self):
+        """Compare direct Iodine result with the algorithm runner result."""
+        direct_result = iodine(self.modules1, self.modules2)
+        runner_result = run_two_repos(self.modules1, self.modules2, IODINE)
 
         assert direct_result.json() == runner_result.json()
