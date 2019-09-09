@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS pattern_instances;
+DROP INDEX IF EXISTS patterns_dump_index;
+DROP TABLE IF EXISTS patterns;
 DROP TABLE IF EXISTS origins;
 DROP TABLE IF EXISTS clusters;
 DROP TABLE IF EXISTS commits;
@@ -53,4 +56,21 @@ CREATE TABLE origins (
     col_offset INTEGER, -- column offset (number of characters on the same line before the token)
     similarity FLOAT NOT NULL,
     UNIQUE(cluster_id, file, line, col_offset)
+);
+
+CREATE TABLE patterns (
+    id SERIAL PRIMARY KEY,
+    dump TEXT UNIQUE NOT NULL,
+    weight INT NOT NULL
+);
+
+CREATE INDEX patterns_dump_index ON patterns (dump);
+
+CREATE TABLE pattern_instances (
+    id SERIAL PRIMARY KEY,
+    commit_id INTEGER REFERENCES commits(id) NOT NULL,
+    file TEXT NOT NULL,
+    line INTEGER,
+    col_offset INTEGER, -- see `origins` table for explanation
+    UNIQUE(commit_id, file, line, col_offset)
 );
