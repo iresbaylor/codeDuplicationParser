@@ -68,6 +68,7 @@ CREATE INDEX patterns_dump_index ON patterns (dump);
 
 CREATE TABLE pattern_instances (
     id SERIAL PRIMARY KEY,
+    pattern_id INTEGER REFERENCES patterns(id) NOT NULL,
     commit_id INTEGER REFERENCES commits(id) NOT NULL,
     file TEXT NOT NULL,
     line INTEGER,
