@@ -2,6 +2,7 @@
 
 import re
 from threading import Thread
+from itertools import chain
 from fastlog import log
 from psycopg2 import Error as PG_Error
 from easy_postgres import Connection as pg_conn
@@ -17,6 +18,34 @@ from .pg_error_handler import handle_pg_error
 
 _SELECT_REPO_JOIN_STATUS = """SELECT repos.*, states.name AS "status_name", states.description AS "status_desc" """ + \
     """FROM repos JOIN states ON (repos.status = states.id) """
+
+
+def _get_pattern_id(conn, node):
+    dump = node.dump()
+    dump_md5 = conn.one("""SELECT MD5(%s);""", dump)
+
+    pattern_id = conn.one("""INSERT INTO patterns ("dump", "hash", "weight", "class") """ +
+                          """VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING RETURNING id;""",
+                          dump, dump_md5, node.weight, node.node.__class__.__name__)
+
+    if pattern_id is None:
+        pattern_id = conn.one(
+            """SELECT id FROM patterns WHERE "hash" = %s;""", dump_md5)
+
+    return pattern_id
+
+
+def _extract_patterns(conn, commit_id, modules):
+    nodes = chain.from_iterable(modules)
+
+    for n in nodes:
+        pattern_id = _get_pattern_id(conn, n)
+
+        conn.run("""INSERT INTO pattern_instances """ +
+                 """(pattern_id, commit_id, "file", "line", col_offset) """ +
+                 """VALUES (%s, %s, %s, %s, %s);""",
+                 pattern_id, commit_id,
+                 n.origin.file, n.origin.line, n.origin.col_offset)
 
 
 def analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
@@ -59,10 +88,18 @@ def analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
                     conn.run("""INSERT INTO origins (cluster_id, file, line, col_offset, similarity) VALUES (%s, %s, %s, %s, %s);""",
                              cluster_id, o.file, o.line, o.col_offset, s)
 
-        log.success(f"Repository has been successfully analyzed: {repo_info}")
+            log.success(
+                f"Repository has been successfully analyzed: {repo_info}")
 
-        conn.run("""UPDATE repos SET status = (SELECT id FROM states WHERE name = 'done') WHERE id = %s;""",
-                 repo_id)
+            conn.run("""UPDATE repos SET status = (SELECT id FROM states WHERE name = 'done') WHERE id = %s;""",
+                     repo_id)
+
+        # Once done with the regular analysis, run pattern extraction
+        with conn.transaction():
+            _extract_patterns(conn, commit_id, modules)
+
+        log.success(
+            f"Pattern extraction from was successful: {repo_info}")
 
     except PG_Error as ex:
         handle_pg_error(ex, conn, repo_id)
