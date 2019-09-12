@@ -28,3 +28,17 @@ class SingleFuncDefTest(TestCase):
         assert isinstance(result, DetectionResult)
 
         return result
+
+    # different/
+
+    def _single_func_def_different(self, algorithm):
+        result = self._single_func_def(self.different, algorithm)
+
+        for c in result.clones:
+            assert c.match_weight < 10
+
+    def test_single_func_def_different_iodine(self):
+        self._single_func_def_different(IODINE)
+
+    def test_single_func_def_different_chlorine(self):
+        self._single_func_def_different(CHLORINE)
