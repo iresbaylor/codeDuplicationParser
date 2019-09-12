@@ -7,7 +7,7 @@ from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODE_WEIGHT = 50
+_MIN_NODE_WEIGHT = 20
 
 # Minimum match / similarity coefficient required for two subtrees
 # to be considered code clones and therefore returned.
