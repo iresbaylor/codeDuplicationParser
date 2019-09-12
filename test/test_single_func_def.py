@@ -42,3 +42,16 @@ class SingleFuncDefTest(TestCase):
 
     def test_single_func_def_different_chlorine(self):
         self._single_func_def_different(CHLORINE)
+
+    # type1/
+
+    def _single_func_def_type1(self, algorithm):
+        result = self._single_func_def(self.type1, algorithm)
+
+        assert len(result.clones) > 0
+
+    def test_single_func_def_type1_iodine(self):
+        self._single_func_def_type1(IODINE)
+
+    def test_single_func_def_type1_chlorine(self):
+        self._single_func_def_type1(CHLORINE)
