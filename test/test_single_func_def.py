@@ -55,3 +55,18 @@ class SingleFuncDefTest(TestCase):
 
     def test_single_func_def_type1_chlorine(self):
         self._single_func_def_type1(CHLORINE)
+
+    # type2/
+
+    def _single_func_def_type2(self, algorithm):
+        result = self._single_func_def(self.type2, algorithm)
+
+        assert len(result.clones) > 0
+
+    @mark.xfail(reason="Not implemented")
+    def test_single_func_def_type2_iodine(self):
+        self._single_func_def_type2(IODINE)
+
+    @mark.xfail(reason="Not implemented")
+    def test_single_func_def_type2_chlorine(self):
+        self._single_func_def_type2(CHLORINE)
