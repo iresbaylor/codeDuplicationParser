@@ -30,44 +30,46 @@ class FuncDefTest(TestCase):
 
         return result
 
+    # ---- Two-Repository Mode ----
+
     # different/
 
-    def _func_def_different(self, algorithm):
+    def _func_def_two_different(self, algorithm):
         result = self._func_def_generic(self.different, algorithm, False)
 
         for c in result.clones:
             assert c.match_weight < 10
 
-    def test_func_def_different_iodine(self):
-        self._func_def_different(IODINE)
+    def test_func_def_two_different_iodine(self):
+        self._func_def_two_different(IODINE)
 
-    def test_func_def_different_chlorine(self):
-        self._func_def_different(CHLORINE)
+    def test_func_def_two_different_chlorine(self):
+        self._func_def_two_different(CHLORINE)
 
     # type1/
 
-    def _func_def_type1(self, algorithm):
+    def _func_def_two_type1(self, algorithm):
         result = self._func_def_generic(self.type1, algorithm, False)
 
         assert len(result.clones) > 0
 
-    def test_func_def_type1_iodine(self):
-        self._func_def_type1(IODINE)
+    def test_func_def_two_type1_iodine(self):
+        self._func_def_two_type1(IODINE)
 
-    def test_func_def_type1_chlorine(self):
-        self._func_def_type1(CHLORINE)
+    def test_func_def_two_type1_chlorine(self):
+        self._func_def_two_type1(CHLORINE)
 
     # type2/
 
-    def _func_def_type2(self, algorithm):
+    def _func_def_two_type2(self, algorithm):
         result = self._func_def_generic(self.type2, algorithm, False)
 
         assert len(result.clones) > 0
 
     @mark.xfail(reason="Not implemented")
-    def test_func_def_type2_iodine(self):
-        self._func_def_type2(IODINE)
+    def test_func_def_two_type2_iodine(self):
+        self._func_def_two_type2(IODINE)
 
     @mark.xfail(reason="Not implemented")
-    def test_func_def_type2_chlorine(self):
-        self._func_def_type2(CHLORINE)
+    def test_func_def_two_type2_chlorine(self):
+        self._func_def_two_type2(CHLORINE)
