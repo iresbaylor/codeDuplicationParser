@@ -3,7 +3,7 @@ from unittest import TestCase
 from pytest import mark
 from . import test_data_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
-from engine.algorithms.algorithm_runner import run_two_repos, IODINE, CHLORINE
+from engine.algorithms.algorithm_runner import run_single_repo, run_two_repos, IODINE, CHLORINE
 from engine.results.detection_result import DetectionResult
 
 
@@ -21,8 +21,9 @@ class FuncDefTest(TestCase):
         self.type1 = get_modules_from_dir(type1_dir)
         self.type2 = get_modules_from_dir(type2_dir)
 
-    def _func_def(self, second, algorithm):
-        result = run_two_repos(self.reference, second, algorithm)
+    def _func_def_generic(self, second, algorithm, single):
+        result = run_single_repo(self.reference + second, algorithm) \
+            if single else run_two_repos(self.reference, second, algorithm)
 
         assert result is not None
         assert isinstance(result, DetectionResult)
@@ -32,7 +33,7 @@ class FuncDefTest(TestCase):
     # different/
 
     def _func_def_different(self, algorithm):
-        result = self._func_def(self.different, algorithm)
+        result = self._func_def_generic(self.different, algorithm, False)
 
         for c in result.clones:
             assert c.match_weight < 10
@@ -46,7 +47,7 @@ class FuncDefTest(TestCase):
     # type1/
 
     def _func_def_type1(self, algorithm):
-        result = self._func_def(self.type1, algorithm)
+        result = self._func_def_generic(self.type1, algorithm, False)
 
         assert len(result.clones) > 0
 
@@ -59,7 +60,7 @@ class FuncDefTest(TestCase):
     # type2/
 
     def _func_def_type2(self, algorithm):
-        result = self._func_def(self.type2, algorithm)
+        result = self._func_def_generic(self.type2, algorithm, False)
 
         assert len(result.clones) > 0
 
