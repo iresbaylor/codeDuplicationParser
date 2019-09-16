@@ -51,6 +51,24 @@ class FuncDefTest(TestCase):
     def test_func_def_single_different_oxygen(self):
         self._func_def_single_different(OXYGEN)
 
+    # type1/
+
+    def _func_def_single_type1(self, algorithm):
+        result = self._func_def_generic(self.type1, algorithm, True)
+
+        assert any(c.match_weight > 10 for c in result.clones)
+
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_single_type1_iodine(self):
+        self._func_def_single_type1(IODINE)
+
+    def test_func_def_single_type1_chlorine(self):
+        self._func_def_single_type1(CHLORINE)
+
+    @mark.xfail(reason="Oxygen considers a missing docstring to be a difference", strict=True)
+    def test_func_def_single_type1_oxygen(self):
+        self._func_def_single_type1(OXYGEN)
+
     # ---- Two-Repository Mode ----
 
     # different/
