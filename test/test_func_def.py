@@ -31,6 +31,26 @@ class FuncDefTest(TestCase):
 
         return result
 
+    # ---- Single-Repository Mode ----
+
+    # different/
+
+    def _func_def_single_different(self, algorithm):
+        result = self._func_def_generic(self.different, algorithm, True)
+
+        for c in result.clones:
+            assert c.match_weight < 10
+
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_single_different_iodine(self):
+        self._func_def_single_different(IODINE)
+
+    def test_func_def_single_different_chlorine(self):
+        self._func_def_single_different(CHLORINE)
+
+    def test_func_def_single_different_oxygen(self):
+        self._func_def_single_different(OXYGEN)
+
     # ---- Two-Repository Mode ----
 
     # different/
