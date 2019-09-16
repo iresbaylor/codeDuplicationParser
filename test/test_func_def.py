@@ -69,6 +69,25 @@ class FuncDefTest(TestCase):
     def test_func_def_single_type1_oxygen(self):
         self._func_def_single_type1(OXYGEN)
 
+    # type2/
+
+    def _func_def_single_type2(self, algorithm):
+        result = self._func_def_generic(self.type2, algorithm, True)
+
+        assert any(c.match_weight > 10 for c in result.clones)
+
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_single_type2_iodine(self):
+        self._func_def_single_type2(IODINE)
+
+    @mark.xfail(reason="Not implemented")
+    def test_func_def_single_type2_chlorine(self):
+        self._func_def_single_type2(CHLORINE)
+
+    @mark.xfail(reason="Not implemented")
+    def test_func_def_single_type2_oxygen(self):
+        self._func_def_single_type2(OXYGEN)
+
     # ---- Two-Repository Mode ----
 
     # different/
