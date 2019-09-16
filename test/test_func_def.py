@@ -7,9 +7,9 @@ from engine.algorithms.algorithm_runner import run_two_repos, IODINE, CHLORINE
 from engine.results.detection_result import DetectionResult
 
 
-class SingleFuncDefTest(TestCase):
+class FuncDefTest(TestCase):
     def setUp(self):
-        data_dir = path_join(test_data_dir, "single_func_def")
+        data_dir = path_join(test_data_dir, "func_def")
 
         reference_dir = path_join(data_dir, "reference")
         different_dir = path_join(data_dir, "different")
@@ -21,7 +21,7 @@ class SingleFuncDefTest(TestCase):
         self.type1 = get_modules_from_dir(type1_dir)
         self.type2 = get_modules_from_dir(type2_dir)
 
-    def _single_func_def(self, second, algorithm):
+    def _func_def(self, second, algorithm):
         result = run_two_repos(self.reference, second, algorithm)
 
         assert result is not None
@@ -31,42 +31,42 @@ class SingleFuncDefTest(TestCase):
 
     # different/
 
-    def _single_func_def_different(self, algorithm):
-        result = self._single_func_def(self.different, algorithm)
+    def _func_def_different(self, algorithm):
+        result = self._func_def(self.different, algorithm)
 
         for c in result.clones:
             assert c.match_weight < 10
 
-    def test_single_func_def_different_iodine(self):
-        self._single_func_def_different(IODINE)
+    def test_func_def_different_iodine(self):
+        self._func_def_different(IODINE)
 
-    def test_single_func_def_different_chlorine(self):
-        self._single_func_def_different(CHLORINE)
+    def test_func_def_different_chlorine(self):
+        self._func_def_different(CHLORINE)
 
     # type1/
 
-    def _single_func_def_type1(self, algorithm):
-        result = self._single_func_def(self.type1, algorithm)
+    def _func_def_type1(self, algorithm):
+        result = self._func_def(self.type1, algorithm)
 
         assert len(result.clones) > 0
 
-    def test_single_func_def_type1_iodine(self):
-        self._single_func_def_type1(IODINE)
+    def test_func_def_type1_iodine(self):
+        self._func_def_type1(IODINE)
 
-    def test_single_func_def_type1_chlorine(self):
-        self._single_func_def_type1(CHLORINE)
+    def test_func_def_type1_chlorine(self):
+        self._func_def_type1(CHLORINE)
 
     # type2/
 
-    def _single_func_def_type2(self, algorithm):
-        result = self._single_func_def(self.type2, algorithm)
+    def _func_def_type2(self, algorithm):
+        result = self._func_def(self.type2, algorithm)
 
         assert len(result.clones) > 0
 
     @mark.xfail(reason="Not implemented")
-    def test_single_func_def_type2_iodine(self):
-        self._single_func_def_type2(IODINE)
+    def test_func_def_type2_iodine(self):
+        self._func_def_type2(IODINE)
 
     @mark.xfail(reason="Not implemented")
-    def test_single_func_def_type2_chlorine(self):
-        self._single_func_def_type2(CHLORINE)
+    def test_func_def_type2_chlorine(self):
+        self._func_def_type2(CHLORINE)
