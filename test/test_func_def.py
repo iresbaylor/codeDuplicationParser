@@ -3,8 +3,9 @@ from unittest import TestCase
 from pytest import mark
 from . import test_data_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
-from engine.algorithms.algorithm_runner import run_single_repo, run_two_repos, IODINE, CHLORINE
+from engine.algorithms.algorithm_runner import run_single_repo, run_two_repos, IODINE, CHLORINE, OXYGEN
 from engine.results.detection_result import DetectionResult
+from engine.errors.user_input import UserInputError
 
 
 class FuncDefTest(TestCase):
@@ -46,6 +47,10 @@ class FuncDefTest(TestCase):
     def test_func_def_two_different_chlorine(self):
         self._func_def_two_different(CHLORINE)
 
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_two_different_oxygen(self):
+        self._func_def_two_different(OXYGEN)
+
     # type1/
 
     def _func_def_two_type1(self, algorithm):
@@ -58,6 +63,10 @@ class FuncDefTest(TestCase):
 
     def test_func_def_two_type1_chlorine(self):
         self._func_def_two_type1(CHLORINE)
+
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_two_type1_oxygen(self):
+        self._func_def_two_type1(OXYGEN)
 
     # type2/
 
@@ -73,3 +82,7 @@ class FuncDefTest(TestCase):
     @mark.xfail(reason="Not implemented")
     def test_func_def_two_type2_chlorine(self):
         self._func_def_two_type2(CHLORINE)
+
+    @mark.xfail(raises=UserInputError, reason="Not implemented", strict=True)
+    def test_func_def_two_type2_oxygen(self):
+        self._func_def_two_type2(OXYGEN)
