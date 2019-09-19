@@ -65,7 +65,6 @@ class FuncDefTest(TestCase):
     def test_func_def_single_type1_chlorine(self):
         self._func_def_single_type1(CHLORINE)
 
-    @mark.xfail(reason="Oxygen considers a missing docstring to be a difference", strict=True)
     def test_func_def_single_type1_oxygen(self):
         self._func_def_single_type1(OXYGEN)
 
