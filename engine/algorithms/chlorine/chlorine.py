@@ -125,7 +125,7 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
     for k, v in match_dict.items():
         origin_list = list(v)
         clones.append(DetectedClone(
-            origin_list[0].value, skeleton_weight_dict[k], origin_list))
+            origin_list[0].value, skeleton_weight_dict[k], nodes=origin_list))
 
     return DetectionResult(clones)
 
