@@ -25,7 +25,7 @@ class DetectionResult:
         The original list of clones will not be modified in any way.
 
         Arguments:
-            clones {list[Detectedlone]} -- List of detected code clones.
+            clones {list[DetectedClone]} -- List of detected code clones.
 
         """
         self.clones = clones.copy()

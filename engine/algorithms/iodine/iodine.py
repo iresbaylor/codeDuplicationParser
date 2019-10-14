@@ -28,6 +28,7 @@ def iodine(module_list_1, module_list_2):
     for cluster_list in clusters:
         for pattern in cluster_list:
             if pattern:
-                clones.append(DetectedClone(pattern[0].value, pattern[0].get_match_weight(), pattern[0].nodes))
+                clones.append(DetectedClone(
+                    pattern[0].value, pattern[0].get_match_weight(), nodes=pattern[0].nodes))
 
     return DetectionResult(clones)

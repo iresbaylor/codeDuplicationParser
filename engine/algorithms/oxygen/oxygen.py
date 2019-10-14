@@ -4,6 +4,11 @@ from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
 
 
+def _dump_node(node):
+    """Dump node's value and all of its children recursively."""
+    return f"{node.value}[{'; '.join([_dump_node(c) for c in node.children])}]"
+
+
 def oxygen(modules, weight_limit=15):
     """
     Run basic type 1 code duplication check based on AST.dump() function.
@@ -31,7 +36,7 @@ def oxygen(modules, weight_limit=15):
                 visited.add(n.index)
                 continue
 
-            node_dump = n.dump()
+            node_dump = _dump_node(n)
 
             if node_dump in node_dict:
                 visited.add(n.index)
@@ -47,6 +52,6 @@ def oxygen(modules, weight_limit=15):
             continue
 
         clones.append(DetectedClone(
-            origin_list[0].value, origin_list[0].weight, origin_list))
+            origin_list[0].value, origin_list[0].weight, nodes=origin_list))
 
     return DetectionResult(clones)

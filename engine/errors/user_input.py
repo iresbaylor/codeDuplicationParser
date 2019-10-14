@@ -24,5 +24,7 @@ class UserInputError(Exception):
             code {int} -- Preferred exit code (only if application exits).
 
         """
+        super().__init__(message, code)
+
         self.message = message
         self.code = code

@@ -60,6 +60,31 @@
         </div>
         % endif
 
+        % if repos:
+        <div class="row">
+            <div class="col s6 offset-s3">
+                <ul class="collection with-header">
+                    <li class="collection-header">
+                        <h4>
+                            Matching repositories
+                        </h4>
+                    </li>
+
+                    % for r in repos:
+                    <li class="collection-item">
+                        <h5><a href="?repo=https%3A%2F%2F${r.server}%2F${r.user}%2F${r.name}">${r.name}</a></h5>
+                        <b>URL:</b> <a href="${r.url}">${r.url}</a><br>
+                        <b>Server:</b> <a href="https://${r.server}">${r.server}</a><br>
+                        <b>User:</b> <a href="https://${r.server}/${r.user}">${r.user}</a><br>
+                        <b>Status:</b> ${r.status_desc or r.status_name}
+                    </li>
+                    % endfor
+
+                </ul>
+            </div>
+        </div>
+        % endif
+
         % if clones:
         <div class="row">
             <div class="col s8 offset-s2">
@@ -75,13 +100,13 @@
                         <ul class="collection with-header">
                             <li class="collection-header">
                                 <h5>
-                                    ${c.value} - Weight: ${c.weight}
+                                    ${c.value} - Weight: ${c.match_weight}
                                 </h5>
                             </li>
 
-                            % for o in c.origins:
+                            % for o, s in c.origins.items():
                             <li class="collection-header">
-                                ${o[0]} - Similarity: ${format(o[1] * 100, "g")} %
+                                ${o} - Similarity: ${format(s * 100, "g")} %
                             </li>
                             % endfor
 

@@ -7,7 +7,7 @@ from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODE_WEIGHT = 50
+_MIN_NODE_WEIGHT = 20
 
 # Minimum match / similarity coefficient required for two subtrees
 # to be considered code clones and therefore returned.
@@ -125,7 +125,7 @@ def _dict_to_result(match_dict, skeleton_weight_dict):
     for k, v in match_dict.items():
         origin_list = list(v)
         clones.append(DetectedClone(
-            origin_list[0].value, skeleton_weight_dict[k], origin_list))
+            origin_list[0].value, skeleton_weight_dict[k], nodes=origin_list))
 
     return DetectionResult(clones)
 
