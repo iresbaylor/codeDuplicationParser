@@ -26,8 +26,6 @@ def run_single_repo(modules, algorithm):
         return oxygen(modules)
     elif algorithm == CHLORINE:
         return chlorine_single_repo(modules)
-    elif algorithm == IODINE:
-        raise UserInputError(f"\"{algorithm}\" can only be run with two repositories")
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
 
@@ -52,7 +50,5 @@ def run_two_repos(modules1, modules2, algorithm):
         return chlorine_two_repos(modules1, modules2)
     elif algorithm == IODINE:
         return iodine(modules1, modules2)
-    elif algorithm == OXYGEN:
-        raise UserInputError(f"\"{algorithm}\" can only be run with one repository")
     else:
         raise UserInputError(f"Invalid algorithm name: \"{algorithm}\"")
