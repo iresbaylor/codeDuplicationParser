@@ -42,7 +42,7 @@ def _extract_patterns(conn, commit_id, modules):
         pattern_id = _get_pattern_id(conn, n)
 
         conn.run("""INSERT INTO pattern_instances """ +
-                 """(pattern_id, commit_id, "file", "line", col_offset) """ +
+                 """(pattern_id, commit_id, "file", "start", end) """ +
                  """VALUES (%s, %s, %s, %s, %s);""",
                  pattern_id, commit_id,
                  n.origin.file, n.origin.line, n.origin.col_offset)
@@ -85,7 +85,7 @@ def analyze_repo(repo_info, repo_id, algorithm=OXYGEN):
                                       commit_id, c.value, c.match_weight)
 
                 for o, s in c.origins.items():
-                    conn.run("""INSERT INTO origins (cluster_id, file, line, col_offset, similarity) VALUES (%s, %s, %s, %s, %s);""",
+                    conn.run("""INSERT INTO origins (cluster_id, file, start, end, similarity) VALUES (%s, %s, %s, %s, %s);""",
                              cluster_id, o.file, o.line, o.col_offset, s)
 
             log.success(
@@ -121,7 +121,7 @@ def find_repo_results(conn, repo_id):
     for c in conn.iter_dict("""SELECT id, "value", weight FROM clusters WHERE commit_id = %s;""", commit_id):
         origins = {}
 
-        for o in conn.iter_dict("""SELECT file, line, col_offset, similarity FROM origins WHERE cluster_id = %s;""", c.id):
+        for o in conn.iter_dict("""SELECT file, start, end, similarity FROM origins WHERE cluster_id = %s;""", c.id):
             origins[NodeOrigin(o.file, o.line, o.col_offset)] = o.similarity
 
         clones.append(DetectedClone(c.value, c.weight, origins=origins))

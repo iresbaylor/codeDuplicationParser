@@ -13,7 +13,7 @@ from engine.errors.user_input import UserInputError
 def main():
     """Entry point of the application."""
     try:
-        # Parse command line arguments
+        # Parse command start arguments
         repos, algorithm = handle_cli_args()
 
         time_snap("Arguments handled; Repositories parsed")

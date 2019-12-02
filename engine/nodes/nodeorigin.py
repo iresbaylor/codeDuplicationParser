@@ -7,14 +7,12 @@ class NodeOrigin:
 
     Attributes:
         file {string} -- Source file from which the node originates.
-        line {int|None} -- Line number at which the node was found.
-        col_offset {int|None} -- Column offset within the line.
-                                 Number of characters on the same
-                                 line before the node's token.
+        start {int|None} -- starting line number at which the node was found.
+        end {int|None} -- ending line number at which the node was found.
 
     """
 
-    def __init__(self, file_path, line=None, col_offset=None):
+    def __init__(self, file_path, start=None, end=None):
         """
         Initialize a new node origin instance.
 
@@ -22,8 +20,8 @@ class NodeOrigin:
             file_path {string} -- Path to the node's source file.
 
         Keyword Arguments:
-            line {int} -- Line number of node's origin. (default: {None})
-            col_offset {int} -- Column offset of node. (default: {None})
+            start {int} -- Starting line number of node's origin. (default: {None})
+            end {int} -- Ending line number of node's origin. (default: {None})
 
         Raises:
             ValueError -- When file path is None or when only one of the two
@@ -34,18 +32,18 @@ class NodeOrigin:
             raise ValueError(
                 "File path must always be set to a non-None value")
 
-        if (line is None) != (col_offset is None):
+        if (start is None) != (end is None):
             raise ValueError(
-                "Either both line number and column offset must be set or neither")
+                "Either both the start and end lines must be set or neither")
 
         self.file = file_path
-        self.line = line
-        self.col_offset = col_offset
+        self.start = start
+        self.end = end
 
     def __str__(self):
         """Convert the node origin into a human-readable string representation."""
-        return self.file + (f" (L: {self.line} C: {self.col_offset})"
-                            if self.line and self.col_offset else "")
+        return self.file + (f" ({self.start}, {self.end})"
+                            if self.start and self.end else "")
 
     def __repr__(self):
         """Return a string representation of the node origin."""
