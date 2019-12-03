@@ -18,20 +18,6 @@ def _read_whole_file(file_path):
         return f.read()
 
 
-# def _read_ast_from_file(file_path):
-#     """
-#     Parse a module AST from the specified file.
-#
-#     Arguments:
-#         file_path {string} -- Path of file to parse the AST from.
-#
-#     Returns:
-#         AST parsed from the specified file.
-#
-#     """
-#     return ast.parse(_read_whole_file(file_path))
-
-
 def _get_tree_node_from_file(file_path, repo_path):
     """
     Parse a TreeNode representing the module in the specified file.
