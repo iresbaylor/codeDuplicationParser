@@ -1,6 +1,7 @@
 """Module containing code used for parsing of modules and nodes from Python code."""
 
 import ast
+from asttokens import asttokens, LineNumbers
 from os import listdir, path
 from os.path import isdir, isfile, relpath
 from ..nodes.tree import TreeNode
@@ -17,20 +18,6 @@ def _read_whole_file(file_path):
         return f.read()
 
 
-def _read_ast_from_file(file_path):
-    """
-    Parse a module AST from the specified file.
-
-    Arguments:
-        file_path {string} -- Path of file to parse the AST from.
-
-    Returns:
-        AST parsed from the specified file.
-
-    """
-    return ast.parse(_read_whole_file(file_path))
-
-
 def _get_tree_node_from_file(file_path, repo_path):
     """
     Parse a TreeNode representing the module in the specified file.
@@ -42,7 +29,10 @@ def _get_tree_node_from_file(file_path, repo_path):
         TreeNode -- TreeNode parsed from the specified file.
 
     """
-    return TreeNode(_read_ast_from_file(file_path),
+    atok = asttokens.ASTTokens(_read_whole_file(file_path), True)
+    root = atok.tree
+    lino = LineNumbers(atok.get_text(root))
+    return TreeNode(atok, lino, root,
                     relpath(file_path, repo_path))
 
 

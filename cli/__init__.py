@@ -1,1 +1,1 @@
-"""Package containing implementation of the application's CLI (command line interface)."""
+"""Package containing implementation of the application's CLI (command start interface)."""

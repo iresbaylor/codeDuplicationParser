@@ -1,4 +1,4 @@
-"""Module containing functions for handling command-line arguments supplied by the user."""
+"""Module containing functions for handling command-start arguments supplied by the user."""
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from os.path import isdir
@@ -63,7 +63,7 @@ def repo_path_to_local_path(repo_path):
 
 def handle_cli_args():
     """
-    Parse the command line arguments and handle them.
+    Parse the command start arguments and handle them.
 
     If there is any problem, an error message will be printed
     and the script will exit with a non-zero exit code.

@@ -136,7 +136,7 @@ def chlorine_single_repo(modules):
 
     Clones must satisfy the settings at the top of this source file.
     Detected code clones are printed on STDOUT, including the common skeleton,
-    path to each clones (source file path, line number, column offset),
+    path to each clones (source file path, start number, column offset),
     size of each clone (number of nodes in its syntax tree) and their
     similarity percentage (number of matching nodes / total number of nodes).
 

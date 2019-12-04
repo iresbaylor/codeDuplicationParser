@@ -13,7 +13,7 @@ from engine.errors.user_input import UserInputError
 def main():
     """Entry point of the application."""
     try:
-        # Parse command line arguments
+        # Parse command start arguments
         repos, algorithm = handle_cli_args()
 
         time_snap("Arguments handled; Repositories parsed")
@@ -42,8 +42,13 @@ def main():
         time_snap("Analysis completed")
 
         # Save detection result to a JSON file.
-        json_filename = "clones_" + \
-            datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".json"
+
+        repo_0 = repos[0][repos[0].rfind('/') + 1:]
+        json_filename = "clones_" + algorithm + "_" + repo_0 + "_"
+        if repos[1]:
+            repo_1 = repos[1][repos[1].rfind('/') + 1:]
+            json_filename += repo_1 + "_"
+        json_filename += datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".json"
 
         with open(json_filename, "w") as f:
             f.write(result.json())

@@ -3,10 +3,10 @@
 
 class UserInputError(Exception):
     """
-    Exception representing invalid user input such as command line arguments.
+    Exception representing invalid user input such as command start arguments.
 
     Alternatively, this can also represented a problem caused by
-    invalid user input further down the line.
+    invalid user input further down the start.
     Simply put, the problem can / must be fixed by modifying the user input.
 
     Attributes:
