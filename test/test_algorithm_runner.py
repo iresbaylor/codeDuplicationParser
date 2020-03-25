@@ -16,7 +16,7 @@ from engine.algorithms.chlorine.chlorine import \
 from engine.algorithms.iodine.iodine import iodine
 from engine.algorithms.algorithm_runner import \
     OXYGEN, CHLORINE, IODINE, run_single_repo, run_two_repos
-from . import test_repo1_dir, test_repo2_dir
+from test import test_repo1_dir, test_repo2_dir
 
 
 class AlgorithmRunnerSingleRepoTest(TestCase):

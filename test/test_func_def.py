@@ -1,7 +1,7 @@
 from os.path import join as path_join
 from unittest import TestCase
 from pytest import mark
-from . import test_data_dir
+from test import test_data_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.algorithm_runner import run_single_repo, run_two_repos, IODINE, CHLORINE, OXYGEN
 from engine.results.detection_result import DetectionResult

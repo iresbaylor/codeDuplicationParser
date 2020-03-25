@@ -1,6 +1,6 @@
 """Module containing unit tests for the module parser."""
 
-from . import test_repo1_dir
+from test import test_repo1_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.nodes.tree import TreeNode
 

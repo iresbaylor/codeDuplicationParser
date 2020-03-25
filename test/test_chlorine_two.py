@@ -1,6 +1,6 @@
 """Module containing tests for two-repo mode of the Chlorine algorithm."""
 
-from . import test_repo1_dir, test_repo2_dir
+from test import test_repo1_dir, test_repo2_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.chlorine.chlorine import chlorine_two_repos
 
