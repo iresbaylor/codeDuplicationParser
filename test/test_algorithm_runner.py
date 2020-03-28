@@ -23,7 +23,7 @@ class AlgorithmRunnerSingleRepoTest(TestCase):
     """Test case for single-repository mode of algorithm runner."""
 
     def setUp(self):
-        """Load modules only from the first test repository."""
+        """Load modules only from the first source repository."""
         self.modules1 = get_modules_from_dir(test_repo1_dir)
 
     def test_single_repo_oxygen(self):
@@ -52,7 +52,7 @@ class AlgorithmRunnerTwoReposTest(TestCase):
     """Test case for two-repository mode of algorithm runner."""
 
     def setUp(self):
-        """Load modules from both the first and the second test repository."""
+        """Load modules from both the first and the second source repository."""
         self.modules1 = get_modules_from_dir(test_repo1_dir)
         self.modules2 = get_modules_from_dir(test_repo2_dir)
 
@@ -73,7 +73,7 @@ class AlgorithmRunnerTwoReposTest(TestCase):
 
         assert direct_result.json() == runner_result.json()
 
-    # NOTE: This test is very slow, hence the "slow" PyTest mark.
+    # NOTE: This source is very slow, hence the "slow" PyTest mark.
     @mark.slow
     def test_two_repos_iodine(self):
         """Compare direct Iodine result with the algorithm runner result."""

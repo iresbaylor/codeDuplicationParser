@@ -12,3 +12,8 @@ test_repo2_dir = path_join(_test_repos_dir, "CodeDuplicateTest2")
 
 test_repo1_url = "https://github.com/SchaefferDuncan/CodeDuplicateTest1"
 test_repo2_url = "https://github.com/SchaefferDuncan/CodeDuplicateTest2"
+
+oxygen_test_dir = path_join(_test_repos_dir, "oxygen")
+chlorine_test_dir = path_join(_test_repos_dir, "chlorine")
+chlorine_single_test_dir = path_join(chlorine_test_dir, "single")
+chlorine_double_test_dir = path_join(chlorine_test_dir, "double")

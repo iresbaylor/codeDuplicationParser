@@ -1,6 +1,9 @@
 """Module containing tests for two-repo mode of the Chlorine algorithm."""
 
-from test import test_repo1_dir, test_repo2_dir
+from os.path import join as path_join
+import json
+
+from test import test_repo1_dir, test_repo2_dir, chlorine_double_test_dir
 from engine.preprocessing.module_parser import get_modules_from_dir
 from engine.algorithms.chlorine.chlorine import chlorine_two_repos
 
@@ -17,3 +20,15 @@ def test_chlorine_two_not_none():
 
     assert result
     assert result.clones
+
+
+def test_simple_test_1():
+    test_path = path_join(chlorine_double_test_dir, "simple_test_1")
+
+    expected_file = open(path_join(test_path, "result.json"))
+    expected = json.load(expected_file)
+
+    modules = get_modules_from_dir(path_join(test_path, "source"))
+    actual = json.loads(chlorine_double_test_dir(modules).json())
+
+    assert expected == actual
