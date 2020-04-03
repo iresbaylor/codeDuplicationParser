@@ -26,7 +26,7 @@ def test_simple_1():
     expected_file = open(path_join(test_path, "result.json"))
     expected = json.load(expected_file)
 
-    modules = get_modules_from_dir(path_join(test_path, "source"))
+    modules = get_modules_from_dir(path_join(test_path, "source1"))
     actual = json.loads(oxygen(modules).json())
 
     assert expected == actual

@@ -28,7 +28,8 @@ def test_simple_test_1():
     expected_file = open(path_join(test_path, "result.json"))
     expected = json.load(expected_file)
 
-    modules = get_modules_from_dir(path_join(test_path, "source"))
-    actual = json.loads(chlorine_double_test_dir(modules).json())
+    modules1 = get_modules_from_dir(path_join(test_path, "source1"))
+    modules2 = get_modules_from_dir(path_join(test_path, "source2"))
+    actual = json.loads(chlorine_two_repos(modules1, modules2).json())
 
     assert expected == actual
