@@ -83,6 +83,14 @@ def _type1_compare(node1, node2):
     return match_weight, _get_skeleton(node1.value, child_skeletons)
 
 
+def _check_if_within(outer_node, inner_node):
+    return outer_node.origin.start <= inner_node.origin.start and outer_node.origin.end >= inner_node.origin.end
+
+
+def _calculate_weight_ratio(match_weight, node1, node2):
+    return match_weight / min(node1.weight, node2.weight)
+
+
 def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
     """
     Run common logic shared by single-repo analysis and 2-repo comparison mode.
@@ -106,9 +114,21 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
     if match_weight == max(n1.weight, n2.weight):
         ignore_set.update(n2.get_all_children())
 
-    if match_weight / min(n1.weight, n2.weight) >= _MIN_MATCH_COEFFICIENT:
-        match_dict[match_skeleton] |= {n1, n2}
-        skeleton_weight_dict[match_skeleton] = match_weight
+    if _calculate_weight_ratio(match_weight, n1, n2) >= _MIN_MATCH_COEFFICIENT:
+        # Check if the node is the children of any existing matches
+        add = True
+        for skeleton in match_dict:
+            # Check line numbers and same weight (and if it's the same node)
+            node1, node2 = match_dict[skeleton]
+            if skeleton is not match_skeleton and _check_if_within(node1, n1) and _check_if_within(node2, n2) and \
+                    _calculate_weight_ratio(match_weight, n1, n2) == \
+                    _calculate_weight_ratio(skeleton_weight_dict[skeleton], node1, node2):
+                # Don't add
+                add = False
+
+        if add:
+            match_dict[match_skeleton] |= {n1, n2}
+            skeleton_weight_dict[match_skeleton] = match_weight
 
 
 def _dict_to_result(match_dict, skeleton_weight_dict):
