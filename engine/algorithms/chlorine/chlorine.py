@@ -119,12 +119,14 @@ def _compare_internal(n1, n2, ignore_set, match_dict, skeleton_weight_dict):
         add = True
         for skeleton in match_dict:
             # Check line numbers and same weight (and if it's the same node)
-            node1, node2 = match_dict[skeleton]
-            if skeleton is not match_skeleton and _check_if_within(node1, n1) and _check_if_within(node2, n2) and \
-                    _calculate_weight_ratio(match_weight, n1, n2) == \
-                    _calculate_weight_ratio(skeleton_weight_dict[skeleton], node1, node2):
-                # Don't add
-                add = False
+            nodes = match_dict[skeleton]
+            for node1 in nodes:
+                for node2 in nodes:
+                    if node1 != node2 and skeleton is not match_skeleton and _check_if_within(node1, n1) and \
+                        _check_if_within(node2, n2) and _calculate_weight_ratio(match_weight, n1, n2) == \
+                            _calculate_weight_ratio(skeleton_weight_dict[skeleton], node1, node2):
+                        # Don't add
+                        add = False
 
         if add:
             match_dict[match_skeleton] |= {n1, n2}
