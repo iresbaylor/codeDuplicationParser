@@ -21,8 +21,8 @@ def test_chlorine_single_not_none():
     assert result.clones
 
 
-def test_simple_test_1():
-    test_path = path_join(chlorine_single_test_dir, "simple_test_1")
+def run_test(test_dir):
+    test_path = path_join(chlorine_single_test_dir, test_dir)
 
     expected_file = open(path_join(test_path, "result.json"))
     expected = json.load(expected_file)
@@ -31,3 +31,23 @@ def test_simple_test_1():
     actual = json.loads(chlorine_single_repo(modules).json())
 
     assert expected == actual
+
+
+def test_simple_1():
+    run_test("simple_test_1")
+
+
+def test_simple_2():
+    run_test("simple_test_2")
+
+
+def test_simple_3():
+    run_test("simple_test_3")
+
+
+def test_multi_file():
+    run_test("multi_file")
+
+
+def test_external_1():
+    run_test("external_test_1")
