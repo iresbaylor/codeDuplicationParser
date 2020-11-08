@@ -6,7 +6,7 @@ import os
 
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODE_WEIGHT = int(os.environ["OXYGEN_MIN_NODE_WEIGHT"]) or 20
+_MIN_NODE_WEIGHT = int(os.environ.get("OXYGEN_MIN_NODE_WEIGHT", 20))
 
 
 def _dump_node(node):

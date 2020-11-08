@@ -8,11 +8,11 @@ from ...results.detection_result import DetectionResult
 import os
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODE_WEIGHT = int(os.environ["CHLORINE_MIN_NODE_WEIGHT"]) or 20
+_MIN_NODE_WEIGHT = int(os.environ.get("CHLORINE_MIN_NODE_WEIGHT", 20))
 
 # Minimum match / similarity coefficient required for two subtrees
 # to be considered code clones and therefore returned.
-_MIN_MATCH_COEFFICIENT = float(os.environ["CHLORINE_MIN_MATCH_COEFFICIENT"]) or 0.8
+_MIN_MATCH_COEFFICIENT = float(os.environ.get("CHLORINE_MIN_MATCH_COEFFICIENT", 0.8))
 
 
 def _get_skeleton(node_value, child_skeletons):
