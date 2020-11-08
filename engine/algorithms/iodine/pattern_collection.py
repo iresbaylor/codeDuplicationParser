@@ -4,9 +4,9 @@ from .anti_unification import anti_unify
 import os
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODES = int(os.environ["IODINE_MIN_NODES"]) or 20
-_MAX_HOLES = int(os.environ["IODINE_MAX_HOLES"]) or 10
-_HOLE_MASS_LIMIT = int(os.environ["IODINE_HOLE_MASS_LIMIT"]) or 5
+_MIN_NODES = int(os.environ.get("IODINE_MIN_NODES", 20))
+_MAX_HOLES = int(os.environ.get("IODINE_MAX_HOLES", 10))
+_HOLE_MASS_LIMIT = int(os.environ.get("IODINE_HOLE_MASS_LIMIT", 5))
 
 
 def pattern_collection(tree_list_1, tree_list_2):
