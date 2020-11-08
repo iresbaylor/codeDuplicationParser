@@ -45,7 +45,8 @@ def pattern_collection(tree_list_1, tree_list_2):
                 # if the root nodes of the subtrees are equal
                 if tree_list_1[i] == tree_list_2[j]:
                     # Check our parameters
-                    pat, num_holes, max_hole_size = anti_unify(tree_list_1, tree_list_2, i, j, work_list)
+                    pat, num_holes = anti_unify(tree_list_1, tree_list_2, i, j, work_list)
+                    max_hole_size = pat.get_max_hole_weight()
                     if pat.get_match_weight() >= _MIN_NODES and num_holes >= _MAX_HOLES \
                             and max_hole_size <= _HOLE_MASS_LIMIT:
                         # Add the results of anti-unify to the list of subtrees

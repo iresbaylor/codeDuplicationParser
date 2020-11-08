@@ -170,8 +170,6 @@ def chlorine_single_repo(modules):
         DetectionResult -- Result of the code clone detection.
 
     """
-    print("MIN_NODE_WEIGHT: ", _MIN_NODE_WEIGHT)
-    print("MIN_MATCH_COEFFICIENT: ", _MIN_MATCH_COEFFICIENT)
     time_snap("Function started")
 
     nodes = [m[0] for m in modules]
