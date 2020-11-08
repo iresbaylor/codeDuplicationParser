@@ -81,6 +81,19 @@ class PatternNode:
         return 0 if self.value == _HOLE else \
             (1 + sum([c.get_match_weight() for c in self.children]))
 
+    def get_max_hole_weight(self):
+        """
+        Finds all holes in the tree and returns the hole weight of the maximum
+
+        Returns:
+            int -- Weight of the max hole
+        """
+        if self.value == _HOLE and len(self.nodes) > 0:
+            return max(n.get_all_children() for n in self.nodes)
+        if len(self.children) > 0:
+            return max(c.get_max_hole_weight() for c in self.children)
+        return 0
+
     def __str__(self):
         """Convert the pattern node into a human-readable string."""
         # FIXME: This doesn't seem right.

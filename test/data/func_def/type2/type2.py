@@ -1,5 +1,5 @@
 def welcome(arg1="Wor", param2="ld!"):
-    """The `welcome()` test function."""
+    """The `welcome()` source function."""
     args_combined = arg1 + param2
 
     msg_prefix = "Welcome"

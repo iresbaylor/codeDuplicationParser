@@ -2,6 +2,11 @@
 
 from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
+import os
+
+
+# Minimum weight of a single node used in comparison.
+_MIN_NODE_WEIGHT = int(os.environ["OXYGEN_MIN_NODE_WEIGHT"]) or 20
 
 
 def _dump_node(node):
@@ -9,7 +14,7 @@ def _dump_node(node):
     return f"{node.value}[{'; '.join([_dump_node(c) for c in node.children])}]"
 
 
-def oxygen(modules, weight_limit=15):
+def oxygen(modules):
     """
     Run basic type 1 code duplication check based on AST.dump() function.
 
@@ -32,7 +37,7 @@ def oxygen(modules, weight_limit=15):
         visited = set()
 
         for n in m:
-            if n.parent_index in visited or n.weight < weight_limit:
+            if n.parent_index in visited or n.weight < _MIN_NODE_WEIGHT:
                 visited.add(n.index)
                 continue
 

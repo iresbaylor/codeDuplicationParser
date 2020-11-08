@@ -84,7 +84,7 @@ class RepoInfoCloneTest(TestCase):
         self.clone_dir = path_join(clone_root_dir, "github.com",
                                    "calebdehaan", "codeDuplicationParser")
 
-    # Delete the clone target directory before and after the test.
+    # Delete the clone target directory before and after the source.
     tearDown = setUp = lambda self: rmtree(self.clone_dir, ignore_errors=True)
 
     def _check_repo_info(self, info):

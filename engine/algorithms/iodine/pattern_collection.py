@@ -1,6 +1,12 @@
 from bitstring import BitArray
 from .pattern_clustering import clustering
 from .anti_unification import anti_unify
+import os
+
+# Minimum weight of a single node used in comparison.
+_MIN_NODES = int(os.environ["IODINE_MIN_NODES"]) or 20
+_MAX_HOLES = int(os.environ["IODINE_MAX_HOLES"]) or 10
+_HOLE_MASS_LIMIT = int(os.environ["IODINE_HOLE_MASS_LIMIT"]) or 5
 
 
 def pattern_collection(tree_list_1, tree_list_2):
@@ -38,9 +44,13 @@ def pattern_collection(tree_list_1, tree_list_2):
                 work_list[i].set(True, j)
                 # if the root nodes of the subtrees are equal
                 if tree_list_1[i] == tree_list_2[j]:
-                    # Add the results of anti-unify to the list of subtrees
-                    pats[i].append(anti_unify(
-                        tree_list_1, tree_list_2, i, j, work_list))
+                    # Check our parameters
+                    pat, num_holes = anti_unify(tree_list_1, tree_list_2, i, j, work_list)
+                    max_hole_size = pat.get_max_hole_weight()
+                    if pat.get_match_weight() >= _MIN_NODES and num_holes >= _MAX_HOLES \
+                            and max_hole_size <= _HOLE_MASS_LIMIT:
+                        # Add the results of anti-unify to the list of subtrees
+                        pats[i].append(pat)
     # for every set of patterns (one per node in the first tree)
     for pattern_set in pats:
         # run the clustering function on the pattern set

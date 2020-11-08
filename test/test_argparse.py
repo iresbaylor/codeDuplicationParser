@@ -4,7 +4,7 @@ from pytest import raises
 from argparse import Namespace
 from cli.args_handler import parser
 from engine.algorithms import IODINE, CHLORINE, OXYGEN
-from . import test_repo1_url, test_repo2_url
+from test import test_repo1_url, test_repo2_url
 
 
 def test_no_args():

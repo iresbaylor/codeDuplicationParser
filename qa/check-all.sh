@@ -23,7 +23,7 @@ terminal_setup() {
 
 
 
-# run selected checker or test script
+# run selected checker or source script
 run_checker() {
     local cmd="$1.sh"
     local log="$1.log"
