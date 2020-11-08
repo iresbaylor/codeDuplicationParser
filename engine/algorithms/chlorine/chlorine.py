@@ -5,13 +5,14 @@ from itertools import chain
 from ...utils.benchmark import time_snap
 from ...results.detected_clone import DetectedClone
 from ...results.detection_result import DetectionResult
+import os
 
 # Minimum weight of a single node used in comparison.
-_MIN_NODE_WEIGHT = 20
+_MIN_NODE_WEIGHT = int(os.environ["CHLORINE_MIN_NODE_WEIGHT"]) or 20
 
 # Minimum match / similarity coefficient required for two subtrees
 # to be considered code clones and therefore returned.
-_MIN_MATCH_COEFFICIENT = 0.8
+_MIN_MATCH_COEFFICIENT = float(os.environ["CHLORINE_MIN_MATCH_COEFFICIENT"]) or 0.8
 
 
 def _get_skeleton(node_value, child_skeletons):
@@ -169,6 +170,8 @@ def chlorine_single_repo(modules):
         DetectionResult -- Result of the code clone detection.
 
     """
+    print("MIN_NODE_WEIGHT: ", _MIN_NODE_WEIGHT)
+    print("MIN_MATCH_COEFFICIENT: ", _MIN_MATCH_COEFFICIENT)
     time_snap("Function started")
 
     nodes = [m[0] for m in modules]
